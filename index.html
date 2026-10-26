@@ -1528,9 +1528,10 @@ const PHASES = [
   intro: "Nothing in the main path needs these. Come back when AE2 has a hole you want to fill, or when you just want a bigger machine to play with.",
   steps: [
     { id: "e-ma", layer: "u", t: "Mystical Agriculture crop room", mods: ["Mystical Agriculture"],
-      why: `<p>Mystical Agriculture grows resources as crops. <b>Essence</b> from <b>Inferium ore</b> goes into seeds, and the <b>Infusion Altar</b> combines them with essence and the resource. Each resource has a <b>tier</b> (Inferium, Prudentium, Tertium, Imperium, Supremium) and needs essence and farmland of that tier. Harvested essence becomes resources in a crafting grid. Inferium ore generates in the Overworld up to Y 64, and Prosperity ore up to Y 24.</p>`,
+      why: `<p>Mystical Agriculture grows resources as crops. <b>Inferium essence</b> goes into seeds. You get it three ways: mining <b>Inferium ore</b>, killing <b>mobs</b> (every passive or hostile mob has a 20% chance to drop one), and growing <b>Inferium seeds</b>. Those crops yield more on better farmland: 1 essence per harvest on Inferium farmland, about 1.5 on Prudentium, 2 on Tertium, about 2.5 on Imperium and 3 on Supremium. Once a few Inferium crops are growing, you can stop mining the ore. The <b>Infusion Altar</b> combines them with essence and the resource. Each resource has a <b>tier</b> (Inferium, Prudentium, Tertium, Imperium, Supremium) and needs essence and farmland of that tier. Harvested essence becomes resources in a crafting grid. Inferium ore generates in the Overworld up to Y 64, and Prosperity ore up to Y 24.</p>`,
       subs: [
         "Mine Inferium and Prosperity ore and make Inferium seeds",
+        "Plant the Inferium seeds on Inferium farmland and keep replanting: the crops now supply essence, and mob kills add more",
         "Build the Infusion Altar with 8 pedestals around it",
         "Make an Infusion Crystal (a diamond, 4 prosperity shards and 4 inferium essence), then use it to craft Prudentium and Tertium essence from the tier below",
         "Make seeds for wood, stone, coal, iron, copper and dyes first",
@@ -1551,7 +1552,8 @@ const PHASES = [
         "Write AE2 patterns for essence → resources, as in the crop room step",
       ] },
     { id: "e-mob", layer: "u", t: "Mob farm", mods: ["Mob Grinding Utils"],
-      why: `<p>Guards need arrows, the Fletcher needs feathers and string, and many recipes need bones and gunpowder. A mob farm supplies these. This one uses <b>Mob Grinding Utils</b>: plain blocks, no power. Mobs spawn in a dark room, <b>Entity Conveyors</b> and a <b>Fan</b> move them along, <b>Spikes</b> kill them, and an <b>Absorption Hopper</b> vacuums up the drops and XP into a chest. Build it far from town so it doesn't affect citizens.</p>`,
+      why: `<p>Guards need arrows, the Fletcher needs feathers and string, and many recipes need bones and gunpowder. A mob farm supplies these. This one uses <b>Mob Grinding Utils</b>: plain blocks, no power. Mobs spawn in a dark room, <b>Entity Conveyors</b> and a <b>Fan</b> move them along, <b>Spikes</b> kill them, and an <b>Absorption Hopper</b> vacuums up the drops and XP into a chest. Build it far from town so it doesn't affect citizens.</p>
+      <p>Bonus: every mob that dies has a 20% chance to drop <b>Inferium essence</b>, even when Spikes kill it, so the farm also feeds Mystical Agriculture.</p>`,
       warn: "Mobs killed by Spikes do not count as player kills, so drops that need a player kill will not appear. The Mob Masher (Saw) does count as a player kill, but it needs diamonds.",
       subs: [
         "Dig a room at least 20 blocks from town and light-proof it: solid walls and roof, or Tinted Glass, and no torches inside",
@@ -2240,7 +2242,9 @@ raw("honey_bottle", "Honey bottle", CAT_FARM, "Use a glass bottle on a full beeh
 raw("flint", "Flint", CAT_EARTH, "Gravel drops it now and then when you dig it.", [["By hand", "Dig gravel with a shovel until it drops.", "s-food"]]);
 raw("water_bucket", "Water bucket", CAT_OTHER, "Use a bucket on any water source.", [["By hand", "Scoop it from a lake or river.", "s-food"]]);
 raw("farmland", "Farmland", CAT_FARM, "Till dirt or grass with a hoe. It needs water within 4 blocks to stay wet.", [["By hand", "Hoe the ground next to water.", "s-food"]]);
-raw("inferium_essence", "Inferium essence", CAT_ORE, "Mystical Agriculture: mine Inferium ore, which generates in the Overworld up to Y 64.", [["By hand", "Mine Inferium ore.", "e-ma"]]);
+raw("inferium_essence", "Inferium essence", CAT_ORE, "Mystical Agriculture: mine Inferium ore (Overworld, up to Y 64), or kill mobs: every passive or hostile mob has a 20% chance to drop one. Inferium seeds then grow more of it, 1 per harvest on Inferium farmland and up to 3 on Supremium farmland.",
+  [["By hand", "Mine Inferium ore.", "e-ma"], ["By hand", "Kill mobs: each has a 20% chance to drop one.", "e-ma"], ["Machines", "Grow Inferium seeds on essence farmland, in a crop room or in Hopper Botany Pots.", "e-pots"],
+   ["Machines", "A mob farm collects it from every kill, even with Spikes.", "e-mob"]]);
 raw("prosperity_shard", "Prosperity shard", CAT_ORE, "Mystical Agriculture: mine Prosperity ore, which generates in the Overworld up to Y 24.", [["By hand", "Mine Prosperity ore deep down.", "e-ma"]]);
 raw("flux_dust", "Flux dust", CAT_OTHER, "In this pack the Basic Power quests give it as rewards, and Xycraft's Extractor also makes it: a charged redstone block ringed by obsidian, with a Flux Block next to it. Check the recipe in JEI.", [["Quest book", "Basic Power chapter rewards.", "p-quests"]]);
 raw("rabbit_foot", "Rabbit's foot", CAT_MOB, "Rabbits sometimes drop it. They live in deserts, snowy plains and flower forests, so expect to hunt a lot of them: the walking research alone needs 1, 4, 8, 32 and 64.", [["By hand", "Hunt rabbits.", "s-ores"], ["Machines", "A mob farm.", "e-mob"]]);

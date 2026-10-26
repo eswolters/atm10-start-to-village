@@ -1159,7 +1159,7 @@ const PHASES = [
   [Integrator][ Computer ]
   (all touching; Integrator must be inside the colony)` },
       code: true,
-      tip: `<b>Troubleshooting:</b> run <code>lua</code> on the computer. <code>peripheral.getNames()</code> shows what's connected, and <code>peripheral.find("colony_integrator").getRequests()</code> shows the raw requests. If the script errors on a function name, check the peripheral list with <code>peripheral.getMethods("me_bridge")</code>.` },
+      tip: `<b>Troubleshooting:</b> run <code>lua</code> on the computer. <code>peripheral.getNames()</code> shows what's connected, and <code>peripheral.find("colony_integrator").getRequests()</code> shows the raw requests. If the script errors on a function name, check the peripheral list with <code>peripheral.getMethods("me_bridge")</code>. In the script, <code>OUT</code> is where items go: <code>"@up"</code> means the inventory directly above the ME Bridge, and the <code>@</code> is required (without it the value is read as a peripheral name).` },
     { id: "l-skip", layer: "u", t: "Decide what stays manual", mods: ["MineColonies"],
       why: `<p>Some requests are better handled elsewhere: food (the cook makes it), Domum Ornamentum blocks (colony crafters) and tools with specific enchantments. Add these to <code>SKIP</code> in the script.</p>`,
       subs: [
@@ -1567,6 +1567,7 @@ const EXTRA = {
       ["'No Colony Integrator found'", "The integrator doesn't touch the computer, or it's outside the colony border."],
       ["'Could not read requests'", "The integrator is outside the colony, or the colony isn't loaded. Move it into the colony."],
       ["It crafts but never sends", "AE2 crafts take time. The script checks again every 30 seconds and sends once the item is in stock."],
+      ["'Could not send ...' or nothing arrives in the Stash", "The destination in the script (OUT) must start with @ for a side, for example @up for a Stash on top of the ME Bridge. Check the Stash isn't full and that it touches the ME Bridge."],
     ] },
   "e-ma": { opt: true, next: "Higher-tier farmland and more accelerators. Essence from many crops can go into the same AE2 pattern." },
   "e-mining": { opt: true, fix: [["The miner stops when you leave", "Its chunk isn't force-loaded. Check the FTB Chunks map."]] },
@@ -1774,21 +1775,21 @@ const MISTAKES = [
 
 const LUA = `-- startup.lua : fill MineColonies requests from AE2
 -- Needs: Advanced Computer + Colony Integrator + ME Bridge (Advanced Peripherals)
-local colony = peripheral.find("colony_integrator") or peripheral.find("colonyIntegrator")
-local me     = peripheral.find("me_bridge") or peripheral.find("meBridge")
+local colony = peripheral.find("colony_integrator")
+local me     = peripheral.find("me_bridge")
 assert(colony, "No Colony Integrator found")
 assert(me, "No ME Bridge found")
 
-local OUT      = "up"   -- side of the ME Bridge the Stash sits on
+-- Where the items go. "@up" is the inventory directly above the ME Bridge (the Stash).
+-- Other sides: "@down", "@north", "@south", "@east", "@west", or "@front", "@back", "@left",
+-- "@right", "@top", "@bottom" relative to the bridge. Without the @ it is the name of a
+-- peripheral on a wired modem network, for example "minecolonies:stash_0".
+local OUT      = "@up"
 local WAIT     = 30     -- seconds between checks
 local COOLDOWN = 300    -- seconds before re-sending the same request
 local SKIP = {          -- items the colony should make itself
   ["minecraft:enchanted_book"] = true,
 }
-
--- function names changed between Advanced Peripherals versions
-local isCraftable = me.isCraftable or me.isItemCraftable
-local isCrafting  = me.isCrafting  or me.isItemCrafting
 
 local sentAt = {}  -- request id -> time we last handled it
 
@@ -1798,23 +1799,36 @@ local function stock(name)
   return item.count or item.amount or 0
 end
 
+-- Advanced Peripherals 0.8 takes (destination, filter). Older versions took (filter, direction).
+local function export(name, count)
+  local filter = { name = name, count = count }
+  local ok, sent, err = pcall(me.exportItem, OUT, filter)
+  if ok then return sent, err end
+  local ok2, sent2, err2 = pcall(me.exportItem, filter, (OUT:gsub("^@", "")))
+  if ok2 then return sent2, err2 end
+  return nil, tostring(sent)
+end
+
 local function fill(req)
   local first = req.items and req.items[1]
   if not first or SKIP[first.name] then return end
   local name, need = first.name, req.count or 1
+  local label = req.displayName or first.displayName or name
   local now = os.epoch("utc") / 1000
   if sentAt[req.id] and now - sentAt[req.id] < COOLDOWN then return end
 
   local have = stock(name)
   if have > 0 then
-    local sent = me.exportItem({ name = name, count = math.min(have, need) }, OUT)
+    local sent, err = export(name, math.min(have, need))
     if sent and sent > 0 then
-      print(("Sent %d x %s for %s"):format(sent, name, req.target or "?"))
+      print(("Sent %d x %s for: %s"):format(sent, name, label))
       sentAt[req.id] = now
+    else
+      print(("Could not send %s: %s"):format(name, tostring(err or "nothing moved (is the Stash full or missing?)")))
     end
-  elseif isCraftable and isCraftable({ name = name }) and not isCrafting({ name = name }) then
+  elseif me.isCraftable({ name = name }) and not me.isCrafting({ name = name }) then
     me.craftItem({ name = name, count = need })
-    print(("Crafting %d x %s"):format(need, name))
+    print(("Crafting %d x %s for: %s"):format(need, name, label))
     sentAt[req.id] = now - COOLDOWN + WAIT * 2  -- check again soon
   end
 end

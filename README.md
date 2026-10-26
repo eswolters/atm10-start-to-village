@@ -31,4 +31,4 @@ Progress is kept in your browser's local storage.
 
 - The illustrations are inline SVG drawn in `index.html`, so the guide stays a single file with no build step.
 - Written for solo play on a recent ATM10 (Minecraft 1.21.1, NeoForge). ATM10 updates add and remove mods, so check JEI for exact recipes.
-- `startup.lua` was written against the Advanced Peripherals 1.21.1 source (`colony_integrator`, `me_bridge`, `isCraftable`) and falls back to the older names. It has not been tested in-game, so try it on a small scale first.
+- `startup.lua` was checked against the Advanced Peripherals 0.8.2a jar in an ATM10 instance (method names, argument order, the fields `getRequests` returns, and the `@up` destination syntax) and run against a mock of that API in Lua 5.4 and LuaJIT. It has not been run inside the game yet, so try it on a small scale first.

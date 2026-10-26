@@ -245,7 +245,9 @@ while queue:
     if slug in LEAF: continue
     cands = candidates(reg)
     if slug in PICK:
-        cands = [c for c in cands if c[0] == PICK[slug]] or cands
+        picked = [c for c in cands if c[0] == PICK[slug]]
+        if not picked and PICK[slug] in R: picked = [(PICK[slug], R[PICK[slug]])]   # a recipe from another mod that replaces the vanilla one
+        cands = picked or cands
     if not cands:
         UNRES[slug] = reg; continue
     rid, e = cands[0]; r = e["r"]
@@ -281,5 +283,5 @@ def cycles():
     return found
 CYC = cycles()
 print("cycles:", [" > ".join(c[-4:]) for c in CYC][:10])
-json.dump({"items": ITEMS, "unresolved": UNRES, "picked": PICKED, "names": {k: name_of(v) for k, v in NAMES.items() if ":" in v}}, open(sys.argv[3], "w"), indent=1)
+json.dump({"items": ITEMS, "unresolved": UNRES, "picked": PICKED, "regs": {k: v for k, v in NAMES.items() if ":" in v}, "names": {k: name_of(v) for k, v in NAMES.items() if ":" in v}}, open(sys.argv[3], "w"), indent=1)
 print(len(ITEMS), "items;", len(UNRES), "unresolved")

@@ -21,9 +21,20 @@ for slug, v in I.items():
     row = [OVERRIDE.get(slug, v["n"]), v["out"], v["in"], v["at"], v["grp"], flags]
     if v["also"] or v["tools"]: row += [v["also"], v["tools"]]
     out[slug] = row
-unk = {k: (OVERRIDE.get(k) or d["names"].get(k, k)) for k in ("precision_mechanism", "sturdy_sheet", "sophisticatedstorage_barrel", "track")}
+unk = {k: (OVERRIDE.get(k) or d["names"].get(k, k)) for k in sorted(set(d.get("unresolved", {})) | {"precision_mechanism", "sturdy_sheet", "sophisticatedstorage_barrel", "track"})}
 unk["sophisticatedstorage_barrel"] = "Barrel (Sophisticated Storage)"
 unk["track"] = "Track"
-js = "const ITEM_DATA = " + json.dumps(out, ensure_ascii=False, separators=(",", ":")) + ";\nconst UNKNOWN = " + json.dumps(unk, ensure_ascii=False) + ";\n"
+regs = {}
+for slug, reg in d.get("regs", {}).items():
+    if slug in out: regs[reg] = slug
+if len(sys.argv) > 3:                      # tags and registry ids that stand for one of our items (wood types, ingots, ...)
+    ns = {}; exec(open(sys.argv[3]).read(), ns)
+    for k, v in ns["MAP"].items():
+        if v in out or v in ns["LEAF"]: regs[k] = v
+    for slug in ns["LEAF"]:
+        for reg in [r for r, s in d.get("regs", {}).items() if s == slug]: regs[reg] = slug
+        regs.setdefault("minecraft:" + slug, slug)   # gathered vanilla items (bone, carrot, lava bucket, ...)
+js = "const ITEM_REG = " + json.dumps(regs, ensure_ascii=False, separators=(",", ":")) + ";\n"
+js += "const ITEM_DATA = " + json.dumps(out, ensure_ascii=False, separators=(",", ":")) + ";\nconst UNKNOWN = " + json.dumps(unk, ensure_ascii=False) + ";\n"
 open(sys.argv[2], "w").write(js)
 print(len(out), "items,", len(js), "bytes")

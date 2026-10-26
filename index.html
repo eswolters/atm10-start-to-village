@@ -1275,6 +1275,7 @@ const PHASES = [
         "Leave your AE2 network running for a day of play and write down the iron, copper and gold counts",
         "Check again: if the counts keep falling while the colony builds, do the Mekanism steps below",
         "If the counts are steady or rising, skip the Mekanism steps and go on to the mining and power steps",
+        "Want to go further? The Mystical Agriculture crop room and the mob farm are in the Side projects section at the very end",
       ] },
     { id: "u-mek-start", layer: "u", t: "Mekanism basics: steel, alloys and circuits", mods: ["Mekanism"],
       why: `<p>Mekanism needs four ingredients for nearly everything: <b>Steel</b>, <b>Osmium</b>, <b>Alloys</b> (Infused, Reinforced, Atomic) and <b>Control Circuits</b> (Basic, Advanced, Elite, Ultimate). The <b>Metallurgic Infuser</b> makes all of them, so it's the first machine to build.</p>`,
@@ -1340,17 +1341,6 @@ const PHASES = [
         "Upgrade the Energized Smelter to a factory",
         "Turn on auto-sort in the factory GUI",
       ] },
-    { id: "e-ma", layer: "u", t: "Mystical Agriculture crop room", mods: ["Mystical Agriculture"],
-      why: `<p>Mystical Agriculture grows resources as crops. <b>Essence</b> from <b>Inferium ore</b> goes into seeds, and the <b>Infusion Altar</b> combines them with essence and the resource. Each resource has a <b>tier</b> (Inferium, Prudentium, Tertium, Imperium, Supremium) and needs essence and farmland of that tier. Harvested essence becomes resources in a crafting grid. Inferium ore generates in the Overworld up to Y 64, and Prosperity ore up to Y 24.</p>`,
-      subs: [
-        "Mine Inferium and Prosperity ore and make Inferium seeds",
-        "Build the Infusion Altar with 8 pedestals around it",
-        "Make an Infusion Crystal (a diamond, 4 prosperity shards and 4 inferium essence), then use it to craft Prudentium and Tertium essence from the tier below",
-        "Make seeds for wood, stone, coal, iron, copper and dyes first",
-        "Build a crop room under the town: lights, farmland, Growth Accelerators underneath",
-        "Automate harvesting (Mystical Agriculture's harvester or a Create harvester) into AE2",
-        "Write AE2 patterns: essence → resources",
-      ] },
     { id: "e-mining", layer: "u", t: "Automated mining in the Mining dimension", mods: ["Mekanism", "FTB Chunks", "AE2"],
       why: `<p>The ATM Mining dimension is made for mining. A Mekanism <b>Digital Miner</b> mines a large radius with filters, and a <b>Quantum Entangloporter</b> sends items home across dimensions. Since you play solo, the miner's chunk must be force-loaded. The Mining dimension is a superflat world with nothing on the surface: no caves, no mobs, and every ore underground. The quest book recommends setting up a Quarry there.</p>`,
       warn: `This is an expensive, late build in this pack. The Digital Miner needs vibranium (a Nether metal) and about 34 diamonds in total once you count the Robit, the Teleportation Cores and the alloys behind them. Open Ingredients for this step to see the whole bill before you commit.`,
@@ -1371,13 +1361,6 @@ const PHASES = [
         "Build a train: Train Casing, Controls, bogeys and cargo (chests or vaults)",
         "Write a schedule: go to outpost, wait for full, go home, wait for empty",
         "Unload at home into Funnels → AE2",
-      ] },
-    { id: "e-mob", layer: "u", t: "Mob farm", mods: ["Industrial Foregoing"],
-      why: `<p>Guards need arrows, the Fletcher needs feathers and string, and many recipes need bones and gunpowder. A mob farm supplies these. Build it far from town so it doesn't affect citizens.</p>`,
-      subs: [
-        "Build a dark-room spawner or use an Industrial Foregoing mob farm",
-        "Send drops into AE2",
-        "Remember to force-load the chunk if it's outside your normal play area",
       ] },
     { id: "e-power", layer: "u", t: "Scale up power", mods: ["Powah", "Mekanism", "Flux Networks"],
       why: `<p>Running 4× ore processing, autocrafting and growth accelerators at once takes a lot of power. <b>Powah reactors</b> are compact. <b>Flux Networks</b> sends power wirelessly to outposts, so you need no visible cables.</p>`,
@@ -1530,6 +1513,31 @@ const PHASES = [
         "Take screenshots (<kbd>F2</kbd>) of the gate, the square, the skyline and the night view",
       ],
       look: `Turn on a shader pack if your computer can run it (it makes lanterns and water look far better), and use <kbd>F1</kbd> to hide the interface for photos. The best time to take pictures is the hour after sunrise or before sunset.` },
+  ]
+},
+{
+  id: "side", side: true, title: "Side projects (optional)",
+  sub: "Big, fun builds you can skip. The town runs without them.",
+  intro: "Nothing in the main path needs these. Come back when AE2 has a hole you want to fill, or when you just want a bigger machine to play with.",
+  steps: [
+    { id: "e-ma", layer: "u", t: "Mystical Agriculture crop room", mods: ["Mystical Agriculture"],
+      why: `<p>Mystical Agriculture grows resources as crops. <b>Essence</b> from <b>Inferium ore</b> goes into seeds, and the <b>Infusion Altar</b> combines them with essence and the resource. Each resource has a <b>tier</b> (Inferium, Prudentium, Tertium, Imperium, Supremium) and needs essence and farmland of that tier. Harvested essence becomes resources in a crafting grid. Inferium ore generates in the Overworld up to Y 64, and Prosperity ore up to Y 24.</p>`,
+      subs: [
+        "Mine Inferium and Prosperity ore and make Inferium seeds",
+        "Build the Infusion Altar with 8 pedestals around it",
+        "Make an Infusion Crystal (a diamond, 4 prosperity shards and 4 inferium essence), then use it to craft Prudentium and Tertium essence from the tier below",
+        "Make seeds for wood, stone, coal, iron, copper and dyes first",
+        "Build a crop room under the town: lights, farmland, Growth Accelerators underneath",
+        "Automate harvesting (Mystical Agriculture's harvester or a Create harvester) into AE2",
+        "Write AE2 patterns: essence → resources",
+      ] },
+    { id: "e-mob", layer: "u", t: "Mob farm", mods: ["Industrial Foregoing"],
+      why: `<p>Guards need arrows, the Fletcher needs feathers and string, and many recipes need bones and gunpowder. A mob farm supplies these. Build it far from town so it doesn't affect citizens.</p>`,
+      subs: [
+        "Build a dark-room spawner or use an Industrial Foregoing mob farm",
+        "Send drops into AE2",
+        "Remember to force-load the chunk if it's outside your normal play area",
+      ] },
   ]
 }
 ];
@@ -1700,6 +1708,7 @@ const PHASE_META = {
   grow: { goal: "Town Hall L3, crafter huts taking requests, and guards on the walls.", time: "6–12 hours, plus waiting for upgrades",
     wait: ["Teach the crafters their recipes", "Add patterns to AE2 for blocks that upgrades ask for", "Build the next Town win step", "Check happiness and requests on every visit"] },
   link: { goal: "Colony requests filled by your ME network without you.", time: "2–4 hours" },
+  side: { goal: "Only what interests you: bigger resource machines, no pressure.", time: "Open-ended. Skip it and the town still runs" },
   engines: { goal: "Raw materials rising while you're idle. Most of this is optional until the colony runs short.", time: "Varies. Do only what you need" },
   crown: { goal: "Level 5 buildings and the last huts.", time: "Mostly waiting for builders" },
   beauty: { goal: "A town you'd be proud to screenshot.", time: "As long as you like: about an hour per district" },
@@ -2184,6 +2193,12 @@ raw("milk_bucket", "Milk bucket", CAT_FARM, "Use an empty bucket on a cow.", [["
 raw("cocoa_beans", "Cocoa beans", CAT_FARM, "Cocoa pods grow on jungle logs in jungle biomes. Plant beans on a jungle log to grow more.", [["By hand", "Harvest pods in a jungle.", "s-food"]]);
 raw("wheat_seeds", "Wheat seeds", CAT_FARM, "Break tall grass.", [["By hand", "Break grass.", "s-food"], ["Colony", "The Farm grows its own seeds.", "f-farm"]]);
 raw("nether_wart", "Nether wart", CAT_OTHER, "Found in Nether fortresses, where it grows on soul sand. Replant it to farm it.", [["By hand", "Harvest it in a Nether fortress.", "s-ores"]]);
+raw("flint", "Flint", CAT_EARTH, "Gravel drops it now and then when you dig it.", [["By hand", "Dig gravel with a shovel until it drops.", "s-food"]]);
+raw("water_bucket", "Water bucket", CAT_OTHER, "Use a bucket on any water source.", [["By hand", "Scoop it from a lake or river.", "s-food"]]);
+raw("farmland", "Farmland", CAT_FARM, "Till dirt or grass with a hoe. It needs water within 4 blocks to stay wet.", [["By hand", "Hoe the ground next to water.", "s-food"]]);
+raw("inferium_essence", "Inferium essence", CAT_ORE, "Mystical Agriculture: mine Inferium ore, which generates in the Overworld up to Y 64.", [["By hand", "Mine Inferium ore.", "e-ma"]]);
+raw("prosperity_shard", "Prosperity shard", CAT_ORE, "Mystical Agriculture: mine Prosperity ore, which generates in the Overworld up to Y 24.", [["By hand", "Mine Prosperity ore deep down.", "e-ma"]]);
+raw("flux_dust", "Flux dust", CAT_OTHER, "In this pack the Basic Power quests give it as rewards, and Xycraft's Extractor also makes it: a charged redstone block ringed by obsidian, with a Flux Block next to it. Check the recipe in JEI.", [["Quest book", "Basic Power chapter rewards.", "p-quests"]]);
 raw("rabbit_foot", "Rabbit's foot", CAT_MOB, "Rabbits sometimes drop it. They live in deserts, snowy plains and flower forests, so expect to hunt a lot of them: the walking research alone needs 1, 4, 8, 32 and 64.", [["By hand", "Hunt rabbits.", "s-ores"], ["Machines", "A mob farm.", "e-mob"]]);
 raw("saddle", "Saddle", CAT_OTHER, "You can't craft it. Find it in chests (dungeons, temples and others) or fish it up as treasure.", [["By hand", "Loot chests or fish.", "s-ores"]]);
 raw("gilded_blackstone", "Gilded blackstone", CAT_OTHER, "Found in the Nether, in bastion remnants.", [["By hand", "Mine it in a bastion remnant.", "s-ores"]]);
@@ -2201,12 +2216,6 @@ const UNKNOWN_HINT = {
   wooden_railbed: "Railcraft: craft 4 wooden ties together."
 };
 
-raw("flint", "Flint", CAT_EARTH, "Gravel drops it now and then when you dig it.", [["By hand", "Dig gravel with a shovel until it drops.", "s-food"]]);
-raw("water_bucket", "Water bucket", CAT_OTHER, "Use a bucket on any water source.", [["By hand", "Scoop it from a lake or river.", "s-food"]]);
-raw("farmland", "Farmland", CAT_FARM, "Till dirt or grass with a hoe. It needs water within 4 blocks to stay wet.", [["By hand", "Hoe the ground next to water.", "s-food"]]);
-raw("inferium_essence", "Inferium essence", CAT_ORE, "Mystical Agriculture: mine Inferium ore, which generates in the Overworld up to Y 64.", [["By hand", "Mine Inferium ore.", "e-ma"]]);
-raw("prosperity_shard", "Prosperity shard", CAT_ORE, "Mystical Agriculture: mine Prosperity ore, which generates in the Overworld up to Y 24.", [["By hand", "Mine Prosperity ore deep down.", "e-ma"]]);
-raw("flux_dust", "Flux dust", CAT_OTHER, "In this pack the Basic Power quests give it as rewards, and Xycraft's Extractor also makes it: a charged redstone block ringed by obsidian, with a Flux Block next to it. Check the recipe in JEI.", [["Quest book", "Basic Power chapter rewards.", "p-quests"]]);
 const ITEMS = {};
 Object.keys(ITEM_DATA).forEach(id => {
   const d = ITEM_DATA[id];
@@ -2281,15 +2290,6 @@ const MAT_FOR = {
   "b-light": { items: [["lantern", 32], ["chain", 16], ["fence", 32], ["mega_torch", 1]], sug: true },
   "b-roads": { items: [["iron_stick", 1], ["exchanging_gadget", 1], ["charging_station", 1]], sug: true },
   "b-props": { items: [["copy_paste_gadget", 1]], sug: true },
-};
-
-/* steps that point at things you gather, with the cards to open on the Materials tab */
-const FIND_FOR = {
-  "s-wood": ["log", "cobblestone", "sand", "coal"],
-  "s-ores": ["raw_iron", "raw_copper", "raw_gold", "redstone", "diamond", "coal", "raw_zinc", "raw_osmium", "raw_tin"],
-  "a-meteor": ["certus_quartz", "sky_stone_block", "nether_quartz"],
-  "a-certus": ["certus_quartz", "nether_quartz", "redstone"],
-  "g-raw": ["leather", "beef", "porkchop", "egg", "feather", "wool", "honeycomb", "sugar_cane", "cactus", "poppy"],
   "b-land": { items: [["bone_meal", 16], ["shears", 1]], sug: true },
   "b-skyline": { items: [["hut_gatehouse", 1]] },
   "f-hall": { items: [["hut_townhall", 1], ["build_tool", 1]] },
@@ -2299,13 +2299,22 @@ const FIND_FOR = {
   "e-ma": { items: [["infusion_altar", 1], ["infusion_pedestal", 8], ["infusion_crystal", 1], ["inferium_seeds", 1], ["inferium_farmland", 9], ["growth_accelerator", 4]], sug: true },
   "e-mob": { items: [["hopper", 4], ["chest", 2], ["bucket", 2], ["iron_sword", 1]], sug: true },
   "e-power": { items: [["reactor_starter", 1], ["flux_controller", 1], ["flux_plug", 2], ["flux_point", 2]], sug: true },
+};
+
+/* steps that point at things you gather, with the cards to open on the Materials tab */
+const FIND_FOR = {
+  "s-food": ["flint", "wheat_seeds", "farmland", "water_bucket"],
+  "e-ma": ["inferium_essence", "prosperity_shard"],
+  "e-power": ["flux_dust"],
+  "s-wood": ["log", "cobblestone", "sand", "coal"],
+  "s-ores": ["raw_iron", "raw_copper", "raw_gold", "redstone", "diamond", "coal", "raw_zinc", "raw_osmium", "raw_tin"],
+  "a-meteor": ["certus_quartz", "sky_stone_block", "nether_quartz"],
+  "a-certus": ["certus_quartz", "nether_quartz", "redstone"],
+  "g-raw": ["leather", "beef", "porkchop", "egg", "feather", "wool", "honeycomb", "sugar_cane", "cactus", "poppy"],
   "e-mob": ["string", "bone", "ender_pearl", "slime_ball", "blaze_rod"],
   "e-mining": ["vibranium_ingot", "ender_pearl"],
   "u-power": ["uraninite", "coal"],
   "c-late": ["netherrack", "obsidian", "blaze_rod", "nether_quartz"],
-  "s-food": ["flint", "wheat_seeds", "farmland", "water_bucket"],
-  "e-ma": ["inferium_essence", "prosperity_shard"],
-  "e-power": ["flux_dust"],
   "u-vault": ["ender_pearl", "lapis_lazuli", "coal"],
   "p-site": ["sapling", "log"],
 };
@@ -3684,7 +3693,7 @@ function isOpen(s) {
 /* the phase you are in: the first one with an unfinished required step (optional steps never hold you back) */
 function currentPhaseIndex() {
   const i = PHASES.findIndex(ph => ph.steps.some(s => !s.opt && !stepDone(s)));
-  return i < 0 ? PHASES.length - 1 : i;
+  return i < 0 ? PHASES.findLastIndex(ph => !ph.side) : i;
 }
 function nextStepId(ph) {
   const s = ph.steps.find(x => !x.opt && !stepDone(x)) || ph.steps.find(x => !stepDone(x));
@@ -3697,13 +3706,14 @@ function render() {
   focusActive = focus && !query;
   const cur = currentPhaseIndex();
   focusNext = focusActive ? nextStepId(PHASES[cur]) : null;
+  const nMain = PHASES.filter(p => !p.side).length;
   PHASES.forEach((ph, i) => {
     const d = document.createElement("details");
     d.className = "phase";
-    d.open = ph.id in openPhases ? openPhases[ph.id] : (focusActive ? i === cur : true);
+    d.open = ph.id in openPhases ? openPhases[ph.id] : ph.side ? false : (focusActive ? i === cur : true);
     const total = ph.steps.length, nDone = ph.steps.filter(stepDone).length;
     const sum = document.createElement("summary");
-    sum.innerHTML = `<span class="ph-num"><span class="ph-chev">›</span> Phase ${i + 1}</span>
+    sum.innerHTML = `<span class="ph-num"><span class="ph-chev">›</span> ${ph.side ? "Side projects" : "Phase " + (i + 1)}</span>
       <span class="ph-title"></span>
       <span class="ph-count ${nDone === total ? "full" : ""}">${nDone}/${total}</span>
       <p class="ph-sub"></p>`;
@@ -3740,8 +3750,8 @@ function render() {
     if (MILESTONES[ph.id]) {
       const ms = document.createElement("div");
       ms.className = "milestone";
-      ms.innerHTML = `<h3>Checkpoint: before Phase ${i + 2 <= PHASES.length ? i + 2 : "the end"}</h3><ul></ul>`;
-      if (i + 1 === PHASES.length) ms.querySelector("h3").textContent = "Final checkpoint";
+      ms.innerHTML = `<h3>Checkpoint: before Phase ${i + 2 <= nMain ? i + 2 : "the end"}</h3><ul></ul>`;
+      if (i + 1 === nMain) ms.querySelector("h3").textContent = "Final checkpoint";
       MILESTONES[ph.id].forEach(t => { const li = document.createElement("li"); li.textContent = t; ms.querySelector("ul").appendChild(li); });
       d.appendChild(ms);
     }

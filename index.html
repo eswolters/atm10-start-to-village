@@ -168,7 +168,64 @@ li.step.isdone .st-title { text-decoration: line-through; color: var(--done); }
 .reset-row button { font: inherit; font-size: 14px; background: transparent; border: 1px solid var(--line); color: var(--fg); padding: 4px 10px; border-radius: 3px; cursor: pointer; }
 .reset-row button.danger { border-color: var(--tech); }
 
+[hidden] { display: none !important; }
+a { color: var(--tech); }
+
+/* tabs */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); margin-bottom: 2px; overflow-x: auto; }
+.tabs a { font-family: var(--f-display); font-size: 20px; color: var(--muted); text-decoration: none; padding: 2px 14px 6px; border-bottom: 3px solid transparent; white-space: nowrap; }
+.tabs a:first-child { padding-left: 0; }
+.tabs a[aria-current="page"] { color: var(--fg); border-bottom-color: var(--fg); }
+.tabs a:focus-visible { outline: 2px solid var(--tech); outline-offset: 2px; }
+
+/* step extras */
+.chip.opt { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+.xbox { border-radius: 3px; padding: 8px 12px; font-size: 15px; border: 1px solid var(--line); }
+.xbox .blk-label { margin-bottom: 2px; }
+.xbox.check { background: var(--moss-soft); border-color: transparent; }
+.xbox.fix { background: var(--panel); border-style: dashed; }
+.xbox.next { background: var(--slate-soft); border-color: transparent; }
+.xbox ul { margin: 2px 0 0; padding-left: 18px; }
+.xbox li { margin: 2px 0; }
+.fx-sym { font-weight: 500; }
+.milestone { margin: 0 0 22px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); }
+.milestone h3 { font-family: var(--f-display); font-weight: 400; font-size: 19px; margin: 0 0 4px; }
+.milestone ul { margin: 0; padding-left: 20px; font-size: 15px; }
+abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+
+/* learn + fix pages */
+.page { padding-block: 24px 48px; display: flex; flex-direction: column; gap: 28px; }
+.page h2 { font-family: var(--f-display); font-weight: 400; font-size: 30px; line-height: 1.15; margin: 0 0 6px; text-wrap: balance; }
+.page h3 { font-size: 18px; margin: 14px 0 4px; }
+.page p { margin: 0 0 8px; max-width: 70ch; }
+.page section > ul { margin: 4px 0 8px; padding-left: 20px; max-width: 70ch; }
+.page section > ul li { margin: 3px 0; }
+.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 15px; }
+.toc a { color: var(--tech); }
+.concepts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 12px; }
+.concept { background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 12px 14px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.concept h3 { margin: 0; }
+.concept p { margin: 0; font-size: 16px; }
+.gloss { display: grid; grid-template-columns: minmax(110px, max-content) 1fr; gap: 6px 16px; margin: 0; }
+.gloss dt { font-weight: 700; }
+.gloss dd { margin: 0; color: var(--fg); }
+.fixgroup { display: flex; flex-direction: column; gap: 6px; }
+.fixrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 4px 16px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.fixrow .src { grid-column: 1 / 3; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.fixrow .src a { color: var(--muted); }
+.mistakes { counter-reset: m; list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.mistakes li { background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 10px 14px; }
+.mistakes b { display: block; }
+
 @media (max-width: 560px) {
+  .gloss { grid-template-columns: 1fr; gap: 0 0; }
+  .gloss dd { margin-bottom: 8px; }
+  .fixrow { grid-template-columns: 1fr; }
+  .fixrow .src { grid-column: 1; }
+}
+
+@media (max-width: 560px) {
+  .bar { position: static; }
   body { font-size: 16px; }
   .ph-title { font-size: 23px; }
   .ph-sub { grid-column: 1 / 4; }
@@ -186,17 +243,22 @@ li.step.isdone .st-title { text-decoration: line-through; color: var(--done); }
     <span><i class="sw s"></i>Surface town (MineColonies)</span>
     <span><i class="sw u"></i>Undercroft (hidden tech)</span>
   </div>
-  <p class="howto">Recipes list the <b>key ingredients</b>. For the exact grid, hover an item in JEI and press <kbd>R</kbd> (how to make it) or <kbd>U</kbd> (what it's used in). For AE2 parts, hold <kbd>G</kbd> over an item to open AE2's in-game guide.</p>
+  <p class="howto">New to automation? Read the <a href="#learn">Learn</a> tab first: 10 minutes there makes every tech step easier. Stuck? The <a href="#fix">Fix it</a> tab lists common problems and their causes. In game: hover an item in JEI and press <kbd>R</kbd> (recipe) or <kbd>U</kbd> (uses). Hold <kbd>W</kbd> over a Create item for an animated Ponder scene, and <kbd>G</kbd> over an AE2 item for its guide.</p>
 </header>
 
 <div class="bar">
   <div class="wrap">
-    <div class="bar-top">
+    <nav class="tabs" aria-label="Sections">
+      <a href="#guide" data-tab="guide">Guide</a>
+      <a href="#learn" data-tab="learn">Learn the basics</a>
+      <a href="#fix" data-tab="fix">Fix it</a>
+    </nav>
+    <div class="bar-top" id="guideBar">
       <div class="meter" id="meter" role="img" aria-label="Overall progress"></div>
       <span class="count" id="count">0 / 0</span>
       <span class="sync" id="sync">Loading progress…</span>
     </div>
-    <div class="filters">
+    <div class="filters" id="guideFilters">
       <div class="seg" role="group" aria-label="Layer filter">
         <button type="button" data-layer="all" aria-pressed="true">All</button>
         <button type="button" data-layer="s" aria-pressed="false">Surface</button>
@@ -204,6 +266,7 @@ li.step.isdone .st-title { text-decoration: line-through; color: var(--done); }
       </div>
       <select id="modFilter" aria-label="Filter by mod"><option value="">Every mod</option></select>
       <input type="search" id="q" placeholder="Search steps, e.g. warehouse" aria-label="Search steps">
+      <label class="chk-lbl"><input type="checkbox" id="essOnly"> Essentials only</label>
       <label class="chk-lbl"><input type="checkbox" id="hideDone"> Hide finished</label>
       <button type="button" class="tbtn" id="expandAll">Expand all</button>
       <button type="button" class="tbtn" id="collapseAll">Collapse all</button>
@@ -212,6 +275,8 @@ li.step.isdone .st-title { text-decoration: line-through; color: var(--done); }
 </div>
 
 <main class="wrap" id="main"></main>
+<div class="wrap page" id="learnPage" hidden></div>
+<div class="wrap page" id="fixPage" hidden></div>
 
 <footer class="wrap" style="padding-block: 0 48px; display:flex; flex-direction:column; gap:14px;">
   <div class="note">Written for solo play on a recent ATM10 (Minecraft 1.21.1, NeoForge). ATM10 updates add and remove mods and change recipes, so treat ingredient lists as a guide and JEI as the authority. The request-filler script targets Advanced Peripherals for 1.21.1 and also handles the older function names.</div>
@@ -475,6 +540,54 @@ const PHASES = [
   ]
 },
 {
+  id: "first", title: "Your first automation",
+  sub: "Two small projects, 15 minutes each, that teach the basics before the big systems.",
+  intro: "Every big factory is small loops chained together. These two projects teach the three skills you use everywhere: moving items with pipes, setting which side does what, and powering machines with rotation. If something goes wrong here, nothing important breaks.",
+  steps: [
+    { id: "m-smelter", layer: "u", t: "Project 1: an automatic smelter", mods: ["Pipez", "Iron Furnaces"],
+      why: `<p>A furnace that feeds itself and empties itself. It's the smallest complete automation loop: <b>input chest → pipe → machine → pipe → output chest</b>. You learn that pipes must be told to <b>extract</b> from one side, that a furnace takes ore from the top and fuel from the side, and that output comes out of the bottom.</p>`,
+      subs: [
+        "Place an Iron Furnace with a chest above it (ore) and a chest to its side (fuel)",
+        "Place a chest two blocks below the furnace and connect it with a Pipez Item Pipe",
+        "Right-click the pipe where it touches the furnace to open its settings, and switch that side to <b>extract</b>",
+        "Connect the top chest to the furnace with a pipe and set it to extract from the chest",
+        "Connect the side chest the same way (fuel goes into the side of the furnace)",
+        "Put 64 raw iron in the top chest and 16 coal in the side chest, then walk away",
+      ],
+      diagram: { h: "Side view", d:
+`   [ore chest]
+       | pipe: extract from chest -> into furnace top
+  [fuel]-[ IRON FURNACE ]     pipe from the side = fuel slot
+       | pipe: extract from furnace bottom
+   [output chest]` } },
+    { id: "m-filter", layer: "u", t: "Project 1b: add a filter and an overflow", mods: ["Pipez"],
+      why: `<p>Real setups have mixed items. A <b>filter</b> on a pipe only lets certain items through. A filter turned around (a deny list instead of an allow list) sends everything else elsewhere. This is how you sort without a storage system. In Pipez, filters are unlocked by putting an <b>upgrade</b> (Basic or better) in the pipe's settings.</p>`,
+      subs: [
+        "Craft a Basic Upgrade and put it in the extracting side of the top pipe",
+        "Add a filter that allows only raw ores (an item tag such as raw materials works)",
+        "Throw a mix of ore and cobble in the top chest",
+        "Add a second pipe from the chest to a 'rejects' chest, with its filter set to deny raw ores",
+        "Check that ore goes to the furnace and cobble goes to the rejects chest",
+      ] },
+    { id: "m-cobble", layer: "u", t: "Project 2: a Create cobblestone generator", mods: ["Create"],
+      why: `<p>Your first rotation-powered machine. A <b>Mechanical Drill</b> breaks the cobblestone made by lava and water flowing together, and a <b>chute</b> or belt carries it to a chest. You learn how a water wheel gives power, how shafts carry it, and what <b>stress</b> means when you add more drills.</p>`,
+      subs: [
+        "Build a vanilla cobblestone generator (lava and water flowing together, with a gap between them)",
+        "Place a Mechanical Drill pointing at the spot where cobblestone forms",
+        "Power the drill with a Water Wheel and shafts. Hold <kbd>W</kbd> over the water wheel to watch its Ponder scene first",
+        "Put a chest under the drill, or a belt leading to a chest",
+        "Wear Engineer's Goggles and look at the shaft: note the stress used and the stress capacity",
+        "Add a second and a third drill on separate generators and watch the stress go up",
+      ],
+      diagram: { h: "Top view", d:
+`  [water]~~>[ cobble ]<~~[lava]
+               ^
+          [Mechanical Drill]
+               |  shaft
+          (water wheel in a stream)` } },
+  ]
+},
+{
   id: "undercroft", title: "Dig the undercroft: first hidden tech",
   sub: "Create, Powah and Mekanism. Nothing modern is visible from the street.",
   intro: "This phase teaches three tech mods, each with a different kind of energy. Create uses rotation (speed and stress), Powah makes FE (Forge Energy, used by almost every machine), and Mekanism uses FE plus chemicals (gases) for advanced ore processing.",
@@ -604,6 +717,24 @@ const PHASES = [
         ["Reinforced Alloy", "infused alloy + diamond", "Metallurgic Infuser"],
         ["Steel Casing", "steel, glass, osmium", "crafting table"],
       ] },
+    { id: "u-mek-sides", layer: "u", t: "Learn Mekanism side configuration", mods: ["Mekanism"],
+      why: `<p>Every Mekanism machine decides <b>per side</b> what it accepts and what it gives out. This is the number one reason pipes "don't work". Open a machine and click the <b>Side Configuration</b> tab (the wrench icon on the right edge of the GUI). You'll see the 6 faces of the block, each with a colour. The legend in the GUI tells you what each colour means, and the usual ones are below.</p>
+      <p>Next to it is <b>auto-eject</b>: when it's on, the machine pushes its output out of the output-coloured sides by itself, so the pipe doesn't have to extract.</p>`,
+      subs: [
+        "Open an Enrichment Chamber and click the Side Configuration tab",
+        "Find the faces that are input (where ore goes in) and output (where dust comes out)",
+        "Click a face to cycle its colour; Shift-click to reset it",
+        "Turn on auto-eject for items",
+        "Connect a pipe to the output-coloured side and check that dust comes out on its own",
+      ],
+      diagram: { h: "Side configuration screen (colours as most Mekanism machines use them)", d:
+`          [ top    ]
+  [ left ][ front  ][ right ]      grey   = nothing
+          [ bottom ]               red    = input  (items in)
+          [ back   ]               blue   = output (items out)
+                                   green  = energy
+  [Auto-eject: ON]                 yellow = extra input (e.g. gas)
+  Check the legend in the GUI: some machines use more colours.` } },
     { id: "u-mek-ore", layer: "u", t: "Mekanism ore processing: 2×, 3×, 4×", mods: ["Mekanism"],
       why: `<p>Each stage adds a step in front of the previous one. <b>2×</b>: the Enrichment Chamber turns 1 ore into 2 dusts. <b>3×</b>: the Purification Chamber uses oxygen to make 3 clumps per ore. <b>4×</b>: the Chemical Injection Chamber uses hydrogen chloride to make 4 shards per ore. Build one stage at a time, since each stage teaches a new piece of chemistry.</p>`,
       subs: [
@@ -1053,6 +1184,220 @@ const PHASES = [
 }
 ];
 
+/* Per-step extras, kept apart from the step text so the guide stays readable:
+   opt = optional (hidden by "Essentials only"), check = how you know it works,
+   fix = [symptom, cause and fix] pairs (also listed on the Fix it tab), next = what to do when it feels slow */
+const EXTRA = {
+  "p-quests": { opt: true },
+  "s-pack": { check: "Mined blocks go straight into the backpack instead of your inventory." },
+  "s-ores": { fix: [["Can't find zinc or osmium", "Check the ore in JEI (U on the ore) for the Y-levels where it generates. Mining in the ATM Mining dimension is faster once you can reach it."]] },
+  "s-waystone": { check: "You can teleport to the town waystone from any other waystone." },
+  "f-camp": { fix: [["The camp preview is red", "The spot isn't flat enough or something is in the way. Move it or flatten the ground."]] },
+  "f-hall": { check: "Four citizens wander around, and the Town Hall GUI opens with your colony name." },
+  "f-builder": {
+    check: "The builder walks to the site with materials and the hut grows layer by layer.",
+    fix: [
+      ["Builder stands still for a long time", "A material is missing. Check the Resource Scroll and the Clipboard for what it's waiting for."],
+      ["Builder says it can't reach the site", "Something blocks the path (water, a cliff, a fence). Clear a walkway or lay a road."],
+    ] },
+  "f-clipboard": { check: "When you fill a request, it disappears from the Clipboard within a minute." },
+  "f-homes": { fix: [["No visitors at the Tavern", "Visitors arrive over time, and only while the colony chunks are loaded. Stay in town for a few days."]] },
+  "f-forester": { fix: [["Forester doesn't cut", "It needs an axe of the right level for its hut, and a working area with trees it's allowed to cut."]] },
+  "f-farm": { fix: [["Farmer doesn't plant", "Each field needs a seed assigned, and the farmer needs a hoe and the seeds in the hut or the Warehouse."]] },
+  "f-cook": {
+    check: "Citizens' saturation in the Town Hall stays above half.",
+    fix: [["Cook doesn't cook", "It needs fuel and raw food. Check its requests on the Clipboard."]] },
+  "f-warehouse": {
+    check: "A builder's request is filled by a courier without you touching it.",
+    fix: [["Couriers idle while requests are open", "The Warehouse doesn't have the item, or its racks are full. Upgrade the Warehouse or remove junk."]],
+    next: "Add a second Courier's Hut once you have more than about 8 huts." },
+  "f-routine": { check: "No request on the Clipboard is older than a Minecraft day." },
+  "m-smelter": {
+    check: "The output chest fills with iron ingots while you're not touching anything.",
+    fix: [
+      ["Nothing moves", "No side is set to extract. Pipes only pull from a side set to extract."],
+      ["Ore goes into the fuel slot", "The pipe enters the furnace from the side instead of the top. Furnaces use the top for input and the sides for fuel."],
+      ["Items go back and forth", "Two pipes are extracting from each other. Only the start of each route should extract."],
+    ],
+    next: "Add a second furnace on the same pipe: Pipez spreads items between all destinations." },
+  "m-filter": { check: "Ore ends up as ingots and cobble ends up in the rejects chest." },
+  "m-cobble": {
+    check: "The goggles show the stress used below the capacity, and the chest fills with cobble.",
+    fix: [
+      ["The drill doesn't turn", "Too much stress: you're asking for more than the water wheel gives. Remove a drill or add a second wheel."],
+      ["The drill turns but nothing appears", "The drill doesn't point exactly at the block where cobble forms. Ponder (W) shows the right position."],
+    ],
+    next: "More water wheels in a row add up their capacity. A larger water wheel gives more." },
+  "u-vault": { check: "No mobs spawn in the vault, and you can reach it from town without being seen." },
+  "u-create-basics": { fix: [["The network stops and the shafts show red particles", "It's overstressed. Lower the speed (RPM) or add another source."]] },
+  "u-windmill": {
+    opt: true,
+    check: "The goggles on the bottom shaft show a few thousand SU of capacity.",
+    fix: [["The bearing won't assemble", "The sails aren't glued to the bearing, or there are fewer than 8 sail blocks."]],
+    next: "More sails, up to the limit, give more capacity. A second windmill on the same shaft network adds up." },
+  "u-create-machines": { fix: [["The mixer won't make brass", "The basin needs heat: a lit Blaze Burner directly underneath, fed with fuel."]] },
+  "u-create-ore": {
+    check: "One stack of raw iron gives clearly more than one stack of ingots.",
+    fix: [["Crushed ore isn't washed", "The fan must blow through water: put a water source in the fan's airflow, between the fan and the items."]],
+    next: "Move to Mekanism 3× and 4× once you have power. Keep this line for zinc and other metals Mekanism doesn't handle." },
+  "u-power": {
+    check: "The Energy Cell's stored FE goes up while machines are running.",
+    fix: [["Machines have no power", "Cables need to touch the machine on a side that accepts energy. Check the machine's side config."]],
+    next: "When energy keeps dropping, add a second generator before adding more machines." },
+  "u-mek-start": { fix: [["The infuser does nothing", "It needs both an infuse type (redstone or carbon on the left) and the item. Check the bar on the left of the GUI."]] },
+  "u-mek-sides": {
+    check: "Dust leaves the Enrichment Chamber by itself through the output side.",
+    fix: [
+      ["The pipe pulls nothing out", "The pipe touches a side that isn't output. Change that face to the output colour, or move the pipe."],
+      ["Items go in but nothing happens", "The input goes into the wrong slot (for example the energy slot). Check which colour that face has."],
+    ] },
+  "u-mek-ore": {
+    check: "One iron ore gives 4 ingots at the end of the chain.",
+    fix: [
+      ["The chain is full and stops", "An output is backed up somewhere. Follow the chain and find the first machine with a full output slot."],
+      ["Purification Chamber idles", "No oxygen. Check that the Electrolytic Separator has water and power, and that oxygen goes out the correct side."],
+    ],
+    next: "The slowest machine sets the speed of the whole chain. Upgrade that one first, usually to a factory." },
+  "u-mek-factory": { opt: true, check: "The factory processes several items at the same time." },
+  "u-logistics": { opt: true },
+  "a-meteor": { fix: [["The compass spins", "There's no meteorite within range. Travel a few hundred blocks and try again."]] },
+  "a-certus": { next: "More budding blocks and more accelerators. Automate harvesting so it keeps running." },
+  "a-processors": {
+    check: "Processors appear in the output chest without you inserting anything.",
+    fix: [["The inscriber makes the wrong thing", "Items went into the wrong slots. Feed the top and bottom from the top and bottom faces, and the middle from a side."]] },
+  "a-network": {
+    check: "Items you put into the terminal stay there, and the controller is lit.",
+    fix: [
+      ["A device is red or says it's offline", "No channel available, or no power. Use the AE2 guide (G) to check channel counts, and add dense cable or a second controller face."],
+      ["Everything is off", "Not enough power. Check the energy acceptor connection, or add an Energy Cell to buffer it."],
+    ],
+    next: "Use 16k or bigger cells for bulk items. Keep many different item types in separate cells." },
+  "a-autocraft": {
+    check: "Requesting 64 planks in the terminal crafts them by itself.",
+    fix: [
+      ["The craft never finishes", "A processing pattern sends ingredients to a machine whose output doesn't come back into AE2. Add a way back (an interface or a pipe into the network)."],
+      ["'Missing ingredients'", "One of the ingredients isn't in storage and has no pattern either. The craft screen shows which one."],
+    ],
+    next: "More Molecular Assemblers per Pattern Provider and Co-Processing Units in the CPU make crafts faster." },
+  "a-colony-patterns": { check: "A test order of 64 of each colony block crafts without errors." },
+  "a-wireless": { opt: true },
+  "a-addons": { opt: true },
+  "g-order": { fix: [["The upgrade button is grey", "Something else must be upgraded first, or research is needed. Hover over the button for the reason."]] },
+  "g-mine": { fix: [["Miner stops at a certain depth", "The hut level limits how deep it may go, or it's missing ladders or supports. Check its requests."]] },
+  "g-crafters": {
+    check: "A request goes to a crafter instead of to you on the Clipboard.",
+    fix: [["The crafter won't learn a recipe", "Each crafter only accepts recipes that fit its trade, and the number of recipes is limited by hut level."]] },
+  "g-happy": { check: "Happiness in the Town Hall stays at 7 or above." },
+  "l-how": { check: "You can tell which requests on the Clipboard say they're for the player." },
+  "l-see": { opt: true, check: "The terminal shows the items in the Warehouse rack." },
+  "l-stash": {
+    check: "Logs and planks in the Warehouse go up by themselves over a day.",
+    fix: [["The Stash fills up and nothing is collected", "There's no free courier, or the Warehouse is full. Add a Courier's Hut or upgrade the Warehouse."]] },
+  "l-cc": {
+    check: "The computer prints 'Sent ... for ...' lines, and the item appears in the Stash.",
+    fix: [
+      ["'No Colony Integrator found'", "The integrator doesn't touch the computer, or it's outside the colony border."],
+      ["'Could not read requests'", "The integrator is outside the colony, or the colony isn't loaded. Move it into the colony."],
+      ["It crafts but never sends", "AE2 crafts take time. The script checks again every 30 seconds and sends once the item is in stock."],
+    ] },
+  "e-ma": { opt: true, next: "Higher-tier farmland and more accelerators. Essence from many crops can go into the same AE2 pattern." },
+  "e-mining": { opt: true, fix: [["The miner stops when you leave", "Its chunk isn't force-loaded. Check the FTB Chunks map."]] },
+  "e-trains": { opt: true },
+  "e-mob": { opt: true },
+  "e-power": { next: "Measure first: put an Energy Detector or look at the cell's input/output, and add generation 20% above use." },
+  "c-late": { opt: true },
+  "c-scan": { opt: true },
+};
+
+/* Checkpoint at the end of each phase: what you should have before moving on */
+const MILESTONES = {
+  plan: ["You've chosen and marked the town site, and know where the vault and mine district go", "You've chosen a main style and wood type"],
+  survive: ["6 stacks of logs and 4 of cobble", "Full iron gear and spare tools for citizens", "About a stack each of osmium and zinc, plus redstone and 10+ diamonds", "A waystone home"],
+  found: ["About 8–12 citizens, all with beds and jobs", "Builder's Hut, Residences, Tavern, Forester, Farmer, Fisher, Restaurant and Warehouse built", "Couriers deliver to builders without you"],
+  first: ["A smelter that runs on its own", "A cobblestone generator powered by rotation", "You can explain extract vs insert, filters, and stress"],
+  undercroft: ["Hidden vault with an entrance", "Create power and an ore line", "Steady FE, with stored energy going up", "Mekanism 3× or 4× ore processing"],
+  ae2: ["All your items in AE2", "Processors made automatically", "Autocrafting for planks, glass, slabs, stairs and other colony blocks"],
+  grow: ["Town Hall L3 and 3 builders", "Crafters handle most building requests", "University research running", "Guards in place and happiness at 7+"],
+  link: ["Warehouse topped up from AE2", "The script fills requests, and the Clipboard is mostly empty"],
+  engines: ["AE2 stock of iron, copper and wood goes up while you're idle", "Power use stays below generation"],
+  crown: ["Town Hall L5, and the town builds itself as long as raw materials keep coming in"],
+};
+
+/* Learn tab */
+const CONCEPTS = [
+  { t: "Input → process → output", d: `Every machine takes something in, works on it, and puts something out. Automation means connecting one machine's output to the next machine's input, so no one has to carry items in between.`,
+    diagram: `[chest] -> [machine] -> [machine] -> [storage]
+   input     process      process     output` },
+  { t: "Push and pull", d: `Something has to move the items. Either a pipe <b>pulls</b> (extracts) from a block, or a machine <b>pushes</b> (auto-eject) into the pipe. Set only one of them per connection. If two pipes pull from each other, items go back and forth forever.` },
+  { t: "Sides matter", d: `Most machines care which face you connect to: one face is input, another is output, another is energy. If a connection seems to do nothing, check the side first. Mekanism shows this in its Side Configuration tab, and a vanilla furnace takes ore from the top and fuel from the side.` },
+  { t: "Throughput and bottlenecks", d: `A chain runs only as fast as its slowest step. If a crusher does 10 items a minute and the smelter after it does 5, everything piles up at the smelter. Find the step with full input and empty output: that's your bottleneck. Speeding up anything else does nothing.` },
+  { t: "Buffers", d: `A chest between two machines smooths out bursts. A machine that sometimes works fast and sometimes waits can fill a buffer, and the next machine works through it steadily.` },
+  { t: "Filters", d: `A filter decides which items may pass. An <b>allow list</b> lets only the listed items through, and a <b>deny list</b> blocks only the listed items. Use filters to split mixed items, for example ore to processing and everything else to storage.` },
+  { t: "Three kinds of energy", d: `<b>Create</b> uses rotation, measured in speed (RPM) and stress (SU). <b>FE</b> (Forge Energy) powers almost all other machines. <b>Mekanism chemicals</b> (gases such as oxygen and hydrogen) are ingredients, not power. They don't convert freely into each other, so plan which machines need which.` },
+  { t: "Tiers and upgrades", d: `Most tech mods have tiers: better versions of the same machine that are faster or bigger. Upgrades and cards (speed, energy, acceleration) go into a machine to improve it. Upgrade your bottleneck first.` },
+  { t: "Loaded chunks", d: `Machines only run in loaded chunks. In singleplayer that means near you, or in chunks you've force-loaded. A factory that seems slow may simply have been switched off while you were away.` },
+];
+
+const READ_MACHINE = [
+  "<b>Energy bar</b> (usually on the left): if it's empty, the machine has no power.",
+  "<b>Progress arrow</b> between input and output: if it doesn't move, something is missing.",
+  "<b>Slots</b>: hover them for a tooltip saying what goes in. JEI's + button on a recipe fills them for you.",
+  "<b>Tabs on the edge</b>: side configuration, upgrades, redstone control. Machines often stop because redstone control is set to 'needs a signal'.",
+  "<b>Hover the machine in JEI</b> and press U to see everything it can make.",
+];
+
+const FIND_INFO = [
+  "<kbd>R</kbd> over any item in JEI: how to make it. <kbd>U</kbd>: what it's used for.",
+  "<kbd>W</kbd> (hold) over a Create item: an animated Ponder scene showing how it works.",
+  "<kbd>G</kbd> (hold) over an AE2 item: AE2's in-game guide.",
+  "The ATM10 quest book: chapters per mod, with explanations.",
+  "Engineer's Goggles (Create): look at machines to see stress, speed and contents.",
+  "MineColonies: hover a hut's upgrade button for its requirements; the Clipboard shows what the colony needs.",
+];
+
+const GLOSSARY = [
+  ["SU", "Stress Units. Create's measure of load. Sources give stress capacity, machines use stress. Used above capacity = everything stops."],
+  ["RPM", "Rotations per minute: Create's speed. Faster machines work faster but use more stress."],
+  ["FE", "Forge Energy, the shared power unit of almost all tech mods. RF and Joules (Mekanism) convert to it."],
+  ["Extract", "A pipe side that pulls items out of the block it touches."],
+  ["Auto-eject", "A machine pushing its own output into a connected pipe or block."],
+  ["Side config", "Settings per face of a machine: which side accepts what and outputs what."],
+  ["Filter", "A rule on a pipe or bus that allows or denies specific items."],
+  ["Buffer", "Storage between two machines that absorbs differences in speed."],
+  ["Bottleneck", "The slowest step in a chain. It decides the speed of the whole chain."],
+  ["Byproduct", "An extra output with a chance, for example redstone when washing crushed iron."],
+  ["Channel", "AE2's limit on devices. A cable carries 8, a dense cable 32."],
+  ["Controller", "AE2's central block. It provides channels; without one a network supports only 8 devices."],
+  ["Cell", "AE2 storage disk, with a limit in bytes and in number of item types."],
+  ["Pattern", "AE2 recipe instruction. A crafting pattern is for a crafting table; a processing pattern is for any other machine."],
+  ["Pattern Provider", "AE2 block that sends a pattern's ingredients to a machine next to it."],
+  ["Crafting CPU", "AE2 blocks that keep track of autocrafting jobs. Bigger crafts need more storage in the CPU."],
+  ["Interface", "AE2 block that other blocks can insert into or take from as if it were a chest."],
+  ["Export / Import Bus", "AE2 parts that push items out of, or pull items into, the network."],
+  ["Storage Bus", "AE2 part that makes an external inventory (a chest, a rack) part of the network."],
+  ["Tier", "A better version of a machine or material: faster, bigger, or more efficient."],
+  ["Chunk loading", "Keeping an area of the world running while you're not there."],
+  ["Request", "MineColonies: something a hut needs. The colony tries the Warehouse, then crafters, then you."],
+  ["Rack", "MineColonies' storage block. The Warehouse counts its racks as the colony's stock."],
+  ["Courier", "MineColonies worker who carries items between the Warehouse and the huts."],
+  ["Stash", "MineColonies block where couriers collect items to take to the Warehouse."],
+  ["Hut level", "A building's level (1–5). It decides workers, recipes, and what a builder can build."],
+  ["Essence", "Mystical Agriculture's harvest. Crafted into the resource the seed is for."],
+];
+
+/* Common beginner mistakes, shown on the Fix it tab */
+const MISTAKES = [
+  ["Smelting all your raw ore right away", "Raw ore is worth 1.75× to 4× more once Create or Mekanism is running. Store it until then."],
+  ["AE2 cables merging", "Two cables next to each other connect and share channels. Use different colours, or a covered cable, to keep lines apart."],
+  ["Building everything at once", "Upgrade the bottleneck first. A faster first machine doesn't help if the second can't keep up."],
+  ["Miner's Hut too close to things", "Its shaft and tunnels cut through anything in the way. Keep it far from the vault."],
+  ["Forgetting chunk loading", "In solo play, nothing runs while you're away. Force-load the vault so processing keeps going."],
+  ["Not checking the Clipboard", "Most stuck colonies are waiting for one missing item. The Clipboard says which."],
+  ["Mixing styles everywhere", "Every new style adds new blocks to supply. Stick to one or two."],
+  ["Overstressing Create", "Adding a machine to a full network stops all of it. Check capacity with goggles first."],
+  ["Running out of power", "One machine too many drains everything. Keep generation 20% above use."],
+];
+
 const LUA = `-- startup.lua : fill MineColonies requests from AE2
 -- Needs: Advanced Computer + Colony Integrator + ME Bridge (Advanced Peripherals)
 local colony = peripheral.find("colony_integrator") or peripheral.find("colonyIntegrator")
@@ -1121,6 +1466,7 @@ function hash(s) {
 }
 PHASES.forEach(ph => ph.steps.forEach(s => {
   s.subs = (s.subs || []).map(html => ({ id: s.id + ":" + hash(html), html }));
+  Object.assign(s, EXTRA[s.id] || {});
 }));
 const allSteps = PHASES.flatMap(p => p.steps);
 /* one progress unit per sub-step; a step without sub-steps counts as one unit */
@@ -1129,7 +1475,7 @@ const allUnits = allSteps.flatMap(s => units(s).map(id => ({ id, layer: s.layer 
 
 /* ---------- state ---------- */
 let done = {};
-let layer = "all", modSel = "", hideDone = false, query = "";
+let layer = "all", modSel = "", hideDone = false, essOnly = false, query = "";
 let openSteps = {};
 let store = null, saveTimer = null, saving = false, pending = false;
 const LS_KEY = "hollowmere-progress";
@@ -1137,7 +1483,7 @@ const LS_KEY = "hollowmere-progress";
 function lsGet(k, d) { try { return JSON.parse(localStorage.getItem(k) || "null") || d; } catch (e) { return d; } }
 function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function lsWrite() { lsSet(LS_KEY, done); }
-function lsSavePrefs() { lsSet(LS_KEY + "-prefs", { layer, modSel, hideDone, openSteps }); }
+function lsSavePrefs() { lsSet(LS_KEY + "-prefs", { layer, modSel, hideDone, essOnly, openSteps }); }
 
 const syncEl = document.getElementById("sync");
 function setSync(t) { syncEl.textContent = t; }
@@ -1157,9 +1503,39 @@ const openPhases = {};
 function plain(html) { const d = document.createElement("div"); d.innerHTML = html; return d.textContent.toLowerCase(); }
 const searchText = new Map(allSteps.map(s => [s.id,
   (s.t + " " + s.mods.join(" ") + " " + plain(s.why || "") + " " + s.subs.map(x => plain(x.html)).join(" ") +
-   " " + (s.recipes || []).map(r => r.join(" ")).join(" ")).toLowerCase()]));
+   " " + (s.recipes || []).map(r => r.join(" ")).join(" ") + " " + (s.check || "") +
+   " " + (s.fix || []).map(f => f.join(" ")).join(" ")).toLowerCase()]));
+
+/* glossary hover: wrap the first mention of each term in a step's explanation */
+const GLOSS_RE = GLOSSARY.map(([term, def]) => {
+  const esc = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const acronym = term === term.toUpperCase();
+  return { re: new RegExp("\\b" + esc + "s?\\b", acronym ? "" : "i"), def, term };
+});
+function addGlossary(root) {
+  const used = new Set();
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    if (node.parentElement.closest("abbr, code, kbd")) return;
+    for (const g of GLOSS_RE) {
+      if (used.has(g.term)) continue;
+      const m = node.nodeValue.match(g.re);
+      if (!m) continue;
+      used.add(g.term);
+      const after = node.splitText(m.index);
+      after.splitText(m[0].length);
+      const ab = document.createElement("abbr");
+      ab.className = "g"; ab.title = g.def; ab.textContent = after.nodeValue;
+      after.replaceWith(ab);
+      break;
+    }
+  });
+}
 
 function visible(s) {
+  if (essOnly && s.opt) return false;
   if (layer !== "all" && s.layer !== layer) return false;
   if (modSel && !s.mods.includes(modSel)) return false;
   if (hideDone && stepDone(s)) return false;
@@ -1203,6 +1579,14 @@ function render() {
       vis.forEach(s => ol.appendChild(stepEl(s)));
       d.appendChild(ol);
     }
+    if (MILESTONES[ph.id]) {
+      const ms = document.createElement("div");
+      ms.className = "milestone";
+      ms.innerHTML = `<h3>Checkpoint: before Phase ${i + 2 <= PHASES.length ? i + 2 : "the end"}</h3><ul></ul>`;
+      if (i + 1 === PHASES.length) ms.querySelector("h3").textContent = "Final checkpoint";
+      MILESTONES[ph.id].forEach(t => { const li = document.createElement("li"); li.textContent = t; ms.querySelector("ul").appendChild(li); });
+      d.appendChild(ms);
+    }
     main.appendChild(d);
   });
   renderMeter();
@@ -1211,6 +1595,7 @@ function render() {
 
 function stepEl(s) {
   const li = document.createElement("li");
+  li.id = "step-" + s.id;
   const complete = stepDone(s), n = stepCount(s), tot = units(s).length;
   li.className = `step ${s.layer}${complete ? " isdone" : ""}`;
 
@@ -1224,6 +1609,7 @@ function stepEl(s) {
   const body = document.createElement("div");
   body.className = "st-body";
   const chips = [`<span class="chip layer">${LAYER_NAME[s.layer]}</span>`]
+    .concat(s.opt ? [`<span class="chip opt">Optional</span>`] : [])
     .concat(s.mods.map(m => `<span class="chip">${m}</span>`)).join("");
   const open = isOpen(s);
   body.innerHTML = `<div class="st-head"><label class="st-title" for="cb-${s.id}"></label>
@@ -1238,7 +1624,7 @@ function stepEl(s) {
   if (open) {
     const det = document.createElement("div");
     det.className = "st-detail";
-    if (s.why) { const w = document.createElement("div"); w.className = "st-why"; w.innerHTML = s.why; det.appendChild(w); }
+    if (s.why) { const w = document.createElement("div"); w.className = "st-why"; w.innerHTML = s.why; addGlossary(w); det.appendChild(w); }
     if (s.warn) { const w = document.createElement("div"); w.className = "warn"; w.innerHTML = "<b>Watch out:</b> " + s.warn; det.appendChild(w); }
     if (s.subs.length) {
       const wrap = document.createElement("div");
@@ -1273,6 +1659,29 @@ function stepEl(s) {
       det.appendChild(g);
     }
     if (s.code) det.appendChild(codeBox());
+    if (s.check) {
+      const c = document.createElement("div"); c.className = "xbox check";
+      c.innerHTML = `<div class="blk-label">Is it working?</div><div></div>`;
+      c.lastChild.textContent = s.check;
+      det.appendChild(c);
+    }
+    if (s.fix) {
+      const f = document.createElement("div"); f.className = "xbox fix";
+      f.innerHTML = `<div class="blk-label">Not working?</div><ul></ul>`;
+      s.fix.forEach(([sym, cure]) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="fx-sym"></span> → <span></span>`;
+        li.children[0].textContent = sym; li.children[1].textContent = cure;
+        f.querySelector("ul").appendChild(li);
+      });
+      det.appendChild(f);
+    }
+    if (s.next) {
+      const n = document.createElement("div"); n.className = "xbox next";
+      n.innerHTML = `<div class="blk-label">When it feels slow</div><div></div>`;
+      n.lastChild.textContent = s.next;
+      det.appendChild(n);
+    }
     if (s.tip) { const t = document.createElement("div"); t.className = "tip"; t.innerHTML = s.tip; det.appendChild(t); }
     body.appendChild(det);
   }
@@ -1314,6 +1723,140 @@ function renderMeter() {
   meter.setAttribute("aria-label", `${n} of ${total} tasks finished`);
 }
 
+/* ---------- learn + fix pages ---------- */
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+function renderLearn() {
+  const page = document.getElementById("learnPage");
+  page.textContent = "";
+  const intro = el("section");
+  intro.innerHTML = `<h2>Learn the basics</h2>
+    <p>The ideas below apply to every tech mod in the pack. Read them once before Phase 4. When a step in the guide seems confusing, come back here. Terms with a dotted underline in the guide show their meaning when you hover them.</p>
+    <nav class="toc" aria-label="On this page"><a href="#learn" data-jump="l-concepts">Core concepts</a><a href="#learn" data-jump="l-read">Reading a machine</a><a href="#learn" data-jump="l-find">Finding information</a><a href="#learn" data-jump="l-gloss">Glossary</a></nav>`;
+  page.appendChild(intro);
+
+  const con = el("section"); con.id = "l-concepts";
+  con.appendChild(el("h2", null, "Core concepts"));
+  const grid = el("div", "concepts");
+  CONCEPTS.forEach(c => {
+    const card = el("div", "concept", `<h3></h3><p>${c.d}</p>`);
+    card.querySelector("h3").textContent = c.t;
+    if (c.diagram) {
+      const g = el("div", "diagram", `<pre></pre>`);
+      g.querySelector("pre").textContent = c.diagram;
+      card.appendChild(g);
+    }
+    grid.appendChild(card);
+  });
+  con.appendChild(grid);
+  page.appendChild(con);
+
+  const rd = el("section"); rd.id = "l-read";
+  rd.innerHTML = `<h2>Reading a machine</h2><p>Most machine screens share the same parts. When a machine isn't working, check these in order.</p><ul>${READ_MACHINE.map(x => `<li>${x}</li>`).join("")}</ul>`;
+  page.appendChild(rd);
+
+  const fi = el("section"); fi.id = "l-find";
+  fi.innerHTML = `<h2>Finding information in game</h2><ul>${FIND_INFO.map(x => `<li>${x}</li>`).join("")}</ul>`;
+  page.appendChild(fi);
+
+  const gl = el("section"); gl.id = "l-gloss";
+  gl.innerHTML = `<h2>Glossary</h2><dl class="gloss"></dl>`;
+  const dl = gl.querySelector("dl");
+  GLOSSARY.forEach(([t, d]) => {
+    const dt = el("dt"); dt.textContent = t;
+    const dd = el("dd"); dd.textContent = d;
+    dl.append(dt, dd);
+  });
+  page.appendChild(gl);
+}
+
+function renderFix() {
+  const page = document.getElementById("fixPage");
+  page.textContent = "";
+  const intro = el("section");
+  intro.innerHTML = `<h2>Fix it</h2>
+    <p>Find your symptom, then check the cause. Each entry links back to the guide step it belongs to. If nothing here matches, go through <a href="#learn" data-jump="l-read">Reading a machine</a>: most problems are power, sides or a missing input.</p>
+    <nav class="toc" aria-label="On this page"><a href="#fix" data-jump="f-mistakes">Common beginner mistakes</a>${PHASES.filter(p => p.steps.some(s => s.fix)).map(p => `<a href="#fix" data-jump="f-${p.id}"></a>`).join("")}</nav>`;
+  const tocLinks = intro.querySelectorAll('[data-jump^="f-"]:not([data-jump="f-mistakes"])');
+  PHASES.filter(p => p.steps.some(s => s.fix)).forEach((p, i) => { tocLinks[i].textContent = p.title; });
+  page.appendChild(intro);
+
+  const mk = el("section"); mk.id = "f-mistakes";
+  mk.innerHTML = `<h2>Common beginner mistakes</h2><ol class="mistakes"></ol>`;
+  MISTAKES.forEach(([t, d]) => {
+    const li = el("li", null, `<b></b><span></span>`);
+    li.querySelector("b").textContent = t; li.querySelector("span").textContent = d;
+    mk.querySelector("ol").appendChild(li);
+  });
+  page.appendChild(mk);
+
+  PHASES.forEach(p => {
+    const steps = p.steps.filter(s => s.fix);
+    if (!steps.length) return;
+    const sec = el("section"); sec.id = "f-" + p.id;
+    const h = el("h2"); h.textContent = p.title; sec.appendChild(h);
+    const grp = el("div", "fixgroup");
+    steps.forEach(s => s.fix.forEach(([sym, cure]) => {
+      const row = el("div", "fixrow", `<div class="fx-sym"></div><div></div><div class="src">Step: <a href="#guide"></a></div>`);
+      row.children[0].textContent = sym; row.children[1].textContent = cure;
+      const a = row.querySelector(".src a");
+      a.textContent = s.t;
+      a.addEventListener("click", e => { e.preventDefault(); goToStep(s.id); });
+      grp.appendChild(row);
+    }));
+    sec.appendChild(grp);
+    page.appendChild(sec);
+  });
+}
+
+/* ---------- tabs ---------- */
+let tab = "guide";
+function showTab(name) {
+  tab = ["guide", "learn", "fix"].includes(name) ? name : "guide";
+  document.getElementById("main").hidden = tab !== "guide";
+  document.getElementById("guideFilters").hidden = tab !== "guide";
+  document.getElementById("learnPage").hidden = tab !== "learn";
+  document.getElementById("fixPage").hidden = tab !== "fix";
+  document.querySelectorAll(".tabs a").forEach(a => {
+    if (a.dataset.tab === tab) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+}
+function goToStep(id) {
+  const s = allSteps.find(x => x.id === id);
+  const ph = PHASES.find(p => p.steps.includes(s));
+  openSteps[id] = true; openPhases[ph.id] = true;
+  layer = "all"; modSel = ""; query = ""; essOnly = false; hideDone = false;
+  document.getElementById("q").value = ""; modFilter.value = ""; hideBox.checked = false; essBox.checked = false;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.layer === "all")));
+  showTab("guide");
+  try { history.replaceState(null, "", "#guide"); } catch (e) {}
+  render();
+  const target = document.getElementById("step-" + id);
+  if (target) target.scrollIntoView({ block: "start" });
+}
+document.querySelectorAll(".tabs a").forEach(a => a.addEventListener("click", e => {
+  e.preventDefault();
+  showTab(a.dataset.tab);
+  try { history.replaceState(null, "", "#" + a.dataset.tab); } catch (err) {}
+  window.scrollTo(0, 0);
+}));
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-jump]");
+  if (!a) return;
+  e.preventDefault();
+  const page = a.getAttribute("href") === "#fix" ? "fix" : "learn";
+  showTab(page);
+  try { history.replaceState(null, "", "#" + page); } catch (err) {}
+  const t = document.getElementById(a.dataset.jump);
+  if (t) t.scrollIntoView({ block: "start" });
+});
+document.querySelectorAll('.howto a[href="#learn"], .howto a[href="#fix"]').forEach(a => a.addEventListener("click", e => {
+  e.preventDefault();
+  const name = a.getAttribute("href").slice(1);
+  showTab(name);
+  try { history.replaceState(null, "", "#" + name); } catch (err) {}
+}));
+
 /* ---------- saving ---------- */
 function setMany(ids, val) {
   ids.forEach(id => { if (val) done[id] = true; else delete done[id]; });
@@ -1352,6 +1895,8 @@ document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click"
 modFilter.addEventListener("change", () => { modSel = modFilter.value; lsSavePrefs(); render(); });
 const hideBox = document.getElementById("hideDone");
 hideBox.addEventListener("change", () => { hideDone = hideBox.checked; lsSavePrefs(); render(); });
+const essBox = document.getElementById("essOnly");
+essBox.addEventListener("change", () => { essOnly = essBox.checked; lsSavePrefs(); render(); });
 let qTimer;
 document.getElementById("q").addEventListener("input", e => {
   clearTimeout(qTimer);
@@ -1383,10 +1928,14 @@ resetYes.addEventListener("click", () => {
   if (prefs.layer) layer = prefs.layer;
   if (prefs.modSel && mods.includes(prefs.modSel)) modSel = prefs.modSel;
   hideDone = !!prefs.hideDone;
+  essOnly = !!prefs.essOnly;
   openSteps = prefs.openSteps || {};
-  modFilter.value = modSel; hideBox.checked = hideDone;
+  modFilter.value = modSel; hideBox.checked = hideDone; essBox.checked = essOnly;
   document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.layer === layer)));
   render();
+  renderLearn();
+  renderFix();
+  showTab((location.hash || "#guide").slice(1));
   setSync("Saved in this browser");
 
   (async () => {

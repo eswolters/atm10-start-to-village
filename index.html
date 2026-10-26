@@ -185,6 +185,8 @@ a { color: var(--tech); }
 .xbox.check { background: var(--moss-soft); border-color: transparent; }
 .xbox.fix { background: var(--panel); border-style: dashed; }
 .xbox.next { background: var(--slate-soft); border-color: transparent; }
+.xbox.side { background: var(--moss-soft); border-color: transparent; }
+.xbox.side p { margin: 4px 0 0; }
 /* illustrations (inline SVG, themed through the page variables) */
 .fig { margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .fig .ft { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
@@ -2302,6 +2304,16 @@ const MAT_FOR = {
 };
 
 /* steps that point at things you gather, with the cards to open on the Materials tab */
+/* where the optional side projects (the last section of the guide) pay off: step id -> [side step, why] */
+const SIDE_FOR = {
+  "s-ores": [["e-ma", "Much later, Mystical Agriculture can grow iron, copper and coal as crops, so you will need to mine less."]],
+  "u-create-ore": [["e-ma", "If iron or copper still runs short after the ore line, a crop room can grow them instead."]],
+  "g-raw": [["e-mob", "The Fletcher needs string and feathers, and many recipes need bones and gunpowder. A mob farm keeps all of them coming."]],
+  "g-guards": [["e-mob", "Archers use arrows, and skeletons drop arrows and bones. A mob farm supplies them without you hunting."]],
+  "l-stash": [["e-ma", "Seeds for wood, stone, coal and iron can fill the Warehouse for you."], ["e-mob", "Bones, string and feathers can flow into AE2 the same way."]],
+  "c-five": [["e-ma", "Level 5 buildings ask for huge stacks of materials. A crop room is the easiest way to keep up."]],
+};
+
 const FIND_FOR = {
   "s-food": ["flint", "wheat_seeds", "farmland", "water_bucket"],
   "e-ma": ["inferium_essence", "prosperity_shard"],
@@ -3606,7 +3618,7 @@ function hash(s) {
 }
 PHASES.forEach(ph => ph.steps.forEach(s => {
   s.subs = (s.subs || []).map(html => ({ id: s.id + ":" + hash(html), html }));
-  Object.assign(s, EXTRA[s.id] || {}, LOOK[s.id] ? { look: LOOK[s.id] } : {});
+  Object.assign(s, EXTRA[s.id] || {}, LOOK[s.id] ? { look: LOOK[s.id] } : {}, SIDE_FOR[s.id] ? { side: SIDE_FOR[s.id] } : {});
 }));
 const allSteps = PHASES.flatMap(p => p.steps);
 /* one progress unit per sub-step; a step without sub-steps counts as one unit */
@@ -3902,6 +3914,11 @@ function stepEl(s) {
       const n = document.createElement("div"); n.className = "xbox next";
       n.innerHTML = `<div class="blk-label">When it feels slow</div><div></div>`;
       n.lastChild.textContent = s.next;
+      det.appendChild(n);
+    }
+    if (s.side) {
+      const n = el("div", "xbox side", `<div class="blk-label">Side project idea (optional)</div>`);
+      s.side.forEach(([id, why]) => { const p = el("p"); p.append(why + " "); p.appendChild(stepLink(id, "See: " + (allSteps.find(x => x.id === id) || { t: id }).t)); n.appendChild(p); });
       det.appendChild(n);
     }
     if (s.tip) { const t = document.createElement("div"); t.className = "tip"; t.innerHTML = s.tip; det.appendChild(t); }

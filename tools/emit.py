@@ -15,7 +15,7 @@ OVERRIDE = {
     "laser_card_item": "Item Card (Laser IO)", "laser_filter_basic": "Basic Filter (Laser IO)", "pipez_item_pipe": "Item Pipe (Pipez)", "pipez_basic_upgrade": "Basic Upgrade (Pipez)",
     "stone": "Stone", "sophisticatedstorage_barrel": "Barrel (Sophisticated Storage)", "hut_field": "Scarecrow (field)", "hut_plantation_field": "Plantation field marker", "hut_citizen": "Residence",
 }
-GROUPFIX = {"ender_eye": "Powah"}   # reached from two mods; keep the original heading
+GROUPFIX = {"ender_eye": "Powah", "beehive": "Colony huts"}   # reached from two mods; keep the original heading
 out = {}
 for slug, v in I.items():
     if slug in GROUPFIX: v["grp"] = GROUPFIX[slug]

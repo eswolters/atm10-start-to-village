@@ -106,7 +106,15 @@ FX = "Flux Networks"
 WANT += L(FX, ("flux_core", "fluxnetworks:flux_core"), ("flux_controller", "fluxnetworks:flux_controller"), ("flux_plug", "fluxnetworks:flux_plug"),
           ("flux_point", "fluxnetworks:flux_point"), ("flux_configurator", "fluxnetworks:flux_configurator"))
 WANT += L(MC, ("sophisticatedstorage_barrel", "sophisticatedstorage:barrel"), ("hopper", "minecraft:hopper"))
-WANT += L(CT, ("shape_tool", "minecolonies:shapetool"))
+
+BP, MG, PB = "Botany Pots", "Mob Grinding Utils", "Productive Bees"
+WANT += L(BP, ("botany_pot", "botanypots:terracotta_botany_pot"), ("hopper_botany_pot", "botanypots:terracotta_hopper_botany_pot"))
+WANT += L(MG, ("mgu_spikes", "mob_grinding_utils:spikes"), ("mgu_fan", "mob_grinding_utils:fan"), ("mgu_entity_conveyor", "mob_grinding_utils:entity_conveyor"),
+          ("mgu_absorption_hopper", "mob_grinding_utils:absorption_hopper"), ("mgu_tinted_glass", "mob_grinding_utils:tinted_glass"), ("mgu_saw", "mob_grinding_utils:saw"))
+WANT += L(PB, ("honey_treat", "productivebees:honey_treat"), ("advanced_oak_beehive", "productivebees:advanced_oak_beehive"), ("oak_wood_nest", "productivebees:oak_wood_nest"),
+          ("stone_nest", "productivebees:stone_nest"), ("centrifuge", "productivebees:centrifuge"), ("bee_cage", "productivebees:bee_cage"),
+          ("beehive", "minecraft:beehive"), ("campfire", "minecraft:campfire"))
+WANT += L(MT, ("block_gen_stone", "cobblegengalore:block_gen_stone"))
 
 # registry id / tag -> slug, for ingredients that stand for a generic thing
 MAP = {
@@ -120,7 +128,7 @@ MAP = {
     "#c:raw_materials/iron": "raw_iron", "minecraft:raw_iron": "raw_iron", "#c:raw_materials/gold": "raw_gold", "minecraft:raw_gold": "raw_gold",
     "#c:raw_materials/copper": "raw_copper", "minecraft:raw_copper": "raw_copper", "#c:ores/iron": "raw_iron", "#c:ores/gold": "raw_gold", "#c:ores/copper": "raw_copper",
     "#c:strings": "string", "minecraft:string": "string", "#c:glass_blocks": "glass", "#c:glass_blocks/colorless": "glass", "#c:chests": "chest", "#c:chests/wooden": "chest",
-    "#minecraft:chest_boats": "chest_boat", "#minecraft:boats": "boat", "#c:slimeballs": "slime_ball", "#c:netherracks": "netherrack",
+    "#minecraft:chest_boats": "chest_boat", "#minecraft:boats": "boat", "#c:slimeballs": "slime_ball", "#c:slime_balls": "slime_ball", "#c:netherracks": "netherrack",
     "#c:gems/diamond": "diamond", "minecraft:diamond": "diamond", "#c:dusts/redstone": "redstone", "minecraft:redstone": "redstone",
     "minecraft:coal": "coal", "#minecraft:coals": "coal", "#c:gems/coal": "coal", "minecraft:charcoal": "coal",
     "minecraft:andesite": "andesite", "minecraft:quartz": "nether_quartz", "#c:gems/quartz": "nether_quartz",
@@ -128,7 +136,7 @@ MAP = {
     "#c:wool": "wool", "#minecraft:wool": "wool",
     "#c:storage_blocks/redstone": "redstone_block", "#c:drinks/milk": "milk_bucket", "#c:eggs": "egg", "#c:storage_blocks/coal": "coal_block", "#c:storage_blocks/gold": "gold_block", "#saplings": "sapling", "#minecraft:saplings": "sapling", "#logs": "log", "#c:ender_pearls": "ender_pearl", "#mekanism:tin": "tin_ingot", "#c:dusts/copper": "dust_copper", "#c:ingots/tin": "tin_ingot", "#ae2:all_nether_quartz": "nether_quartz", "#ae2:all_certus_quartz": "certus_quartz", "#ae2:all_fluix": "fluix_crystal", "#c:dusts/fluix": "fluix_dust", "minecraft:ender_pearl": "ender_pearl",
     "#c:glass_blocks/cheap": "glass", "#c:glass_panes": "glass_pane", "#c:glass_panes/colorless": "glass_pane", "#c:leathers": "leather", "#c:feathers": "feather",
-    "#c:buckets/empty": "bucket", "#c:buckets/water": "water_bucket", "minecraft:farmland": "farmland", "#c:buckets/lava": "lava_bucket", "#c:dusts/glowstone": "glowstone_dust", "#c:gems/emerald": "emerald", "#c:gems/lapis": "lapis_lazuli",
+    "#c:buckets/empty": "bucket", "#c:hives": "beehive", "#c:campfires": "campfire", "#c:honeycombs": "honeycomb", "minecraft:honeycomb": "honeycomb", "minecraft:honey_bottle": "honey_bottle", "#c:tools/shear": "shears", "#c:buckets/water": "water_bucket", "minecraft:farmland": "farmland", "#c:buckets/lava": "lava_bucket", "#c:dusts/glowstone": "glowstone_dust", "#c:gems/emerald": "emerald", "#c:gems/lapis": "lapis_lazuli",
     "#c:obsidians/normal": "obsidian", "#c:obsidians": "obsidian", "#c:rods/blaze": "blaze_rod", "#c:ingots/zinc": "zinc_ingot", "#c:nuggets/zinc": "zinc_nugget",
     "#c:dusts/gold": "dust_gold", "#c:dusts/iron": "dust_iron", "#c:ingots/osmium": "osmium_ingot", "#c:ingots/steel": "steel_ingot", "#c:ingots/vibranium": "vibranium_ingot",
     "#c:ingots/bronze": "bronze_ingot", "#c:circuits/basic": "basic_control_circuit", "#c:gems/amethyst": "amethyst_shard", "#c:crops/wheat": "wheat",
@@ -139,8 +147,8 @@ MAP = {
 LEAF = {k: "" for k in ["sapling", "chicken", "milk_bucket", "cocoa_beans", "nether_wart", "rabbit_foot", "saddle", "gilded_blackstone", "wheat_seeds", "leather", "wheat", "apple", "egg", "beef", "porkchop", "bone", "flint", "gravel", "dirt", "honeycomb", "obsidian", "blaze_rod", "amethyst_shard", "ender_pearl",
                         "feather", "sugar_cane", "lapis_lazuli", "poppy", "carrot", "cactus", "kelp", "glowstone_dust", "emerald", "lava_bucket", "raw_zinc", "raw_osmium", "clay_ball", "vibranium_ingot", "raw_tin", "uraninite", "sky_stone_block",
                         "raw_tin", "uraninite", "sky_stone_block", "silicon_press", "calculation_processor_press", "engineering_processor_press", "logic_processor_press", "water_bucket", "rabbit_hide", "honey_bottle","log", "cobblestone", "sand", "raw_iron", "raw_copper", "raw_gold", "redstone", "coal", "diamond", "string", "wool", "andesite", "certus_quartz",
-                        "nether_quartz", "slime_ball", "netherrack", "inferium_essence", "prosperity_shard", "flux_dust", "farmland", "bone", "flint"]}
+                        "nether_quartz", "slime_ball", "netherrack", "inferium_essence", "prosperity_shard", "flux_dust", "farmland", "bone", "flint", "honey_bottle"]}
 ALLOW = {"minecraft", "create", "ae2", "mekanism", "powah", "minecolonies", "structurize", "ironfurnaces", "pipez", "laserio", "functionalstorage", "sophisticatedbackpacks",
          "advancedperipherals", "computercraft", "waystones", "domum_ornamentum", "kubejs", "alltheores", "allthemodium",
-         "farmersdelight", "mysticalagriculture", "fluxnetworks", "sophisticatedstorage"}
+         "farmersdelight", "mysticalagriculture", "fluxnetworks", "sophisticatedstorage", "botanypots", "mob_grinding_utils", "productivebees", "cobblegengalore"}
 PICK = {"cake": "farmersdelight:cake_from_milk_bottle", "dielectric_rod": "powah:crafting/dielectric_rod", "dielectric_rod_horizontal": "powah:crafting/dielectric_rod_h", "fluix_crystal": "ae2:transform/fluix_crystals", "iron_ingot": "minecraft:iron_ingot_from_smelting_raw_iron", "gold_ingot": "minecraft:gold_ingot_from_smelting_raw_gold", "copper_ingot": "minecraft:copper_ingot_from_smelting_raw_copper"}

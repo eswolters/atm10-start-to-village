@@ -11,7 +11,7 @@ Open `index.html` in a browser. It has four tabs:
 - **Learn the basics**: ten illustrated town-design principles (palette, skyline, roads, lighting, hiding the tech), a guide to the town styles installed in the pack (MineColonies, StyleColonies and the Byzantine pack), the decoration mods (Macaw's, Handcrafted, Refurbished Furniture, Supplementaries, Bibliocraft and more) with real block examples, the building and digging tools (FTB Ultimine, the Destruction and Exchanging Gadgets, Construction Sticks, Nature's Compass) with their costs and which ones are gated behind Allthemodium, core automation concepts (input → process → output, push vs pull, sides, bottlenecks, buffers, filters, energy types), how to read a machine, where to find information in game, and a glossary. Glossary terms show their meaning when you hover them in the guide.
 - **Fix it**: every troubleshooting entry from the guide by phase, plus common beginner mistakes.
 
-Progress is kept in your browser's local storage.
+Progress is kept in your browser's local storage. *Export progress* (at the bottom of the page) saves your ticks, Materials list and palette to a small JSON file, and *Import progress* restores it in another browser or on another computer. An import asks whether to replace your ticks or add to them, ignores anything it doesn't recognise, and never touches your data if the file is invalid.
 
 ## The phases
 

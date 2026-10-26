@@ -343,6 +343,15 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
 
 <footer class="wrap" style="padding-block: 0 48px; display:flex; flex-direction:column; gap:14px;">
   <div class="note">Written for solo play on a recent ATM10 (Minecraft 1.21.1, NeoForge). ATM10 updates add and remove mods and change recipes, so treat ingredient lists as a guide and JEI as the authority. The request-filler script targets Advanced Peripherals for 1.21.1 and also handles the older function names.</div>
+  <div class="reset-row" id="backupRow">
+    <span id="backupMsg">Back up or move your progress to another browser or computer:</span>
+    <button type="button" id="exportBtn">Export progress</button>
+    <button type="button" id="importBtn">Import progress…</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+    <button type="button" id="importReplace" class="danger" hidden>Replace my ticks</button>
+    <button type="button" id="importMerge" hidden>Add to my ticks</button>
+    <button type="button" id="importCancel" hidden>Cancel</button>
+  </div>
   <div class="reset-row">
     <span id="resetMsg">Start over in a new world?</span>
     <button type="button" id="resetBtn">Clear all ticks</button>
@@ -2998,6 +3007,76 @@ resetYes.addEventListener("click", () => {
   done = {}; openSteps = {}; lsWrite(); lsSavePrefs(); render(); queueSave();
   resetNo.click(); resetMsg.textContent = "All ticks cleared.";
 });
+
+/* ---------- backup: export and import your progress ---------- */
+const BACKUP_APP = "hollowmere-town-plan", PAL_KEY = "hollowmere-palette";
+/* everything worth keeping: ticks, the Materials list and your palette. Layout preferences stay per browser. */
+function buildBackup() {
+  const ticks = {};
+  Object.keys(done).forEach(k => { if (done[k]) ticks[k] = true; });
+  return { app: BACKUP_APP, version: 1, exportedAt: new Date().toISOString(), done: ticks, materials: matList, palette: lsGet(PAL_KEY, null) };
+}
+/* check a file before touching anything: unknown ticks are ignored, bad data is rejected */
+function parseBackup(text) {
+  let d;
+  try { d = JSON.parse(text); } catch (e) { return { error: "That file isn't valid JSON." }; }
+  if (!d || d.app !== BACKUP_APP || typeof d.done !== "object" || d.done === null || Array.isArray(d.done)) return { error: "That doesn't look like a progress file from this guide." };
+  const valid = new Set(allUnits.map(u => u.id));
+  const ids = Object.keys(d.done).filter(k => d.done[k]);
+  const known = ids.filter(k => valid.has(k));
+  const mats = Array.isArray(d.materials) ? d.materials.filter(x => Array.isArray(x) && ITEMS[x[0]] && Number.isFinite(x[1]) && x[1] > 0).map(x => [x[0], Math.floor(x[1])]) : [];
+  let pal = null;
+  if (d.palette && typeof d.palette === "object") {
+    const ok = ["wood", "stone", "roof", "acc"].every(k => /^#[0-9a-f]{6}$/i.test(String(d.palette[k])));
+    if (ok) pal = { wood: d.palette.wood, stone: d.palette.stone, roof: d.palette.roof, acc: d.palette.acc };
+  }
+  return { known, unknown: ids.length - known.length, mats, pal, exportedAt: typeof d.exportedAt === "string" ? d.exportedAt : "" };
+}
+function applyBackup(b, mode) {
+  if (mode === "replace") done = {};
+  b.known.forEach(k => { done[k] = true; });
+  if (b.mats.length) { matList = b.mats; saveMat(); }
+  if (b.pal) lsSet(PAL_KEY, b.pal);
+  lsWrite(); renderMatPage(); renderLearn(); render(); queueSave();
+}
+function downloadBackup() {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(buildBackup(), null, 1)], { type: "application/json" }));
+  a.download = "hollowmere-progress-" + new Date().toISOString().slice(0, 10) + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+(function backupUI() {
+  const msg = document.getElementById("backupMsg"), file = document.getElementById("importFile");
+  const ids = ["importReplace", "importMerge", "importCancel"].map(i => document.getElementById(i));
+  const idle = "Back up or move your progress to another browser or computer:";
+  let pending = null;
+  const show = on => { ids.forEach(b => { b.hidden = !on; }); document.getElementById("exportBtn").hidden = on; document.getElementById("importBtn").hidden = on; };
+  const reset = text => { pending = null; file.value = ""; show(false); msg.textContent = text || idle; };
+  document.getElementById("exportBtn").addEventListener("click", () => {
+    try { downloadBackup(); msg.textContent = "Saved a file with " + Object.keys(buildBackup().done).length + " ticks. Keep it somewhere safe."; }
+    catch (e) { msg.textContent = "Your browser blocked the download."; }
+  });
+  document.getElementById("importBtn").addEventListener("click", () => file.click());
+  file.addEventListener("change", () => {
+    const f = file.files && file.files[0];
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      const b = parseBackup(String(rd.result));
+      if (b.error) { reset(b.error); return; }
+      pending = b;
+      const when = b.exportedAt ? " from " + b.exportedAt.slice(0, 10) : "";
+      msg.textContent = `Found ${b.known.length} ticks${when}` + (b.unknown ? ` (${b.unknown} unknown, ignored)` : "") + (b.mats.length ? " and a Materials list" : "") + ". Replace your ticks or add them?";
+      show(true);
+    };
+    rd.onerror = () => reset("Couldn't read that file.");
+    rd.readAsText(f);
+  });
+  ids[0].addEventListener("click", () => { const n = pending.known.length; applyBackup(pending, "replace"); reset("Imported: your ticks now match the file (" + n + ")."); });
+  ids[1].addEventListener("click", () => { const n = pending.known.length; applyBackup(pending, "merge"); reset("Added " + n + " ticks to yours."); });
+  ids[2].addEventListener("click", () => reset());
+})();
 
 /* ---------- boot ---------- */
 (function boot() {

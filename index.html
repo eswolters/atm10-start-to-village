@@ -227,6 +227,7 @@ a { color: var(--tech); }
 .mat-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
 .mat-form select, .mat-form input { font: inherit; font-size: 15px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 3px; padding: 5px 8px; max-width: 100%; }
 .mat-form input { width: 80px; }
+.mat-form input[type=search] { width: 230px; max-width: 100%; }
 .mat-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
 .mat-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: var(--moss-soft); color: var(--fg); border-radius: 3px; padding: 2px 4px 2px 9px; }
 .mat-chip button { font: inherit; border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 6px; font-size: 16px; line-height: 1; }
@@ -534,7 +535,8 @@ const PHASES = [
         "Hold it and right-click to see a preview, rotate it so it fits, and confirm the placement",
         "Open the rack in the camp and take the Build Tool and the Town Hall",
         "Store the starter materials in your own chest for the builder later",
-      ] },
+      ],
+      tip: `<b>This pack changes the recipe:</b> the Supply Camp is crafted from 2 iron bars, a white banner and 3 chest boats (not the MineColonies default). Press <i>Ingredients for this step</i> for the full list down to logs, wool and iron.` },
     { id: "f-hall", layer: "s", t: "Place the Town Hall and create the colony", mods: ["MineColonies"],
       why: `<p>The Town Hall block creates the colony: it sets the border, spawns the first four citizens, and is where you manage permissions, settings and citizens.</p>`,
       subs: [
@@ -557,11 +559,11 @@ const PHASES = [
         "Put the missing materials in the builder's hut chest until the hut is done",
       ],
       recipes: [
-        ["Hut blocks", "planks around a themed item (differs per hut)", "crafting table"],
+        ["Hut blocks", "5–7 planks + a Build Tool + a themed item (differs per hut, see the Materials tab)", "crafting table"],
         ["Clipboard", "check JEI", "crafting table"],
         ["Resource Scroll", "check JEI", "crafting table"],
       ],
-      tip: `<b>Builder routine:</b> builders walk to the hut, take materials, build a section and come back. Having the materials there in advance means no waiting.` },
+      tip: `<b>Builder routine:</b> builders walk to the hut, take materials, build a section and come back. Having the materials there in advance means no waiting.<br><br><b>Hut blocks in this pack:</b> every hut is crafted from 5–7 planks, a <b>Build Tool</b> and one themed item (the Builder's Hut takes a door, the Farmer a hoe, the Warehouse a chest, and so on). A Build Tool is just 1 cobblestone and 2 sticks, and the Supply Camp gives you one to start. The Materials tab lists the exact recipe for every hut.` },
     { id: "f-clipboard", layer: "s", t: "Learn the request system with the Clipboard", mods: ["MineColonies"],
       why: `<p>Every hut that needs something creates a <b>request</b>. The colony tries to fill it in this order: <b>(1)</b> the Warehouse's stock, <b>(2)</b> a crafter hut that knows the recipe, <b>(3)</b> you. Requests that only you can fill appear on the <b>Clipboard</b>. Later, the AE2 script reads exactly this list and fills it for you.</p>`,
       subs: [
@@ -847,7 +849,7 @@ const PHASES = [
     { id: "a-meteor", layer: "u", t: "Find meteorites for presses and certus quartz", mods: ["AE2"],
       why: `<p>In AE2 for 1.21, <b>certus quartz</b> and the <b>inscriber presses</b> come only from <b>meteorites</b>. There's no certus ore in the world. Each meteorite has a <b>mysterious cube</b> in its centre containing the presses, and <b>budding certus</b> around it, which grows crystals.</p>`,
       subs: [
-        "Craft a Meteorite Compass (needs certus quartz, check JEI) or explore until you find a crater",
+        "Craft a Meteorite Compass (a normal compass, charged in a Charger: the Charger recipe is in the next step) or explore until you find a crater",
         "Find a meteorite and mine the sky stone",
         "Break the mysterious cube in the centre and take the 4 presses: Calculation, Engineering, Logic and Silicon",
         "Collect all certus quartz crystals and buds",
@@ -1253,9 +1255,11 @@ const PHASES = [
       ] },
     { id: "e-mining", layer: "u", t: "Automated mining in the Mining dimension", mods: ["Mekanism", "FTB Chunks", "AE2"],
       why: `<p>The ATM Mining dimension is made for mining. A Mekanism <b>Digital Miner</b> mines a large radius with filters, and a <b>Quantum Entangloporter</b> sends items home across dimensions. Since you play solo, the miner's chunk must be force-loaded.</p>`,
+      warn: `This is an expensive, late build in this pack. The Digital Miner needs vibranium (a Nether metal) and about 34 diamonds in total once you count the Robit, the Teleportation Cores and the alloys behind them. Open Ingredients for this step to see the whole bill before you commit.`,
       subs: [
         "Find the way into the ATM Mining dimension (quest book)",
-        "Craft a Digital Miner (atomic alloys and robit parts, check JEI)",
+        "Collect the vibranium first: the Digital Miner needs 2 vibranium ingots, found in the Nether",
+        "Craft a Digital Miner (2 vibranium ingots, a Robit, 2 Teleportation Cores, 2 Logistical Sorters and more: see Ingredients for this step)",
         "Set its filters to the ores you need (iron, copper, osmium, zinc...)",
         "Force-load the chunk(s) with FTB Chunks",
         "Craft two Quantum Entangloporters on the same frequency",
@@ -1940,125 +1944,174 @@ function figure(id) {
 }
 
 /* ---------- materials: ingredients, where to find them, how to automate them ---------- */
-/* RAW: things you gather. auto = ladder of ways to get them without effort: [level, what to do, guide step to open] */
-const RAW = {
-  log: { n: "Logs", where: "Any tree. Use your style's main wood so the numbers match what the colony asks for, and replant saplings as you cut.",
-    auto: [["By hand", "Chop trees and replant.", "s-wood"], ["Colony", "The Forester's Hut cuts and replants a tree area, and the logs go to the Warehouse.", "f-forester"],
-      ["Machines", "Mystical Agriculture wood seeds grow logs in a crop room.", "e-ma"], ["AE2", "An Export Bus under a Stash keeps the Warehouse topped up from AE2.", "l-stash"]] },
-  cobblestone: { n: "Cobblestone", where: "Mine any stone: stone drops cobblestone. A cobblestone generator makes it forever.",
-    auto: [["By hand", "Mine it.", "s-wood"], ["Colony", "The Miner's Hut brings back cobble and stone.", "g-mine"], ["Machines", "A Create cobblestone generator with a drill makes it without end.", "m-cobble"], ["AE2", "Export it to the Warehouse through the Stash.", "l-stash"]] },
-  sand: { n: "Sand", where: "Beaches, riverbeds and deserts. Dig it with a shovel.",
-    auto: [["By hand", "Shovel it from beaches and riverbeds.", "s-wood"], ["Colony", "The Crusher's Hut turns cobblestone into gravel and sand.", "g-raw"], ["Machines", "A Mekanism Crusher turns gravel into sand.", "u-mek-ore"], ["AE2", "Export it to the Warehouse through the Stash.", "l-stash"]] },
-  raw_iron: { n: "Raw iron", where: "Iron ore at about Y 16, or in mountains around Y 232. Smelt it to ingots. Keep raw ore if you plan to use Create or Mekanism: they give far more ingots from the same ore.",
-    auto: [["By hand", "Mine at Y 16.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line (crushing wheels and washing) gives about 1.75× the ingots.", "u-create-ore"],
-      ["Machines", "Mystical Agriculture iron seeds grow it in a crop room.", "e-ma"], ["Machines", "A Digital Miner in the Mining dimension.", "e-mining"], ["Machines", "The Mekanism 3× and 4× chain.", "u-mek-ore"]] },
-  raw_copper: { n: "Raw copper", where: "Copper ore around Y 48. Dripstone caves have a lot of it.",
-    auto: [["By hand", "Mine it around Y 48.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line gives extra ingots.", "u-create-ore"], ["Machines", "Mystical Agriculture copper seeds.", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
-  raw_gold: { n: "Raw gold", where: "Deep underground (about Y −16 and lower), and near the surface in Badlands, where there is a lot of it. Nether gold ore also works.",
-    auto: [["By hand", "Mine in Badlands or deep underground.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "Mystical Agriculture gold seeds.", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
-  redstone: { n: "Redstone", where: "Redstone ore near the bottom of the world, around Y −59 (deepslate).",
-    auto: [["By hand", "Mine at Y −59.", "s-ores"], ["Machines", "Washing crushed iron in the Create ore line gives redstone as a bonus.", "u-create-ore"], ["Machines", "Mystical Agriculture redstone seeds.", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
-  coal: { n: "Coal", where: "Coal ore is common at about Y 48 and in mountains. Smelting logs gives charcoal, which works for torches and as fuel.",
-    auto: [["By hand", "Mine it, or smelt logs into charcoal.", "s-ores"], ["Colony", "The Forester's logs make charcoal in a furnace.", "f-forester"], ["Machines", "Mystical Agriculture coal seeds.", "e-ma"]] },
-  diamond: { n: "Diamonds", where: "Diamond ore around Y −59, often next to lava. Bring a water bucket.",
-    auto: [["By hand", "Mine at Y −59.", "s-ores"], ["Machines", "Mystical Agriculture diamond seeds (higher tier).", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
-  string: { n: "String", where: "Spiders drop it, and cobwebs give it when cut with a sword or shears. Mineshafts have a lot of cobwebs.",
-    auto: [["By hand", "Kill spiders at night, or cut cobwebs.", "s-ores"], ["Machines", "A mob farm makes string, bones and gunpowder.", "e-mob"]] },
-  wool: { n: "Wool", where: "Shear sheep: they regrow their wool. Four string also make one wool.",
-    auto: [["By hand", "Shear sheep.", "s-food"], ["Colony", "The Shepherd's Hut shears sheep for you.", "g-raw"]] },
-  andesite: { n: "Andesite", where: "A grey stone found in caves and on hills. You can also craft it from diorite and cobblestone.",
-    auto: [["By hand", "Mine it in caves.", "s-ores"], ["AE2", "Write a pattern for it so AE2 crafts it on demand.", "a-autocraft"]] },
-  certus_quartz: { n: "Certus quartz", where: "Only from meteorites in the Overworld. Mine the crystals, then grow more on budding certus.",
-    auto: [["By hand", "Find a meteorite.", "a-meteor"], ["Machines", "Budding certus with Growth Accelerators grows crystals without end.", "a-certus"]] },
-  nether_quartz: { n: "Nether quartz", where: "Nether quartz ore, found throughout the Nether.",
-    auto: [["By hand", "Mine it in the Nether.", "s-ores"], ["Colony", "The Nether Mine (Netherworker) hut brings back nether goods.", "c-late"], ["Machines", "Mystical Agriculture nether quartz seeds.", "e-ma"]] },
-};
+/* Item recipes below were read from the installed ATM10 files (Create 6.0.10, AE2 19.2.18, Mekanism 10.7.19, MineColonies 1.1.1403, Powah 6.2.10 and the
+   others) with the pack's own KubeJS recipe scripts applied on top. Ore heights come from the pack's world generation. */
 
-/* ITEMS: things you make. [name, makes, ingredients, made in, group]. Vanilla recipes are reliable; "mod" ones are from memory for 1.21 and may differ in ATM10. */
+/* RAW: things you gather. auto = a ladder of ways to stop doing it by hand: [level, what to do, guide step to open] */
+const RAW = {};
+function raw(id, n, cat, where, auto) { RAW[id] = { n, cat, where, auto }; }
+const CAT_ORE = "Ores and minerals", CAT_EARTH = "Wood, stone and earth", CAT_FARM = "Farm and animal", CAT_MOB = "Mob drops", CAT_OTHER = "Nether and other";
+raw("log", "Logs", CAT_EARTH, "Any tree. Use your style's main wood so the numbers match what the colony asks for, and replant saplings as you cut.",
+  [["By hand", "Chop trees and replant.", "s-wood"], ["Colony", "The Forester's Hut cuts and replants a tree area, and the logs go to the Warehouse.", "f-forester"],
+   ["Machines", "Mystical Agriculture wood seeds grow logs in a crop room.", "e-ma"], ["AE2", "An Export Bus under a Stash keeps the Warehouse topped up from AE2.", "l-stash"]]);
+raw("cobblestone", "Cobblestone", CAT_EARTH, "Mine any stone: stone drops cobblestone. A cobblestone generator makes it forever.",
+  [["By hand", "Mine it.", "s-wood"], ["Colony", "The Miner's Hut brings back cobble and stone.", "g-mine"], ["Machines", "A Create cobblestone generator with a drill makes it without end.", "m-cobble"], ["AE2", "Export it to the Warehouse through the Stash.", "l-stash"]]);
+raw("sand", "Sand", CAT_EARTH, "Beaches, riverbeds and deserts. Dig it with a shovel.",
+  [["By hand", "Shovel it from beaches and riverbeds.", "s-wood"], ["Colony", "The Crusher's Hut turns cobblestone into gravel and sand.", "g-raw"], ["Machines", "A Mekanism Crusher turns gravel into sand.", "u-mek-ore"], ["AE2", "Export it to the Warehouse through the Stash.", "l-stash"]]);
+raw("gravel", "Gravel", CAT_EARTH, "Riverbeds and caves; dig it with a shovel. The Crusher's Hut makes it from cobblestone.", [["By hand", "Shovel it.", "s-wood"], ["Colony", "The Crusher's Hut turns cobblestone into gravel.", "g-raw"]]);
+raw("dirt", "Dirt", CAT_EARTH, "Anywhere. Dig it with a shovel.", [["By hand", "Shovel it.", "s-wood"]]);
+raw("clay_ball", "Clay balls", CAT_EARTH, "Dig clay blocks from shallow water and riverbeds with a shovel: each block gives 4 balls.", [["By hand", "Shovel clay from riverbeds.", "s-wood"]]);
+raw("kelp", "Kelp", CAT_EARTH, "An underwater plant in oceans and rivers. Smelt it to dried kelp.", [["By hand", "Harvest it from oceans and rivers.", "s-food"]]);
+raw("andesite", "Andesite", CAT_EARTH, "A grey stone found in caves and on hills. You can also craft it: diorite and cobblestone make andesite.",
+  [["By hand", "Mine it in caves.", "s-ores"], ["AE2", "Write a pattern for it so AE2 crafts it on demand.", "a-autocraft"]]);
+raw("raw_iron", "Raw iron", CAT_ORE, "Iron ore from Y −24 to 56 (richest around Y 16), and far more in mountains from Y 80 to 384 (richest around Y 232). Smelt it for ingots, but keep raw ore if you plan to use Create or Mekanism: they give far more ingots from the same ore.",
+  [["By hand", "Mine at Y 16.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line (crushing wheels and washing) gives about 1.75× the ingots.", "u-create-ore"],
+   ["Machines", "Mystical Agriculture iron seeds grow it in a crop room.", "e-ma"], ["Machines", "The Mekanism 3× and 4× chain.", "u-mek-ore"]]);
+raw("raw_copper", "Raw copper", CAT_ORE, "Copper ore from Y −16 to 112, richest around Y 48. Dripstone caves have big veins of it.",
+  [["By hand", "Mine it around Y 48.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line gives extra ingots.", "u-create-ore"], ["Machines", "Mystical Agriculture copper seeds.", "e-ma"]]);
+raw("raw_gold", "Raw gold", CAT_ORE, "Gold ore from Y −64 to 32, richest around Y −16. Badlands biomes also have a lot of gold from Y 32 to 256, close to the surface.",
+  [["By hand", "Mine deep, or in Badlands.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "Mystical Agriculture gold seeds.", "e-ma"]]);
+raw("raw_zinc", "Raw zinc", CAT_ORE, "In this pack zinc comes from AllTheOres, not from Create (Create's own zinc generation is switched off): Y −64 to 126, richest around Y 31.",
+  [["By hand", "Mine it around Y 31.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line washes it into extra nuggets.", "u-create-ore"]]);
+raw("raw_tin", "Raw tin", CAT_ORE, "Tin ore from AllTheOres: Y −64 to 196, richest around Y 66.", [["By hand", "Mine it around Y 66.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"]]);
+raw("raw_osmium", "Raw osmium", CAT_ORE, "Osmium ore from AllTheOres (Mekanism's own generation is switched off): Y −64 to 56, richest around Y −4.",
+  [["By hand", "Mine it around Y −4.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Mekanism 3× and 4× chain.", "u-mek-ore"]]);
+raw("coal", "Coal", CAT_ORE, "Coal ore is common from Y 0 up to 192 (richest around Y 96), and especially above Y 136 in mountains. Smelting logs gives charcoal, which works for torches and as fuel.",
+  [["By hand", "Mine it, or smelt logs into charcoal.", "s-ores"], ["Colony", "The Forester's logs make charcoal in a furnace.", "f-forester"], ["Machines", "Mystical Agriculture coal seeds.", "e-ma"]]);
+raw("redstone", "Redstone", CAT_ORE, "Redstone ore from Y −64 to 15, most of it near the bottom of the world (Y −64 to −32).",
+  [["By hand", "Mine near the bottom.", "s-ores"], ["Machines", "Washing crushed iron in the Create ore line gives redstone as a bonus.", "u-create-ore"], ["Machines", "Mystical Agriculture redstone seeds.", "e-ma"]]);
+raw("diamond", "Diamonds", CAT_ORE, "Diamond ore from Y −64 to 16, the most near the bottom of the world (around Y −59), often next to lava. Bring a water bucket.",
+  [["By hand", "Mine at Y −59.", "s-ores"], ["Machines", "Mystical Agriculture diamond seeds (higher tier).", "e-ma"]]);
+raw("lapis_lazuli", "Lapis lazuli", CAT_ORE, "Lapis ore from Y −32 to 32 (richest around Y 0), plus some buried near the bottom of the world.", [["By hand", "Mine it around Y 0.", "s-ores"], ["Machines", "Mystical Agriculture lapis seeds.", "e-ma"]]);
+raw("emerald", "Emerald", CAT_ORE, "Emerald ore only generates in mountain biomes, as single gems. Villagers also trade emeralds for crops and other goods.", [["By hand", "Mine mountain biomes.", "s-ores"], ["Machines", "Mystical Agriculture emerald seeds.", "e-ma"]]);
+raw("amethyst_shard", "Amethyst shards", CAT_ORE, "Amethyst geodes underground: look for a smooth basalt shell with purple crystals inside, and break the clusters.", [["By hand", "Find a geode.", "s-ores"]]);
+raw("certus_quartz", "Certus quartz", CAT_ORE, "Only from meteorites in the Overworld. Mine the crystals, then grow more on budding certus.",
+  [["By hand", "Find a meteorite.", "a-meteor"], ["Machines", "Budding certus with Growth Accelerators grows crystals without end.", "a-certus"]]);
+raw("sky_stone_block", "Sky stone", CAT_ORE, "The dark stone around a meteorite's crater. Mine it with a pickaxe: smelting it makes smooth sky stone, which the ME Controller needs.", [["By hand", "Mine it at the meteorite.", "a-meteor"]]);
+raw("uraninite", "Uraninite", CAT_ORE, "Powah's uraninite ore (poor, normal and dense) generates underground in the Overworld. Hover the ore in JEI and press U to see how it becomes uraninite.", [["By hand", "Find and mine the ore.", "u-power"]]);
+raw("vibranium_ingot", "Vibranium ingot", CAT_ORE, "Vibranium ore generates in the Nether (around Y 64 to 127, in the upper Nether). Smelt or blast the ore. It is the late-game metal the Digital Miner needs in this pack.", [["By hand", "Mine it in the Nether.", "e-mining"]]);
+raw("wheat", "Wheat", CAT_FARM, "Grows from seeds on farmland. Seeds drop from tall grass.", [["By hand", "Plant a field next to water.", "s-food"], ["Colony", "The Farmer's Hut grows fields for you.", "f-farm"]]);
+raw("carrot", "Carrots", CAT_FARM, "Found in villages and as a rare zombie drop. Plant them on farmland.", [["By hand", "Plant a field.", "s-food"], ["Colony", "The Farmer's Hut grows fields for you.", "f-farm"]]);
+raw("sugar_cane", "Sugar cane", CAT_FARM, "Grows on sand and dirt next to water, mostly near rivers and beaches.", [["By hand", "Harvest and replant.", "s-food"], ["Colony", "The Plantation hut grows sugar cane.", "g-raw"]]);
+raw("cactus", "Cactus", CAT_FARM, "Grows on sand in deserts.", [["By hand", "Cut it in a desert.", "s-food"], ["Colony", "The Plantation hut grows cactus.", "g-raw"]]);
+raw("poppy", "Poppies", CAT_FARM, "Wild flowers in plains and meadows.", [["By hand", "Pick them.", "s-food"], ["Colony", "The Florist's Hut grows flowers.", "g-raw"]]);
+raw("apple", "Apples", CAT_FARM, "Oak and dark oak leaves sometimes drop them, and villagers trade them.", [["By hand", "Break oak leaves.", "s-food"]]);
+raw("egg", "Eggs", CAT_FARM, "Chickens lay them.", [["By hand", "Keep chickens in a pen.", "s-food"], ["Colony", "The Chicken Farmer's Hut collects eggs and feathers.", "g-raw"]]);
+raw("feather", "Feathers", CAT_FARM, "Chickens drop them.", [["By hand", "Kill chickens.", "s-food"], ["Colony", "The Chicken Farmer's Hut collects eggs and feathers.", "g-raw"]]);
+raw("leather", "Leather", CAT_FARM, "Cows (and horses) drop it.", [["By hand", "Kill cows.", "s-food"], ["Colony", "The Cowhand's Hut produces leather and milk.", "g-raw"]]);
+raw("beef", "Raw beef", CAT_FARM, "Cows drop it.", [["By hand", "Kill cows.", "s-food"], ["Colony", "The Cowhand's Hut.", "g-raw"]]);
+raw("porkchop", "Raw porkchop", CAT_FARM, "Pigs drop it.", [["By hand", "Kill pigs.", "s-food"], ["Colony", "The Swineherd's Hut.", "g-raw"]]);
+raw("honeycomb", "Honeycomb", CAT_FARM, "Shear a full bee nest or beehive.", [["By hand", "Shear a nest.", "s-food"], ["Colony", "The Apiary (Beekeeper) produces honey and honeycomb.", "g-raw"]]);
+raw("wool", "Wool", CAT_FARM, "Shear sheep: they regrow their wool. Four string also make one wool.", [["By hand", "Shear sheep.", "s-food"], ["Colony", "The Shepherd's Hut shears sheep for you.", "g-raw"]]);
+raw("string", "String", CAT_MOB, "Spiders drop it, and cobwebs give it when cut with a sword or shears. Mineshafts have a lot of cobwebs.", [["By hand", "Kill spiders at night, or cut cobwebs.", "s-ores"], ["Machines", "A mob farm makes string, bones and gunpowder.", "e-mob"]]);
+raw("bone", "Bones", CAT_MOB, "Skeletons drop them.", [["By hand", "Kill skeletons.", "s-ores"], ["Machines", "A mob farm.", "e-mob"]]);
+raw("slime_ball", "Slimeballs", CAT_MOB, "Slimes drop them: they live in swamps at night and in underground 'slime chunks'.", [["By hand", "Kill slimes.", "s-ores"], ["Machines", "A mob farm.", "e-mob"]]);
+raw("ender_pearl", "Ender pearls", CAT_MOB, "Endermen drop them. They are common in the End and also wander the Overworld at night.", [["By hand", "Kill endermen.", "s-ores"], ["Machines", "A mob farm.", "e-mob"]]);
+raw("nether_quartz", "Nether quartz", CAT_OTHER, "Nether quartz ore, found throughout the Nether.", [["By hand", "Mine it in the Nether.", "s-ores"], ["Colony", "The Nether Mine (Netherworker) hut brings back nether goods.", "c-late"], ["Machines", "Mystical Agriculture nether quartz seeds.", "e-ma"]]);
+raw("netherrack", "Netherrack", CAT_OTHER, "Everywhere in the Nether. It is the grey-red stone.", [["By hand", "Mine it in the Nether.", "s-ores"], ["Colony", "The Nether Mine (Netherworker) hut brings back nether goods.", "c-late"]]);
+raw("blaze_rod", "Blaze rods", CAT_OTHER, "Blazes drop them, in Nether fortresses.", [["By hand", "Fight blazes in a fortress.", "s-ores"], ["Machines", "A mob farm at a blaze spawner.", "e-mob"]]);
+raw("glowstone_dust", "Glowstone dust", CAT_OTHER, "Glowstone clusters hang from the Nether's ceilings; breaking them drops dust.", [["By hand", "Mine them in the Nether.", "s-ores"]]);
+raw("obsidian", "Obsidian", CAT_OTHER, "Pour water onto a lava source (not flowing lava) and mine it with a diamond pickaxe.", [["By hand", "Make it where water meets still lava.", "s-ores"], ["Colony", "The Nether Mine (Netherworker) hut brings back nether goods.", "c-late"]]);
+raw("lava_bucket", "Lava bucket", CAT_OTHER, "Use a bucket on a lava source. Lava pools are common deep underground and in caves.", [["By hand", "Scoop it deep underground.", "s-ores"]]);
+
+/* ITEMS: things you make. */
+const ITEM_DATA = {"planks":["Planks (any wood)",4,[["log",1]],"crafting table","Wood and building",2],"stick":["Sticks",4,[["planks",2]],"crafting table","Wood and building",2],"slab":["Wooden slabs",6,[["planks",3]],"crafting table","Wood and building",2],"stairs":["Wooden stairs",4,[["planks",6]],"crafting table","Wood and building",2],"fence":["Wooden fences",3,[["planks",4],["stick",2]],"crafting table","Wood and building",2],"fence_gate":["Wooden fence gate",1,[["stick",4],["planks",2]],"crafting table","Wood and building",2],"door":["Wooden doors",3,[["planks",6]],"crafting table","Wood and building",2],"trapdoor":["Wooden trapdoors",2,[["planks",6]],"crafting table","Wood and building",2],"ladder":["Ladders",3,[["stick",7]],"crafting table","Wood and building",2],"sign":["Signs",3,[["planks",6],["stick",1]],"crafting table","Wood and building",2],"chest":["Chest",1,[["planks",8]],"crafting table","Wood and building",2],"barrel":["Barrel",1,[["planks",6],["slab",2]],"crafting table","Wood and building",2],"crafting_table":["Crafting Table",1,[["planks",4]],"crafting table","Wood and building",3],"bed":["Bed",1,[["wool",3],["planks",3]],"crafting table","Wood and building",2],"torch":["Torches",4,[["coal",1],["stick",1]],"crafting table","Wood and building",2],"chest_boat":["Chest boat",1,[["chest",1],["boat",1]],"crafting table","Wood and building",2],"boat":["Boat",1,[["planks",5]],"crafting table","Wood and building",2],"white_banner":["White Banner",1,[["wool",6],["stick",1]],"crafting table","Wood and building",2],"furnace":["Furnace",1,[["cobblestone",8]],"crafting table","Stone and glass",2],"stone":["Stone",1,[["cobblestone",1]],"furnace (needs fuel)","Stone and glass",2],"smooth_stone":["Smooth Stone",1,[["stone",1]],"furnace (needs fuel)","Stone and glass",2],"stone_bricks":["Stone bricks",4,[["stone",4]],"crafting table","Stone and glass",2],"stone_brick_slab":["Stone brick slabs",6,[["stone_bricks",3]],"crafting table","Stone and glass",2],"stone_brick_stairs":["Stone brick stairs",4,[["stone_bricks",6]],"crafting table","Stone and glass",2],"stone_brick_wall":["Stone brick walls",6,[["stone_bricks",6]],"crafting table","Stone and glass",2],"cobble_slab":["Cobblestone slabs",6,[["cobblestone",3]],"crafting table","Stone and glass",2],"cobble_stairs":["Cobblestone stairs",4,[["cobblestone",6]],"crafting table","Stone and glass",2],"cobble_wall":["Cobblestone walls",6,[["cobblestone",6]],"crafting table","Stone and glass",2],"glass":["Glass",1,[["sand",1]],"furnace (needs fuel)","Stone and glass",2],"glass_pane":["Glass panes",16,[["glass",6]],"crafting table","Stone and glass",2],"iron_ingot":["Iron Ingot",1,[["raw_iron",1]],"furnace (needs fuel)","Metal and tools",2],"gold_ingot":["Gold Ingot",1,[["raw_gold",1]],"furnace (needs fuel)","Metal and tools",2],"copper_ingot":["Copper Ingot",1,[["raw_copper",1]],"furnace (needs fuel)","Metal and tools",2],"iron_nugget":["Iron nuggets",9,[["iron_ingot",1]],"crafting table","Metal and tools",2],"iron_block":["Block of Iron",1,[["iron_ingot",9]],"crafting table","Metal and tools",2],"iron_bars":["Iron bars",16,[["iron_ingot",6]],"crafting table","Metal and tools",2],"chain":["Chain",1,[["iron_nugget",2],["iron_ingot",1]],"crafting table","Metal and tools",2],"lantern":["Lantern",1,[["iron_nugget",8],["torch",1]],"crafting table","Metal and tools",2],"iron_pickaxe":["Iron Pickaxe",1,[["iron_ingot",3],["stick",2]],"crafting table","Metal and tools",2],"iron_axe":["Iron Axe",1,[["iron_ingot",3],["stick",2]],"crafting table","Metal and tools",2],"iron_hoe":["Iron Hoe",1,[["iron_ingot",2],["stick",2]],"crafting table","Metal and tools",2],"iron_sword":["Iron Sword",1,[["iron_ingot",2],["stick",1]],"crafting table","Metal and tools",2],"stone_pickaxe":["Stone Pickaxe",1,[["cobblestone",3],["stick",2]],"crafting table","Metal and tools",2],"stone_axe":["Stone Axe",1,[["cobblestone",3],["stick",2]],"crafting table","Metal and tools",2],"stone_hoe":["Stone Hoe",1,[["cobblestone",2],["stick",2]],"crafting table","Metal and tools",2],"wooden_pickaxe":["Wooden Pickaxe",1,[["planks",3],["stick",2]],"crafting table","Metal and tools",2],"wooden_axe":["Wooden Axe",1,[["planks",3],["stick",2]],"crafting table","Metal and tools",2],"wooden_hoe":["Wooden Hoe",1,[["planks",2],["stick",2]],"crafting table","Metal and tools",2],"shears":["Shears",1,[["iron_ingot",2]],"crafting table","Metal and tools",2],"fishing_rod":["Fishing Rod",1,[["stick",3],["string",2]],"crafting table","Metal and tools",2],"bow":["Bow",1,[["stick",3],["string",3]],"crafting table","Metal and tools",2],"iron_boots":["Iron Boots",1,[["iron_ingot",4]],"crafting table","Metal and tools",2],"leather_boots":["Leather Boots",1,[["leather",4]],"crafting table","Metal and tools",2],"redstone_block":["Block of Redstone",1,[["redstone",9]],"crafting table","Metal and tools",2],"zinc_ingot":["Zinc Ingot",1,[["raw_zinc",1]],"furnace (needs fuel)","Metal and tools",2],"zinc_nugget":["Zinc Nugget",9,[["zinc_ingot",1]],"crafting table","Metal and tools",2],"osmium_ingot":["Osmium Ingot",1,[["raw_osmium",1]],"furnace (needs fuel)","Metal and tools",2],"tin_ingot":["Tin Ingot",1,[["raw_tin",1]],"furnace (needs fuel)","Metal and tools",2],"dust_copper":["Copper Dust",4,[["raw_copper",3]],"Enrichment Chamber","Metal and tools",2],"dust_gold":["Gold Dust",4,[["raw_gold",3]],"Enrichment Chamber","Metal and tools",2],"dust_iron":["Iron Dust",4,[["raw_iron",3]],"Enrichment Chamber","Metal and tools",2],"dust_refined_obsidian":["Refined Obsidian Dust",1,[["dust_obsidian",1],["diamond",1]],"Metallurgic Infuser","Metal and tools",2],"iron_helmet":["Iron Helmet",1,[["iron_ingot",5]],"crafting table","Metal and tools",2],"iron_chestplate":["Iron Chestplate",1,[["iron_ingot",8]],"crafting table","Metal and tools",2],"iron_leggings":["Iron Leggings",1,[["iron_ingot",7]],"crafting table","Metal and tools",2],"shield":["Shield",1,[["planks",6],["iron_ingot",1]],"crafting table","Metal and tools",2],"bucket":["Bucket",1,[["iron_ingot",3]],"crafting table","Metal and tools",2],"hut_alchemist":["Alchemist Tower",1,[["planks",7],["build_tool",1],["brewing_stand",1]],"crafting table","Colony huts",2],"hut_archery":["Archery",1,[["planks",5],["build_tool",1],["bow",3]],"crafting table","Colony huts",2],"hut_baker":["Bakery",1,[["planks",7],["build_tool",1],["wheat",1]],"crafting table","Colony huts",2],"hut_barracks":["Barracks",1,[["planks",7],["build_tool",1],["iron_block",1]],"crafting table","Colony huts",2],"hut_beekeeper":["Apiary",1,[["planks",7],["build_tool",1],["beehive",1]],"crafting table","Colony huts",2],"hut_blacksmith":["Blacksmith's Hut",1,[["planks",5],["build_tool",1],["iron_ingot",3]],"crafting table","Colony huts",2],"hut_builder":["Builder's Hut",1,[["planks",7],["build_tool",1],["door",1]],"crafting table","Colony huts",2],"hut_chickenherder":["Chicken Farmer's Hut",1,[["planks",7],["build_tool",1],["egg",1]],"crafting table","Colony huts",2],"hut_citizen":["Residence",1,[["planks",7],["build_tool",1],["torch",1]],"crafting table","Colony huts",2],"hut_combatacademy":["Combat Academy",1,[["planks",5],["build_tool",1],["iron_sword",3]],"crafting table","Colony huts",2],"hut_composter":["Composter's Hut",1,[["planks",7],["build_tool",1],["barrel_block",1]],"crafting table","Colony huts",2],"hut_concretemixer":["Concrete Mixer's Hut",1,[["planks",7],["build_tool",1],["white_concrete_powder",1]],"crafting table","Colony huts",2],"hut_cook":["Dining Hall",1,[["planks",7],["build_tool",1],["apple",1]],"crafting table","Colony huts",2],"hut_cowboy":["Cowhand's Hut",1,[["planks",7],["build_tool",1],["beef",1]],"crafting table","Colony huts",2],"hut_crusher":["Crusher",1,[["planks",5],["build_tool",1],["cobblestone",2],["iron_ingot",1]],"crafting table","Colony huts",2],"hut_deliveryman":["Courier's Hut",1,[["planks",7],["build_tool",1],["leather_boots",1]],"crafting table","Colony huts",2],"hut_dyer":["Dyer's Hut",1,[["planks",7],["build_tool",1],["red_dye",1]],"crafting table","Colony huts",2],"hut_enchanter":["Enchanter's Tower",1,[["planks",7],["build_tool",1],["enchanting_table",1]],"crafting table","Colony huts",2],"hut_farmer":["Farm",1,[["planks",7],["build_tool",1],["wooden_hoe",1]],"crafting table","Colony huts",2],"hut_fisherman":["Fisher's Hut",1,[["planks",7],["build_tool",1],["fishing_rod",1]],"crafting table","Colony huts",2],"hut_fletcher":["Fletcher's Hut",1,[["planks",7],["build_tool",1],["string",1]],"crafting table","Colony huts",2],"hut_florist":["Flower Shop",1,[["planks",7],["build_tool",1],["poppy",1]],"crafting table","Colony huts",2],"hut_gatehouse":["Gatehouse",1,[["planks",6],["build_tool",1],["iron_sword",1],["bow",1]],"crafting table","Colony huts",2],"hut_glassblower":["Glassblower's Hut",1,[["planks",7],["build_tool",1],["glass",1]],"crafting table","Colony huts",2],"hut_graveyard":["Graveyard",1,[["stone",7],["build_tool",1],["bone",1]],"crafting table","Colony huts",2],"hut_guardtower":["Guard Tower",2,[["planks",7],["build_tool",1],["bow",1]],"crafting table","Colony huts",2],"hut_hospital":["Hospital",1,[["planks",7],["build_tool",1],["carrot",1]],"crafting table","Colony huts",2],"hut_kitchen":["Chef's Kitchen",1,[["planks",7],["build_tool",1],["smoker",1]],"crafting table","Colony huts",2],"hut_library":["Library",1,[["planks",7],["build_tool",1],["book",1]],"crafting table","Colony huts",2],"hut_lumberjack":["Forester's Hut",1,[["planks",7],["build_tool",1],["wooden_axe",1]],"crafting table","Colony huts",2],"hut_mechanic":["Mechanic's Hut",1,[["planks",7],["build_tool",1],["redstone_block",1]],"crafting table","Colony huts",2],"hut_miner":["Mine",1,[["planks",7],["build_tool",1],["wooden_pickaxe",1]],"crafting table","Colony huts",2],"hut_mysticalsite":["Mystical Site",1,[["planks",7],["build_tool",1],["diamond",1]],"crafting table","Colony huts",2],"hut_netherworker":["Nether Mine",1,[["planks",7],["build_tool",1],["obsidian",1]],"crafting table","Colony huts",2],"hut_plantation":["Plantation",1,[["planks",7],["build_tool",1],["cactus",1]],"crafting table","Colony huts",2],"hut_sawmill":["Sawmill",1,[["planks",5],["build_tool",1],["wooden_axe",3]],"crafting table","Colony huts",2],"hut_school":["School",1,[["planks",6],["build_tool",1],["feather",2]],"crafting table","Colony huts",2],"hut_shepherd":["Shepherd's Hut",1,[["planks",7],["build_tool",1],["shears",1]],"crafting table","Colony huts",2],"hut_sifter":["Sifter",1,[["planks",5],["build_tool",1],["string",3]],"crafting table","Colony huts",2],"hut_smeltery":["Smeltery",1,[["planks",7],["build_tool",1],["iron_ingot",1]],"crafting table","Colony huts",2],"hut_stable":["Stable",1,[["planks",7],["build_tool",1],["golden_apple",1]],"crafting table","Colony huts",2],"hut_stonemason":["Stonemason's Hut",1,[["planks",5],["build_tool",1],["stone_bricks",3]],"crafting table","Colony huts",2],"hut_stonesmeltery":["Brick yard",1,[["planks",5],["build_tool",1],["stone_bricks",2],["furnace",1]],"crafting table","Colony huts",2],"hut_swineherder":["Swineherd's Hut",1,[["planks",7],["build_tool",1],["porkchop",1]],"crafting table","Colony huts",2],"hut_tavern":["Tavern",1,[["planks",7],["build_tool",1],["barrel",1]],"crafting table","Colony huts",2],"hut_townhall":["Town Hall",1,[["planks",7],["build_tool",2]],"crafting table","Colony huts",2],"hut_university":["University",1,[["planks",6],["build_tool",1],["book",2]],"crafting table","Colony huts",2],"hut_warehouse":["Warehouse",1,[["planks",7],["build_tool",1],["chest",1]],"crafting table","Colony huts",2],"hut_field":["Scarecrow (field)",1,[["hay_block",1],["stick",3],["leather",1]],"crafting table","Colony huts",2],"hut_plantation_field":["Plantation field marker",1,[["build_tool",1],["stick",2],["iron_ingot",1],["planks",3]],"crafting table","Colony huts",2],"build_tool":["Build Tool",1,[["cobblestone",1],["stick",2]],"crafting table","Colony tools and storage",2],"scan_tool":["Scan Tool",1,[["iron_ingot",1],["stick",2]],"crafting table","Colony tools and storage",2],"clipboard":["Clipboard",1,[["stick",7],["build_tool",1],["leather",1]],"crafting table","Colony tools and storage",2],"resource_scroll":["Resource Scroll",1,[["stick",6],["build_tool",1],["leather",2]],"crafting table","Colony tools and storage",2],"build_goggles":["Builder's Goggles",1,[["gold_nugget",2],["iron_ingot",1],["glass_pane",2],["build_tool",1],["leather",2]],"crafting table","Colony tools and storage",2],"supply_camp":["Supply Camp",1,[["iron_bars",2],["white_banner",1],["chest_boat",3]],"crafting table","Colony tools and storage",3],"supply_ship":["Supply Ship",1,[["white_banner",1],["iron_bars",3],["chest_boat",3]],"crafting table","Colony tools and storage",3],"rack":["Rack",1,[["planks",6],["iron_nugget",2],["build_tool",1]],"crafting table","Colony tools and storage",2],"postbox":["Postbox",1,[["planks",5],["build_tool",1],["chest",3]],"crafting table","Colony tools and storage",2],"stash":["Stash",1,[["planks",6],["build_tool",1],["chest",2]],"crafting table","Colony tools and storage",2],"architects_cutter":["Architect's Cutter",1,[["iron_ingot",1],["stone_slab",3],["log",3]],"crafting table","Colony tools and storage",2],"andesite_alloy":["Andesite Alloy",1,[["iron_nugget",2],["andesite",2]],"crafting table","Create",2],"shaft":["Shafts",8,[["andesite_alloy",2]],"crafting table","Create",2],"cogwheel":["Cogwheel",1,[["shaft",1],["planks",1]],"crafting table","Create",2],"large_cogwheel":["Large Cogwheel",1,[["cogwheel",1],["planks",1]],"crafting table","Create",2],"andesite_casing":["Andesite Casing",1,[["log",1],["andesite_alloy",1]],"item application (hold the item and right-click the block)","Create",2],"water_wheel":["Water Wheel",1,[["planks",8],["shaft",1]],"crafting table","Create",2],"mechanical_press":["Mechanical Press",1,[["shaft",1],["andesite_casing",1],["iron_block",1]],"crafting table","Create",2],"mechanical_mixer":["Mechanical Mixer",1,[["cogwheel",1],["andesite_casing",1],["whisk",1]],"crafting table","Create",2],"whisk":["Whisk",1,[["andesite_alloy",2],["iron_sheet",5]],"crafting table","Create",2],"basin":["Basin",1,[["andesite_alloy",5]],"crafting table","Create",2],"mechanical_drill":["Mechanical Drill",1,[["andesite_alloy",3],["iron_ingot",1],["andesite_casing",1]],"crafting table","Create",2],"crushing_wheel":["Crushing Wheel",2,[["andesite_alloy",16],["planks",4],["stone",1]],"Mechanical Crafter array","Create",2],"encased_fan":["Encased Fan",1,[["shaft",1],["andesite_casing",1],["propeller",1]],"crafting table","Create",2],"propeller":["Propeller",1,[["iron_sheet",4],["andesite_alloy",1]],"crafting table","Create",2],"belt_connector":["Mechanical Belt",1,[["dried_kelp",6]],"crafting table","Create",2],"chute":["Chutes",4,[["iron_sheet",2],["iron_ingot",1]],"crafting table","Create",2],"millstone":["Millstone",1,[["cogwheel",1],["andesite_casing",1],["stone",1]],"crafting table","Create",2],"depot":["Depot",1,[["andesite_alloy",1],["andesite_casing",1]],"crafting table","Create",2],"empty_blaze_burner":["Empty Blaze Burner",1,[["iron_sheet",4],["netherrack",1]],"crafting table","Create",2],"brass_ingot":["Brass Ingot",2,[["copper_ingot",1],["zinc_ingot",1]],"Mixer + Basin (heated)","Create",2],"iron_sheet":["Iron Sheet",1,[["iron_ingot",1]],"Mechanical Press","Create",2],"copper_sheet":["Copper Sheet",1,[["copper_ingot",1]],"Mechanical Press","Create",2],"golden_sheet":["Golden Sheet",1,[["gold_ingot",1]],"Mechanical Press","Create",2],"goggles":["Engineer's Goggles",1,[["string",1],["glass",2],["golden_sheet",1]],"crafting table","Create",2],"brass_casing":["Brass Casing",1,[["log",1],["brass_ingot",1]],"item application (hold the item and right-click the block)","Create",2],"super_glue":["Super Glue",1,[["slime_ball",2],["iron_sheet",1],["iron_nugget",1]],"crafting table","Create",2],"windmill_bearing":["Windmill Bearing",1,[["slab",1],["stone",1],["shaft",1]],"crafting table","Create",2],"sail_frame":["Windmill Sail Frame",1,[["white_sail",1]],"crafting table","Create",2],"gearbox":["Gearbox",1,[["cogwheel",4],["andesite_casing",1]],"crafting table","Create",2],"andesite_funnel":["Andesite Funnel",2,[["andesite_alloy",1],["dried_kelp",1]],"crafting table","Create",2],"track_station":["Train Station",2,[["railway_casing",1],["compass",1]],"crafting table","Create",2],"train_controls":["Train Controls",1,[["lever",1],["railway_casing",1],["precision_mechanism",1]],"crafting table","Create",2],"railway_casing":["Train Casing",1,[["brass_casing",1],["sturdy_sheet",1]],"item application (hold the item and right-click the block)","Create",2],"certus_dust":["Certus Quartz Dust",1,[["certus_quartz",1]],"Inscriber","AE2",2],"silicon":["Silicon",1,[["certus_dust",1]],"furnace (needs fuel)","AE2",2],"printed_calc":["Printed Calculation Circuit",1,[["certus_quartz",1]],"Inscriber","AE2",2,[],["Inscriber Calculation Press"]],"printed_eng":["Printed Engineering Circuit",1,[["diamond",1]],"Inscriber","AE2",2,[],["Inscriber Engineering Press"]],"printed_logic":["Printed Logic Circuit",1,[["gold_ingot",1]],"Inscriber","AE2",2,[],["Inscriber Logic Press"]],"printed_silicon":["Printed Silicon",1,[["silicon",1]],"Inscriber","AE2",2,[],["Inscriber Silicon Press"]],"calc_processor":["Calculation Processor",1,[["printed_calc",1],["redstone",1],["printed_silicon",1]],"Inscriber","AE2",2],"eng_processor":["Engineering Processor",1,[["printed_eng",1],["redstone",1],["printed_silicon",1]],"Inscriber","AE2",2],"logic_processor":["Logic Processor",1,[["printed_logic",1],["redstone",1],["printed_silicon",1]],"Inscriber","AE2",2],"charged_certus":["Charged Certus Quartz Crystal",1,[["certus_quartz",1]],"Charger","AE2",2],"fluix_dust":["Fluix Dust",1,[["fluix_crystal",1]],"Inscriber","AE2",2],"fluix_crystal":["Fluix Crystal",2,[["charged_certus",1],["redstone",1],["nether_quartz",1]],"thrown into water","AE2",2],"inscriber":["Inscriber",1,[["iron_ingot",5],["piston",2],["copper_ingot",1]],"crafting table","AE2",2],"charger":["Charger",1,[["iron_ingot",5],["copper_ingot",2]],"crafting table","AE2",2],"growth_accelerator":["Growth Accelerator",1,[["iron_ingot",4],["fluix_glass_cable",2],["quartz_glass",2],["fluix_block",1]],"crafting table","AE2",2],"quartz_glass":["Quartz Glass",4,[["certus_dust",5],["glass",4]],"crafting table","AE2",2],"controller":["ME Controller",1,[["smooth_sky_stone_block",4],["fluix_crystal",4],["eng_processor",1]],"crafting table","AE2",2],"drive":["ME Drive",1,[["iron_ingot",4],["eng_processor",2],["fluix_glass_cable",2]],"crafting table","AE2",2],"energy_acceptor":["Energy Acceptor",1,[["iron_ingot",4],["quartz_glass",4],["copper_ingot",1]],"crafting table","AE2",2],"energy_cell":["Energy Cell (AE2)",1,[["certus_quartz",4],["fluix_dust",4],["quartz_glass",1]],"crafting table","AE2",2],"item_cell_housing":["ME Item Cell Housing",1,[["quartz_glass",2],["redstone",3],["iron_ingot",2],["copper_ingot",1]],"crafting table","AE2",2],"cell_component_1k":["1k Cell Component",1,[["redstone",4],["certus_quartz",4],["logic_processor",1]],"crafting table","AE2",2],"cell_component_4k":["4k Cell Component",1,[["redstone",4],["calc_processor",1],["cell_component_1k",3],["quartz_glass",1]],"crafting table","AE2",2],"item_storage_cell_1k":["1k Storage Cell",1,[["item_cell_housing",1],["cell_component_1k",1]],"crafting table","AE2",2],"item_storage_cell_4k":["4k Storage Cell",1,[["item_cell_housing",1],["cell_component_4k",1]],"crafting table","AE2",2],"terminal":["ME Terminal",1,[["formation_core",1],["monitor",1],["logic_processor",1],["annihilation_core",1]],"crafting table","AE2",2],"crafting_terminal":["ME Crafting Terminal",1,[["terminal",1],["crafting_table",1],["calc_processor",1]],"crafting table","AE2",2],"pattern_encoding_terminal":["ME Pattern Encoding Terminal",1,[["eng_processor",1],["crafting_terminal",1]],"crafting table","AE2",2],"blank_pattern":["Blank Pattern",2,[["quartz_glass",2],["glowstone_dust",3],["certus_quartz",1],["iron_ingot",2],["copper_ingot",1]],"crafting table","AE2",2],"crafting_storage_1k":["1k Crafting Storage",1,[["crafting_unit",1],["cell_component_1k",1]],"crafting table","AE2",2],"crafting_storage_4k":["4k Crafting Storage",1,[["crafting_unit",1],["cell_component_4k",1]],"crafting table","AE2",2],"crafting_accelerator":["Crafting Co-Processing Unit",1,[["crafting_unit",1],["eng_processor",1]],"crafting table","AE2",2],"crafting_unit":["Crafting Unit",1,[["iron_ingot",4],["calc_processor",2],["fluix_glass_cable",2],["logic_processor",1]],"crafting table","AE2",2],"pattern_provider":["ME Pattern Provider",1,[["iron_ingot",4],["crafting_table",2],["annihilation_core",1],["formation_core",1]],"crafting table","AE2",2],"molecular_assembler":["Molecular Assembler",1,[["iron_ingot",4],["quartz_glass",2],["annihilation_core",1],["crafting_table",1],["formation_core",1]],"crafting table","AE2",2],"annihilation_core":["Annihilation Core",2,[["nether_quartz",1],["fluix_dust",1],["logic_processor",1]],"crafting table","AE2",2],"formation_core":["Formation Core",2,[["certus_quartz",1],["fluix_dust",1],["logic_processor",1]],"crafting table","AE2",2],"me_interface":["ME Interface",1,[["iron_ingot",4],["glass",2],["annihilation_core",1],["formation_core",1]],"crafting table","AE2",2],"import_bus":["ME Import Bus",1,[["annihilation_core",1],["iron_ingot",2],["piston",1]],"crafting table","AE2",2],"export_bus":["ME Export Bus",1,[["iron_ingot",2],["formation_core",1],["piston",1]],"crafting table","AE2",2],"storage_bus":["ME Storage Bus",1,[["piston",2],["me_interface",1]],"crafting table","AE2",2],"fluix_glass_cable":["Fluix ME Glass Cable",4,[["quartz_fiber",1],["fluix_crystal",2]],"crafting table","AE2",2],"fluix_covered_cable":["Fluix ME Covered Cable",1,[["wool",1],["fluix_glass_cable",1]],"crafting table","AE2",2],"fluix_covered_dense_cable":["Fluix ME Dense Covered Cable",1,[["fluix_covered_cable",4]],"crafting table","AE2",2],"p2p_tunnel":["ME P2P Tunnel",1,[["iron_ingot",3],["eng_processor",1],["fluix_crystal",3]],"crafting table","AE2",2],"wireless_access_point":["ME Wireless Access Point",1,[["wireless_receiver",1],["calc_processor",1],["fluix_glass_cable",1]],"crafting table","AE2",2],"wireless_booster":["Wireless Booster",2,[["fluix_dust",1],["certus_quartz",1],["ender_dust",1],["iron_ingot",3]],"crafting table","AE2",2],"meteorite_compass":["Meteorite Compass",1,[["compass",1]],"Charger","AE2",2],"dielectric_paste":["Dielectric Paste",24,[["coal",3],["clay_ball",2],["lava_bucket",1]],"crafting table","Powah",2],"dielectric_casing":["Dielectric Casing",1,[["iron_ingot",4],["dielectric_rod_horizontal",2],["dielectric_rod",2]],"crafting table","Powah",2],"energizing_orb":["Energizing Orb",1,[["glass",5],["dielectric_casing",1],["dielectric_rod_horizontal",3]],"crafting table","Powah",2],"energizing_rod_starter":["Energizing Rod (Starter)",1,[["nether_quartz",1],["capacitor_basic_tiny",2],["dielectric_casing",1],["dielectric_rod",1]],"crafting table","Powah",2],"energy_cable_starter":["Energy Cable (Starter)",12,[["dielectric_rod_horizontal",6],["iron_nugget",2],["capacitor_basic_tiny",1]],"crafting table","Powah",2],"powah_energy_cell_starter":["Starter Energy Cell (Powah)",1,[["iron_ingot",4],["capacitor_basic_tiny",4],["dielectric_casing",1]],"crafting table","Powah",2],"furnator_starter":["Furnator (Starter)",1,[["dielectric_paste",5],["capacitor_basic_tiny",2],["dielectric_casing",1],["furnace",1]],"crafting table","Powah",2],"magmator_starter":["Magmator (Starter)",1,[["dielectric_paste",5],["capacitor_basic_tiny",2],["dielectric_casing",1],["bucket",1]],"crafting table","Powah",2],"thermo_generator_starter":["Thermo Generator (Starter)",1,[["dielectric_paste",3],["capacitor_basic_tiny",2],["dielectric_casing",1],["thermoelectric_plate",3]],"crafting table","Powah",2],"solar_panel_starter":["Solar Panel (Starter)",1,[["photoelectric_pane",3],["capacitor_basic_tiny",2],["dielectric_casing",1],["dielectric_paste",3]],"crafting table","Powah",2],"steel_energized":["Energized Steel",2,[["iron_ingot",1],["gold_ingot",1]],"Energizing Orb","Powah",2],"crystal_blazing":["Blazing Crystal",1,[["blaze_powder",4]],"Energizing Orb","Powah",2],"ender_cell_starter":["Ender Cell (Starter)",1,[["obsidian",4],["iron_nugget",4],["ender_core",1]],"crafting table","Powah",2],"reactor_starter":["Reactor (Starter)",4,[["uraninite",4],["capacitor_basic_tiny",4],["dielectric_casing",1]],"crafting table","Powah",2],"energy_cable_basic":["Energy Cable (Basic)",6,[["dielectric_rod_horizontal",6],["energy_cable_starter",2],["capacitor_basic",1]],"crafting table","Powah",2],"furnator_basic":["Furnator (Basic)",1,[["iron_ingot",5],["capacitor_basic",2],["dielectric_casing",1],["furnator_starter",1]],"crafting table","Powah",2],"powah_energy_cell_basic":["Basic Energy Cell (Powah)",1,[["iron_ingot",4],["capacitor_basic",4],["dielectric_casing",1]],"crafting table","Powah",2],"capacitor_basic_tiny":["Basic Capacitor (Tiny)",2,[["capacitor_basic",1]],"crafting table","Powah",2],"metallurgic_infuser":["Metallurgic Infuser",1,[["iron_ingot",4],["furnace",2],["redstone",2],["osmium_ingot",1]],"crafting table","Mekanism",2],"steel_casing":["Steel Casing",1,[["steel_ingot",4],["glass",4],["osmium_ingot",1]],"crafting table","Mekanism",2],"steel_ingot":["Steel Ingot",1,[["dust_steel",1]],"furnace (needs fuel)","Mekanism",2],"enriched_carbon":["Enriched Carbon",1,[["coal",1]],"Enrichment Chamber","Mekanism",2],"enriched_iron":["Enriched Iron",1,[["iron_ingot",1],["coal",1]],"Metallurgic Infuser","Mekanism",2],"basic_control_circuit":["Basic Control Circuit",1,[["osmium_ingot",1],["redstone",2]],"Metallurgic Infuser","Mekanism",2],"advanced_control_circuit":["Advanced Control Circuit",1,[["alloy_infused",2],["basic_control_circuit",1]],"crafting table","Mekanism",2],"alloy_infused":["Infused Alloy",1,[["copper_ingot",1],["redstone",1]],"Metallurgic Infuser","Mekanism",2],"alloy_reinforced":["Reinforced Alloy",1,[["alloy_infused",1],["diamond",2]],"Metallurgic Infuser","Mekanism",2],"alloy_atomic":["Atomic Alloy",1,[["alloy_reinforced",1],["dust_refined_obsidian",4]],"Metallurgic Infuser","Mekanism",2],"energy_tablet":["Energy Tablet",1,[["redstone",4],["gold_ingot",3],["alloy_infused",2]],"crafting table","Mekanism",2],"basic_energy_cube":["Basic Energy Cube",1,[["redstone",4],["energy_tablet",2],["iron_ingot",2],["steel_casing",1]],"crafting table","Mekanism",2],"basic_universal_cable":["Basic Universal Cable",8,[["steel_ingot",2],["redstone",1]],"crafting table","Mekanism",2],"enrichment_chamber":["Enrichment Chamber",1,[["redstone",4],["basic_control_circuit",2],["iron_ingot",2],["steel_casing",1]],"crafting table","Mekanism",2],"purification_chamber":["Purification Chamber",1,[["alloy_infused",4],["advanced_control_circuit",2],["osmium_ingot",2],["enrichment_chamber",1]],"crafting table","Mekanism",2],"chemical_injection_chamber":["Chemical Injection Chamber",1,[["alloy_reinforced",4],["elite_control_circuit",2],["gold_ingot",2],["purification_chamber",1]],"crafting table","Mekanism",2],"electrolytic_separator":["Electrolytic Separator",1,[["iron_ingot",4],["redstone",2],["alloy_infused",2],["electrolytic_core",1]],"crafting table","Mekanism",2],"chemical_infuser":["Chemical Infuser",1,[["alloy_infused",4],["basic_control_circuit",2],["basic_chemical_tank",2],["steel_casing",1]],"crafting table","Mekanism",2],"energized_smelter":["Energized Smelter",1,[["redstone",4],["basic_control_circuit",2],["glass",2],["steel_casing",1]],"crafting table","Mekanism",2],"crusher":["Crusher",1,[["redstone",4],["basic_control_circuit",2],["lava_bucket",2],["steel_casing",1]],"crafting table","Mekanism",2],"electric_pump":["Electric Pump",1,[["advanced_control_circuit",2],["bucket",1],["alloy_reinforced",2],["steel_casing",1],["osmium_ingot",2],["energy_tablet",1]],"crafting table","Mekanism",3],"digital_miner":["Digital Miner",1,[["vibranium_ingot",2],["basic_control_circuit",1],["logistical_sorter",2],["robit",1],["teleportation_core",2],["steel_casing",1]],"crafting table","Mekanism",3],"quantum_entangloporter":["Quantum Entangloporter",1,[["ingot_refined_obsidian",4],["ultimate_control_circuit",2],["alloy_atomic",2],["teleportation_core",1]],"crafting table","Mekanism",2],"basic_tier_installer":["Basic Tier Installer",1,[["redstone",4],["basic_control_circuit",2],["iron_ingot",2],["planks",1]],"crafting table","Mekanism",2],"speed_upgrade":["Speed Upgrade",1,[["glass",2],["alloy_infused",2],["dust_osmium",1]],"crafting table","Mekanism",2],"energy_upgrade":["Energy Upgrade",1,[["glass",2],["alloy_infused",2],["dust_gold",1]],"crafting table","Mekanism",2],"thermal_evaporation_block":["Thermal Evaporation Block",8,[["bronze_ingot",4],["steel_ingot",4],["superheating_element",1]],"crafting table","Mekanism",3],"thermal_evaporation_controller":["Thermal Evaporation Controller",1,[["advanced_control_circuit",2],["glass_pane",1],["thermal_evaporation_block",5],["bucket",1]],"crafting table","Mekanism",2],"thermal_evaporation_valve":["Thermal Evaporation Valve",1,[["thermal_evaporation_block",4],["advanced_control_circuit",1]],"crafting table","Mekanism",2],"dynamic_tank":["Dynamic Tank",4,[["steel_ingot",4],["bucket",1]],"crafting table","Mekanism",2],"iron_furnace":["Iron Furnace",1,[["iron_ingot",8],["furnace",1]],"crafting table","Machines and pipes",2],"pipez_item_pipe":["Item Pipe (Pipez)",16,[["iron_ingot",6],["dropper",2],["redstone",1]],"crafting table","Machines and pipes",2],"pipez_basic_upgrade":["Basic Upgrade (Pipez)",1,[["iron_ingot",4],["iron_nugget",4],["redstone",1]],"crafting table","Machines and pipes",2],"laser_node":["Laser Node",1,[["iron_ingot",4],["glass_pane",4],["laser_connector",1]],"crafting table","Machines and pipes",2],"laser_wrench":["Laser Wrench",1,[["iron_ingot",3],["logic_chip",1]],"crafting table","Machines and pipes",2],"laser_connector":["Laser Connector",1,[["glass",1],["redstone",2],["logic_chip",1],["iron_ingot",3]],"crafting table","Machines and pipes",2],"laser_card_item":["Item Card (Laser IO)",1,[["redstone",2],["lapis_lazuli",1],["nether_quartz",2],["logic_chip",1],["gold_nugget",3]],"crafting table","Machines and pipes",2],"laser_filter_basic":["Basic Filter (Laser IO)",4,[["iron_bars",4],["glass_pane",4],["logic_chip",1]],"crafting table","Machines and pipes",2],"computer_advanced":["Advanced Computer",1,[["gold_ingot",7],["redstone",1],["glass_pane",1]],"crafting table","Computers and peripherals",2],"colony_integrator":["Colony Integrator",1,[["log",4],["rack",2],["build_goggles",1],["peripheral_casing",1],["build_tool",1]],"crafting table","Computers and peripherals",2],"me_bridge":["ME Bridge",1,[["fluix_block",4],["me_interface",4],["peripheral_casing",1]],"crafting table","Computers and peripherals",2],"peripheral_casing":["Peripheral Casing",1,[["iron_ingot",4],["iron_bars",4],["redstone_block",1]],"crafting table","Computers and peripherals",2],"backpack":["Backpack",1,[["string",4],["leather",4],["chest",1]],"crafting table","Backpacks and drawers",2],"pickup_upgrade":["Pickup Upgrade",1,[["sticky_piston",1],["string",2],["upgrade_base",1],["redstone",3]],"crafting table","Backpacks and drawers",2],"magnet_upgrade":["Magnet Upgrade",1,[["ender_pearl",2],["iron_ingot",3],["pickup_upgrade",1],["redstone",1],["lapis_lazuli",1]],"crafting table","Backpacks and drawers",2],"upgrade_base":["Upgrade Base",1,[["string",4],["iron_ingot",4],["leather",1]],"crafting table","Backpacks and drawers",2],"drawer_1x1":["Drawer (1×1)",1,[["planks",8],["chest",1]],"crafting table","Backpacks and drawers",2],"storage_controller":["Storage Controller",1,[["stone",4],["quartz_block",2],["drawer_1x1",2],["comparator",1]],"crafting table","Backpacks and drawers",2],"warp_stone":["Warp Stone",1,[["amethyst_shard",4],["ender_pearl",4],["emerald",1]],"crafting table","Backpacks and drawers",2],"waystone":["Waystone",1,[["stone_bricks",3],["warp_stone",1],["obsidian",3]],"crafting table","Backpacks and drawers",2],"warp_dust":["Warp Dust",4,[["ender_pearl",1],["amethyst_shard",1]],"crafting table","Backpacks and drawers",2],"dust_obsidian":["Obsidian Dust",4,[["obsidian",1]],"Crusher","Metal and tools",0],"brewing_stand":["Brewing Stand",1,[["blaze_rod",1],["cobblestone",3]],"crafting table","Colony huts",0],"beehive":["Beehive",1,[["planks",6],["honeycomb",3]],"crafting table","Colony huts",0],"barrel_block":["Compost Barrel",1,[["planks",6],["build_tool",1],["dirt",1],["iron_ingot",1]],"crafting table","Colony huts",0],"white_concrete_powder":["White Concrete Powder",8,[["white_dye",1],["sand",4],["gravel",4]],"crafting table","Colony huts",0],"red_dye":["Red Dye",1,[["poppy",1]],"crafting table","Colony huts",0],"enchanting_table":["Enchanting Table",1,[["book",1],["diamond",2],["obsidian",4]],"crafting table","Colony huts",0],"smoker":["Smoker",1,[["log",4],["furnace",1]],"crafting table","Colony huts",0],"book":["Book",1,[["paper",3],["leather",1]],"crafting table","Colony huts",0],"golden_apple":["Golden Apple",1,[["gold_ingot",8],["apple",1]],"crafting table","Colony huts",0],"hay_block":["Hay Bale",1,[["wheat",9]],"crafting table","Colony huts",0],"gold_nugget":["Gold Nugget",9,[["gold_ingot",1]],"crafting table","Colony tools and storage",0],"stone_slab":["Stone Slab",6,[["stone",3]],"crafting table","Colony tools and storage",0],"dried_kelp":["Dried Kelp",1,[["kelp",1]],"furnace (needs fuel)","Create",0],"white_sail":["Windmill Sail",2,[["wool",1],["stick",2],["andesite_alloy",1]],"crafting table","Create",0],"compass":["Compass",1,[["iron_ingot",4],["redstone",1]],"crafting table","Create",0],"lever":["Lever",1,[["stick",1],["cobblestone",1]],"crafting table","Create",0],"piston":["Piston",1,[["planks",3],["cobblestone",4],["iron_ingot",1],["redstone",1]],"crafting table","AE2",0],"fluix_block":["Fluix Block",1,[["fluix_crystal",4]],"crafting table","AE2",0],"smooth_sky_stone_block":["Sky Stone Block",1,[["sky_stone_block",1]],"furnace (needs fuel)","AE2",0],"monitor":["Bright Illuminated Panel",1,[["semi_dark_monitor",1]],"crafting table","AE2",0],"quartz_fiber":["Quartz Fiber",3,[["glass",6],["certus_dust",3]],"crafting table","AE2",0],"wireless_receiver":["Wireless Receiver",1,[["fluix_pearl",1],["iron_ingot",3],["quartz_fiber",1]],"crafting table","AE2",0],"ender_dust":["Ender Dust",1,[["ender_pearl",1]],"Inscriber","AE2",0],"dielectric_rod_horizontal":["Dielectric Rod (Horizontal)",8,[["dielectric_paste",6],["iron_bars",3]],"crafting table","Powah",0],"dielectric_rod":["Dielectric Rod",8,[["dielectric_paste",6],["iron_bars",3]],"crafting table","Powah",0],"thermoelectric_plate":["Thermo Plate",1,[["blaze_powder",4],["redstone",4],["capacitor_basic_tiny",1]],"crafting table","Powah",0],"photoelectric_pane":["Photoelectric Pane",1,[["dielectric_paste",4],["lapis_lazuli",4],["glass_pane",1]],"crafting table","Powah",0],"blaze_powder":["Blaze Powder",2,[["blaze_rod",1]],"crafting table","Powah",0],"ender_core":["Ender Core",1,[["ender_eye",1],["dielectric_casing",1],["capacitor_basic_tiny",1]],"Energizing Orb","Powah",0],"capacitor_basic":["Basic Capacitor",4,[["iron_ingot",4],["dielectric_paste",2],["redstone_block",1]],"crafting table","Powah",0],"dust_steel":["Steel Dust",1,[["enriched_iron",1],["coal",1]],"Metallurgic Infuser","Mekanism",0],"elite_control_circuit":["Elite Control Circuit",1,[["alloy_reinforced",2],["advanced_control_circuit",1]],"crafting table","Mekanism",0],"electrolytic_core":["Electrolytic Core",1,[["alloy_infused",5],["dust_osmium",2],["dust_iron",1],["dust_gold",1]],"crafting table","Mekanism",0],"basic_chemical_tank":["Basic Chemical Tank",1,[["redstone",4],["osmium_ingot",4]],"crafting table","Mekanism",0],"logistical_sorter":["Logistical Sorter",1,[["iron_ingot",7],["piston",1],["basic_control_circuit",1]],"crafting table","Mekanism",0],"robit":["Robit",1,[["steel_ingot",1],["energy_tablet",2],["alloy_atomic",1],["ingot_refined_obsidian",2],["personal_barrel",1]],"crafting table","Mekanism",0],"teleportation_core":["Teleportation Core",1,[["ender_pearl",4],["alloy_atomic",2],["gold_ingot",2],["diamond",1]],"crafting table","Mekanism",0],"ingot_refined_obsidian":["Refined Obsidian Ingot",1,[["dust_refined_obsidian",1]],"Osmium Compressor","Mekanism",0,["mekanism:osmium"],[]],"ultimate_control_circuit":["Ultimate Control Circuit",1,[["alloy_atomic",2],["elite_control_circuit",1]],"crafting table","Mekanism",0],"dust_osmium":["Osmium Dust",4,[["raw_osmium",3]],"Enrichment Chamber","Mekanism",0],"bronze_ingot":["Bronze Ingot",1,[["dust_bronze",1]],"furnace (needs fuel)","Mekanism",0],"superheating_element":["Superheating Element",1,[["redstone",4],["copper_ingot",4],["steel_casing",1]],"crafting table","Mekanism",0],"dropper":["Dropper",1,[["cobblestone",7],["redstone",1]],"crafting table","Machines and pipes",0],"logic_chip":["Logic Chip",1,[["logic_chip_raw",1]],"furnace (needs fuel)","Machines and pipes",0],"sticky_piston":["Sticky Piston",1,[["slime_ball",1],["piston",1]],"crafting table","Backpacks and drawers",0],"quartz_block":["Block of Quartz",1,[["nether_quartz",4]],"crafting table","Backpacks and drawers",0],"comparator":["Redstone Comparator",1,[["redstone_torch",3],["nether_quartz",1],["stone",3]],"crafting table","Backpacks and drawers",0],"white_dye":["White Dye",1,[["bone_meal",1]],"crafting table","Colony huts",0],"paper":["Paper",3,[["sugar_cane",3]],"crafting table","Colony huts",0],"semi_dark_monitor":["Illuminated Panel",3,[["glowstone_dust",2],["quartz_glass",3],["iron_ingot",1],["redstone",1]],"crafting table","AE2",0],"fluix_pearl":["Fluix Pearl",1,[["fluix_dust",4],["fluix_crystal",4],["ender_pearl",1]],"crafting table","AE2",0],"ender_eye":["Eye of Ender",1,[["ender_pearl",1],["blaze_powder",1]],"crafting table","Powah",0],"personal_barrel":["Personal Barrel",1,[["steel_ingot",5],["glass",1],["sophisticatedstorage_barrel",2],["basic_control_circuit",1]],"crafting table","Mekanism",0],"dust_bronze":["Bronze Dust",4,[["dust_copper",3],["tin_ingot",1]],"Metallurgic Infuser","Mekanism",0],"logic_chip_raw":["Raw Logic Chip",4,[["redstone",4],["gold_nugget",2],["clay_ball",2],["quartz_block",1]],"crafting table","Machines and pipes",0],"redstone_torch":["Redstone Torch",1,[["redstone",1],["stick",1]],"crafting table","Backpacks and drawers",0],"bone_meal":["Bone Meal",3,[["bone",1]],"crafting table","Colony huts",0]};
+const UNKNOWN = {"precision_mechanism": "Precision Mechanism", "sturdy_sheet": "Sturdy Sheet", "sophisticatedstorage_barrel": "Barrel (Sophisticated Storage)", "track": "Track"};
+
 const ITEMS = {};
-function mk(id, n, out, ins, at, grp, mod) { ITEMS[id] = { id, n, out, in: ins, at, grp, mod: !!mod }; }
-const W = "Wood and building", ST = "Stone and glass", MT = "Metal and tools", CR = "Create", AE = "AE2";
-mk("planks", "Planks", 4, [["log", 1]], "crafting table", W);
-mk("stick", "Sticks", 4, [["planks", 2]], "crafting table", W);
-mk("slab", "Wooden slabs", 6, [["planks", 3]], "crafting table", W);
-mk("stairs", "Wooden stairs", 4, [["planks", 6]], "crafting table", W);
-mk("fence", "Wooden fences", 3, [["planks", 4], ["stick", 2]], "crafting table", W);
-mk("fence_gate", "Fence gate", 1, [["planks", 2], ["stick", 4]], "crafting table", W);
-mk("door", "Wooden doors", 3, [["planks", 6]], "crafting table", W);
-mk("trapdoor", "Wooden trapdoors", 2, [["planks", 6]], "crafting table", W);
-mk("ladder", "Ladders", 3, [["stick", 7]], "crafting table", W);
-mk("sign", "Signs", 3, [["planks", 6], ["stick", 1]], "crafting table", W);
-mk("chest", "Chest", 1, [["planks", 8]], "crafting table", W);
-mk("barrel", "Barrel", 1, [["planks", 6], ["slab", 2]], "crafting table", W);
-mk("crafting_table", "Crafting table", 1, [["planks", 4]], "crafting table", W);
-mk("bed", "Bed", 1, [["wool", 3], ["planks", 3]], "crafting table", W);
-mk("torch", "Torches", 4, [["stick", 1], ["coal", 1]], "crafting table", W);
-mk("furnace", "Furnace", 1, [["cobblestone", 8]], "crafting table", ST);
-mk("stone", "Stone", 1, [["cobblestone", 1]], "furnace (needs fuel)", ST);
-mk("smooth_stone", "Smooth stone", 1, [["stone", 1]], "furnace (needs fuel)", ST);
-mk("stone_bricks", "Stone bricks", 4, [["stone", 4]], "crafting table", ST);
-mk("stone_brick_slab", "Stone brick slabs", 6, [["stone_bricks", 3]], "crafting table", ST);
-mk("stone_brick_stairs", "Stone brick stairs", 4, [["stone_bricks", 6]], "crafting table", ST);
-mk("stone_brick_wall", "Stone brick walls", 6, [["stone_bricks", 6]], "crafting table", ST);
-mk("cobble_slab", "Cobblestone slabs", 6, [["cobblestone", 3]], "crafting table", ST);
-mk("cobble_stairs", "Cobblestone stairs", 4, [["cobblestone", 6]], "crafting table", ST);
-mk("cobble_wall", "Cobblestone walls", 6, [["cobblestone", 6]], "crafting table", ST);
-mk("glass", "Glass", 1, [["sand", 1]], "furnace (needs fuel)", ST);
-mk("glass_pane", "Glass panes", 16, [["glass", 6]], "crafting table", ST);
-mk("iron_ingot", "Iron ingot", 1, [["raw_iron", 1]], "furnace (needs fuel)", MT);
-mk("gold_ingot", "Gold ingot", 1, [["raw_gold", 1]], "furnace (needs fuel)", MT);
-mk("iron_nugget", "Iron nuggets", 9, [["iron_ingot", 1]], "crafting table", MT);
-mk("iron_block", "Iron block", 1, [["iron_ingot", 9]], "crafting table", MT);
-mk("iron_bars", "Iron bars", 16, [["iron_ingot", 6]], "crafting table", MT);
-mk("chain", "Chain", 1, [["iron_ingot", 1], ["iron_nugget", 2]], "crafting table", MT);
-mk("lantern", "Lantern", 1, [["iron_nugget", 8], ["torch", 1]], "crafting table", MT);
-mk("iron_pickaxe", "Iron pickaxe", 1, [["iron_ingot", 3], ["stick", 2]], "crafting table", MT);
-mk("iron_axe", "Iron axe", 1, [["iron_ingot", 3], ["stick", 2]], "crafting table", MT);
-mk("iron_hoe", "Iron hoe", 1, [["iron_ingot", 2], ["stick", 2]], "crafting table", MT);
-mk("iron_furnace", "Iron Furnace", 1, [["iron_ingot", 8], ["furnace", 1]], "crafting table", MT, true);
-mk("andesite_alloy", "Andesite Alloy", 1, [["andesite", 1], ["iron_nugget", 1]], "crafting table", CR, true);
-mk("shaft", "Shafts", 4, [["andesite_alloy", 1]], "crafting table", CR, true);
-mk("cogwheel", "Cogwheel", 1, [["shaft", 1], ["planks", 1]], "crafting table", CR, true);
-mk("andesite_casing", "Andesite Casing", 1, [["andesite_alloy", 1], ["log", 1]], "crafting table (strip the log with an axe first)", CR, true);
-mk("water_wheel", "Water Wheel", 1, [["planks", 8], ["shaft", 1]], "crafting table", CR, true);
-mk("mechanical_press", "Mechanical Press", 1, [["shaft", 1], ["andesite_casing", 1], ["iron_block", 1]], "crafting table", CR, true);
-mk("basin", "Basin", 1, [["andesite_alloy", 7]], "crafting table", CR, true);
-mk("mechanical_mixer", "Mechanical Mixer", 1, [["cogwheel", 1], ["andesite_casing", 1], ["whisk", 1]], "crafting table", CR, true);
-mk("certus_dust", "Certus quartz dust", 1, [["certus_quartz", 1]], "any crusher (Create crushing wheels or a Mekanism Crusher)", AE, true);
-mk("silicon", "Silicon", 1, [["certus_dust", 1]], "furnace (needs fuel)", AE, true);
-mk("printed_calc", "Printed Calculation Circuit", 1, [["certus_quartz", 1]], "Inscriber with the Calculation press", AE, true);
-mk("printed_eng", "Printed Engineering Circuit", 1, [["diamond", 1]], "Inscriber with the Engineering press", AE, true);
-mk("printed_logic", "Printed Logic Circuit", 1, [["gold_ingot", 1]], "Inscriber with the Logic press", AE, true);
-mk("printed_silicon", "Printed Silicon", 1, [["silicon", 1]], "Inscriber with the Silicon press", AE, true);
-mk("calc_processor", "Calculation Processor", 1, [["printed_calc", 1], ["redstone", 1], ["printed_silicon", 1]], "Inscriber (no press)", AE, true);
-mk("eng_processor", "Engineering Processor", 1, [["printed_eng", 1], ["redstone", 1], ["printed_silicon", 1]], "Inscriber (no press)", AE, true);
-mk("logic_processor", "Logic Processor", 1, [["printed_logic", 1], ["redstone", 1], ["printed_silicon", 1]], "Inscriber (no press)", AE, true);
-mk("charged_certus", "Charged Certus Quartz", 1, [["certus_quartz", 1]], "Charger (needs power)", AE, true);
-mk("fluix_crystal", "Fluix Crystal", 2, [["charged_certus", 1], ["redstone", 1], ["nether_quartz", 1]], "thrown into water", AE, true);
-/* ingredients the database doesn't cover: shown as "look it up in JEI" instead of guessed */
-const UNKNOWN = { whisk: "Whisk" };
+Object.keys(ITEM_DATA).forEach(id => {
+  const d = ITEM_DATA[id];
+  ITEMS[id] = { id, n: d[0], out: d[1], in: d[2], at: d[3], grp: d[4], atm: !!(d[5] & 1), want: !!(d[5] & 2), also: d[6] || [], tools: d[7] || [] };
+});
+const GROUPS = ["Wood and building", "Stone and glass", "Metal and tools", "Colony huts", "Colony tools and storage", "Create", "AE2", "Powah", "Mekanism", "Machines and pipes", "Computers and peripherals", "Backpacks and drawers"];
 
-/* guide table names → item ids, so recipe rows can link to the breakdown */
-const ITEM_ALIAS = { "Andesite Alloy": "andesite_alloy", "Shaft": "shaft", "Cogwheel": "cogwheel", "Andesite Casing": "andesite_casing", "Water Wheel": "water_wheel",
-  "Mechanical Press": "mechanical_press", "Mechanical Mixer": "mechanical_mixer", "Basin": "basin", "Iron Furnace": "iron_furnace", "Silicon": "silicon",
-  "Printed Calculation Circuit": "printed_calc", "Printed Engineering Circuit": "printed_eng", "Printed Logic Circuit": "printed_logic", "Fluix Crystal": "fluix_crystal" };
+/* guide table names → item ids, so recipe rows show the real recipe and link to the breakdown */
+const ITEM_ALIAS = { "Iron Furnace": "iron_furnace", "Backpack": "backpack", "Pickup Upgrade": "pickup_upgrade", "Oak Drawer (1×1)": "drawer_1x1", "Clipboard": "clipboard", "Resource Scroll": "resource_scroll",
+  "Andesite Alloy": "andesite_alloy", "Shaft": "shaft", "Cogwheel": "cogwheel", "Andesite Casing": "andesite_casing", "Water Wheel": "water_wheel", "Engineer's Goggles": "goggles",
+  "Mechanical Press": "mechanical_press", "Mechanical Mixer": "mechanical_mixer", "Basin": "basin", "Empty Blaze Burner": "empty_blaze_burner", "Brass Ingot": "brass_ingot",
+  "Dielectric Paste": "dielectric_paste", "Furnator": "furnator_starter", "Energizing Orb": "energizing_orb", "Energized Steel": "steel_energized", "Blazing Crystal": "crystal_blazing",
+  "Charger": "charger", "Growth Accelerator": "growth_accelerator", "Fluix Crystal": "fluix_crystal", "Silicon": "silicon", "Inscriber": "inscriber",
+  "Printed Calculation Circuit": "printed_calc", "Printed Engineering Circuit": "printed_eng", "Printed Logic Circuit": "printed_logic",
+  "ME Controller": "controller", "ME Drive": "drive", "Energy Acceptor": "energy_acceptor", "Storage Cell Housing": "item_cell_housing", "1k Cell Component": "cell_component_1k",
+  "4k Component": "cell_component_4k", "Crafting Terminal": "crafting_terminal", "Pattern Provider": "pattern_provider", "Molecular Assembler": "molecular_assembler",
+  "Annihilation Core": "annihilation_core", "Formation Core": "formation_core", "Crafting Unit": "crafting_unit", "Metallurgic Infuser": "metallurgic_infuser", "Steel Ingot": "steel_ingot",
+  "Basic Control Circuit": "basic_control_circuit", "Infused Alloy": "alloy_infused", "Reinforced Alloy": "alloy_reinforced", "Steel Casing": "steel_casing" };
 
-/* "Ingredients for this step" lists. sug = a sensible starter amount I chose, not a number from the sub-steps */
+/* "Ingredients for this step" lists. sug = amounts I chose as a sensible starter, not numbers from the sub-steps */
 const MAT_FOR = {
   "s-wood": { items: [["torch", 64], ["glass", 64]] },
-  "s-tools": { items: [["iron_pickaxe", 3], ["iron_axe", 3], ["iron_hoe", 3], ["iron_furnace", 1]] },
-  "m-smelter": { items: [["iron_furnace", 1], ["chest", 3]], sug: true },
-  "m-cobble": { items: [["water_wheel", 1], ["shaft", 4], ["chest", 1]], sug: true },
-  "u-create-basics": { items: [["shaft", 8], ["cogwheel", 4], ["andesite_casing", 2], ["water_wheel", 1]], sug: true },
-  "u-create-machines": { items: [["mechanical_press", 1], ["mechanical_mixer", 1], ["basin", 1]], sug: true },
-  "a-certus": { items: [["fluix_crystal", 16], ["silicon", 16]], sug: true },
-  "a-processors": { items: [["calc_processor", 16], ["eng_processor", 16], ["logic_processor", 16]] },
+  "s-tools": { items: [["iron_helmet", 1], ["iron_chestplate", 1], ["iron_leggings", 1], ["iron_boots", 1], ["shield", 1], ["iron_pickaxe", 3], ["iron_axe", 3], ["iron_hoe", 3], ["iron_furnace", 1]] },
+  "s-pack": { items: [["backpack", 1], ["pickup_upgrade", 1], ["drawer_1x1", 8]] },
+  "s-waystone": { items: [["warp_stone", 1], ["waystone", 1]] },
+  "f-camp": { items: [["supply_camp", 1]] },
+  "f-builder": { items: [["hut_builder", 1], ["resource_scroll", 1]] },
+  "f-clipboard": { items: [["clipboard", 1]] },
+  "f-homes": { items: [["hut_citizen", 2], ["hut_tavern", 1]] },
+  "f-forester": { items: [["hut_lumberjack", 1], ["stone_axe", 1]], sug: true },
+  "f-farm": { items: [["hut_farmer", 1], ["hut_field", 3], ["stone_hoe", 1]], sug: true },
+  "f-fish": { items: [["hut_fisherman", 1], ["fishing_rod", 1]] },
+  "f-cook": { items: [["hut_cook", 1]] },
+  "f-warehouse": { items: [["hut_warehouse", 1], ["hut_deliveryman", 1], ["postbox", 1], ["stash", 1]] },
+  "g-mine": { items: [["hut_miner", 1], ["stone_pickaxe", 3], ["ladder", 64], ["torch", 64]], sug: true },
+  "g-crafters": { items: [["hut_sawmill", 1], ["hut_stonemason", 1], ["hut_blacksmith", 1], ["hut_smeltery", 1], ["hut_stonesmeltery", 1], ["hut_glassblower", 1]] },
+  "g-domum": { items: [["architects_cutter", 1]] },
+  "g-raw": { items: [["hut_crusher", 1], ["hut_sifter", 1], ["hut_composter", 1], ["hut_plantation", 1], ["hut_florist", 1], ["hut_dyer", 1], ["hut_shepherd", 1], ["hut_cowboy", 1], ["hut_swineherder", 1], ["hut_chickenherder", 1], ["hut_beekeeper", 1], ["hut_fletcher", 1]] },
+  "g-food": { items: [["hut_baker", 1]] },
+  "g-knowledge": { items: [["hut_library", 1], ["hut_school", 1], ["hut_university", 1]] },
+  "g-guards": { items: [["hut_guardtower", 2], ["hut_barracks", 1]] },
+  "g-health": { items: [["hut_hospital", 1], ["hut_graveyard", 1]] },
+  "g-happy": { items: [["hut_mysticalsite", 1]] },
+  "c-late": { items: [["hut_enchanter", 1], ["hut_alchemist", 1], ["hut_mechanic", 1], ["hut_concretemixer", 1], ["hut_netherworker", 1]] },
+  "c-scan": { items: [["scan_tool", 1]] },
+  "m-smelter": { items: [["iron_furnace", 1], ["chest", 3], ["pipez_item_pipe", 16]], sug: true },
+  "m-filter": { items: [["pipez_basic_upgrade", 1], ["chest", 1]], sug: true },
+  "m-cobble": { items: [["mechanical_drill", 3], ["water_wheel", 1], ["shaft", 8], ["chest", 1]], sug: true },
+  "u-create-basics": { items: [["shaft", 8], ["cogwheel", 4], ["andesite_casing", 2], ["goggles", 1], ["water_wheel", 1]], sug: true },
+  "u-windmill": { items: [["windmill_bearing", 1], ["sail_frame", 8], ["super_glue", 1], ["shaft", 16]], sug: true },
+  "u-create-machines": { items: [["mechanical_press", 1], ["depot", 1], ["mechanical_mixer", 1], ["basin", 1], ["empty_blaze_burner", 1], ["millstone", 1]] },
+  "u-create-ore": { items: [["crushing_wheel", 2], ["encased_fan", 1], ["belt_connector", 3], ["chute", 4]], sug: true },
+  "u-power": { items: [["dielectric_paste", 16], ["furnator_starter", 1], ["powah_energy_cell_starter", 1], ["energy_cable_starter", 12], ["energizing_orb", 1], ["energizing_rod_starter", 4]], sug: true },
+  "u-logistics": { items: [["pipez_item_pipe", 16], ["laser_node", 2], ["laser_wrench", 1], ["laser_card_item", 2], ["laser_filter_basic", 1]], sug: true },
+  "a-meteor": { items: [["meteorite_compass", 1]] },
+  "a-certus": { items: [["charger", 1], ["growth_accelerator", 6], ["fluix_crystal", 16], ["silicon", 16]], sug: true },
+  "a-processors": { items: [["inscriber", 5], ["calc_processor", 16], ["eng_processor", 16], ["logic_processor", 16]] },
+  "a-network": { items: [["controller", 1], ["energy_acceptor", 1], ["drive", 1], ["item_storage_cell_4k", 4], ["crafting_terminal", 1], ["me_interface", 1], ["import_bus", 1]] },
+  "a-autocraft": { items: [["pattern_encoding_terminal", 1], ["blank_pattern", 64], ["crafting_storage_4k", 1], ["crafting_accelerator", 3], ["pattern_provider", 2], ["molecular_assembler", 3]], sug: true },
+  "a-wireless": { items: [["wireless_access_point", 1], ["wireless_booster", 4]], sug: true },
   "a-colony-patterns": { items: [["planks", 64], ["slab", 64], ["stairs", 64], ["fence", 32], ["fence_gate", 8], ["door", 16], ["trapdoor", 16], ["ladder", 16], ["sign", 8], ["chest", 8], ["barrel", 8], ["stone_bricks", 64], ["glass_pane", 64], ["torch", 64], ["lantern", 16], ["bed", 8]], sug: true },
+  "l-see": { items: [["storage_bus", 1], ["p2p_tunnel", 2]], sug: true },
+  "l-stash": { items: [["stash", 1], ["export_bus", 1]] },
+  "l-cc": { items: [["computer_advanced", 1], ["colony_integrator", 1], ["me_bridge", 1], ["stash", 1]] },
+  "u-mek-start": { items: [["metallurgic_infuser", 1], ["steel_casing", 1], ["basic_energy_cube", 1], ["basic_universal_cable", 8]] },
+  "u-mek-ore": { items: [["enrichment_chamber", 1], ["energized_smelter", 1], ["electric_pump", 1], ["electrolytic_separator", 1], ["purification_chamber", 1], ["thermal_evaporation_controller", 1], ["thermal_evaporation_valve", 1], ["chemical_infuser", 1], ["chemical_injection_chamber", 1]] },
+  "u-mek-factory": { items: [["basic_tier_installer", 1], ["speed_upgrade", 2], ["energy_upgrade", 2]], sug: true },
+  "e-mining": { items: [["digital_miner", 1], ["quantum_entangloporter", 2]] },
+  "e-trains": { items: [["track_station", 2], ["train_controls", 1]], sug: true },
   "b-light": { items: [["lantern", 32], ["chain", 16], ["fence", 32]], sug: true },
+};
+
+/* steps that point at things you gather, with the cards to open on the Materials tab */
+const FIND_FOR = {
+  "s-wood": ["log", "cobblestone", "sand", "coal"],
+  "s-ores": ["raw_iron", "raw_copper", "raw_gold", "redstone", "diamond", "coal", "raw_zinc", "raw_osmium", "raw_tin"],
+  "a-meteor": ["certus_quartz", "sky_stone_block", "nether_quartz"],
+  "a-certus": ["certus_quartz", "nether_quartz", "redstone"],
+  "g-raw": ["leather", "beef", "porkchop", "egg", "feather", "wool", "honeycomb", "sugar_cane", "cactus", "poppy"],
+  "e-mob": ["string", "bone", "ender_pearl", "slime_ball", "blaze_rod"],
+  "e-mining": ["vibranium_ingot", "ender_pearl"],
+  "u-power": ["uraninite", "coal"],
+  "c-late": ["netherrack", "obsidian", "blaze_rod", "nether_quartz"],
 };
 
 function itemName(id) { return ITEMS[id] ? ITEMS[id].n : RAW[id] ? RAW[id].n : UNKNOWN[id] || id; }
 function stacks(n) { return n >= 64 ? `${n} (${Math.floor(n / 64)} stack${n >= 128 ? "s" : ""}${n % 64 ? " + " + n % 64 : ""})` : String(n); }
+/* "7 Planks (any wood) + 1 Build Tool + 1 Wooden doors" for a recipe table row */
+function recipeText(id) {
+  const it = ITEMS[id];
+  const s = it.in.map(([c, q]) => `${q} ${itemName(c)}`).join(" + ") || "see JEI";
+  return it.out > 1 ? `${s} (makes ${it.out})` : s;
+}
+function madeIn(it) { return it.at + (it.tools.length ? ` (needs ${it.tools.join(", ")}, not used up)` : ""); }
 
 /* Work out everything needed for a list of [item, amount] pairs. Shared yields are respected (one log makes 4 planks for every recipe that needs them). */
 function resolve(list) {
@@ -2098,6 +2151,28 @@ function openMaterials(items) {
   renderMatPage();
   window.scrollTo(0, 0);
 }
+/* open the Materials tab on the "where to find it" cards for some raw materials */
+function openFind(ids) {
+  showTab("materials");
+  try { history.replaceState(null, "", "#materials"); } catch (e) {}
+  renderMatPage();
+  ids.forEach(id => { const d = document.getElementById("raw-" + id); if (d) d.open = true; });
+  const t = document.getElementById(ids.length && document.getElementById("raw-" + ids[0]) ? "raw-" + ids[0] : "m-find");
+  if (t) t.scrollIntoView({ block: "start" });
+}
+
+function fillItemSelect(sel, q) {
+  sel.textContent = "";
+  q = (q || "").trim().toLowerCase();
+  GROUPS.forEach(g => {
+    const items = Object.values(ITEMS).filter(i => i.want && i.grp === g && (!q || i.n.toLowerCase().includes(q)));
+    if (!items.length) return;
+    const og = el("optgroup"); og.label = g;
+    items.forEach(i => { const o = el("option"); o.value = i.id; o.textContent = i.n; og.appendChild(o); });
+    sel.appendChild(og);
+  });
+  if (!sel.children.length) { const o = el("option"); o.textContent = "No item matches"; o.disabled = true; sel.appendChild(o); }
+}
 
 function renderMatPage() {
   const page = document.getElementById("matPage");
@@ -2105,33 +2180,32 @@ function renderMatPage() {
   const intro = el("section");
   intro.innerHTML = `<h2>Materials</h2>
     <p>Pick what you want to build and this works out every ingredient behind it: what to gather, where to find it, what to craft and in what order, and the AE2 patterns that would make it automatically. Use <b>Ingredients for this step</b> in the Guide to fill the list for you.</p>
-    <p class="note">Vanilla recipes here are reliable. Items tagged <span class="chip opt">check JEI</span> (Create, AE2 and other mods) come from my knowledge of the 1.21 versions and may differ in ATM10: JEI is the authority. Anything the database doesn't know is listed so you can look it up.</p>
+    <p class="note">Every recipe here was read from the files of the installed ATM10 pack (Create 6.0.10, AE2 19.2.18, Mekanism 10.7.19, MineColonies 1.1.1403, Powah 6.2.10 and the rest), with the pack's own recipe scripts applied on top. Items marked <span class="chip opt">ATM10 recipe</span> have a recipe that this pack changed. Where an item has several recipes, I chose the main one. Wood types are shown as "any wood", and ingredients that accept several items show one example. A pack update can change recipes: JEI is the authority.</p>
     <nav class="toc" aria-label="On this page"><a href="#materials" data-mjump="m-calc">Calculator</a><a href="#materials" data-mjump="m-find">Where to find things and how to automate them</a></nav>`;
   page.appendChild(intro);
 
   const calc = el("section"); calc.id = "m-calc";
   calc.appendChild(el("h2", null, "What do you want to make?"));
   const form = el("div", "mat-form");
+  const search = el("input"); search.type = "search"; search.placeholder = "Filter items, e.g. hut or processor"; search.setAttribute("aria-label", "Filter items");
   const sel = el("select"); sel.setAttribute("aria-label", "Item");
-  [W, ST, MT, CR, AE].forEach(g => {
-    const og = el("optgroup"); og.label = g;
-    Object.values(ITEMS).filter(i => i.grp === g).forEach(i => { const o = el("option"); o.value = i.id; o.textContent = i.n + (i.mod ? " (mod)" : ""); og.appendChild(o); });
-    sel.appendChild(og);
-  });
-  const qty = el("input"); qty.type = "number"; qty.min = "1"; qty.value = "64"; qty.setAttribute("aria-label", "Amount");
+  fillItemSelect(sel, "");
+  const qty = el("input"); qty.type = "number"; qty.min = "1"; qty.value = "1"; qty.setAttribute("aria-label", "Amount");
   const add = el("button", "tbtn"); add.type = "button"; add.textContent = "Add to list";
   const stepSel = el("select"); stepSel.setAttribute("aria-label", "Load a step's list");
   stepSel.appendChild(Object.assign(el("option"), { value: "", textContent: "Load the list for a step…" }));
   Object.keys(MAT_FOR).forEach(id => { const s = allSteps.find(x => x.id === id); if (s) stepSel.appendChild(Object.assign(el("option"), { value: id, textContent: s.t })); });
   const clear = el("button", "tbtn"); clear.type = "button"; clear.textContent = "Clear list";
-  form.append(sel, qty, add, stepSel, clear);
+  form.append(search, sel, qty, add, stepSel, clear);
   calc.appendChild(form);
   const listBox = el("div", "mat-list"), result = el("div", "mat-result");
   calc.append(listBox, result);
   page.appendChild(calc);
 
   const draw = () => { saveMat(); drawMatList(listBox, draw); drawMatResult(result); };
+  search.addEventListener("input", () => fillItemSelect(sel, search.value));
   add.addEventListener("click", () => {
+    if (!ITEMS[sel.value]) return;
     const q = Math.max(1, parseInt(qty.value, 10) || 1);
     const hit = matList.find(x => x[0] === sel.value);
     if (hit) hit[1] += q; else matList.push([sel.value, q]);
@@ -2147,18 +2221,24 @@ function renderMatPage() {
 
   const find = el("section"); find.id = "m-find";
   find.appendChild(el("h2", null, "Where to find things and how to automate them"));
-  find.appendChild(el("p", null, "Every raw material, with where it is and a ladder of ways to stop gathering it by hand. Each rung opens the guide step that builds it."));
-  Object.values(RAW).forEach(r => {
-    const d = el("details", "rawcard");
-    const sm = el("summary"); sm.textContent = r.n; d.appendChild(sm);
-    d.appendChild(el("p", null)).textContent = r.where;
-    const ul = el("ul", "ladder");
-    r.auto.forEach(([lvl, text, step]) => {
-      const li = el("li"); li.appendChild(el("b", null, lvl + ": ")); li.append(text + " ");
-      li.appendChild(stepLink(step, "Open step →")); ul.appendChild(li);
+  find.appendChild(el("p", null, "Every raw material, with where it is and a ladder of ways to stop gathering it by hand. Each rung opens the guide step that builds it. Ore heights are the real ones from this pack's world generation."));
+  [CAT_ORE, CAT_EARTH, CAT_FARM, CAT_MOB, CAT_OTHER].forEach(cat => {
+    const ids = Object.keys(RAW).filter(k => RAW[k].cat === cat);
+    if (!ids.length) return;
+    find.appendChild(el("h3", null, cat));
+    ids.forEach(id => {
+      const r = RAW[id];
+      const d = el("details", "rawcard"); d.id = "raw-" + id;
+      const sm = el("summary"); sm.textContent = r.n; d.appendChild(sm);
+      d.appendChild(el("p", null)).textContent = r.where;
+      const ul = el("ul", "ladder");
+      r.auto.forEach(([lvl, text, step]) => {
+        const li = el("li"); li.appendChild(el("b", null, lvl + ": ")); li.append(text + " ");
+        li.appendChild(stepLink(step, "Open step →")); ul.appendChild(li);
+      });
+      d.appendChild(ul);
+      find.appendChild(d);
     });
-    d.appendChild(ul);
-    find.appendChild(d);
   });
   page.appendChild(find);
 }
@@ -2199,7 +2279,7 @@ function drawMatResult(box) {
   Object.keys(r.unknown).forEach(id => {
     const row = el("div", "mat-row");
     row.appendChild(el("b", null, `${r.unknown[id]} × ${itemName(id)}`));
-    row.appendChild(el("span", "mat-where", "Not in this database. Hover it in JEI and press R to see how to make it."));
+    row.appendChild(el("span", "mat-where", "Not in this database (its recipe has several steps). Hover it in JEI and press R to see how to make it."));
     g.appendChild(row);
   });
   box.appendChild(g);
@@ -2213,9 +2293,9 @@ function drawMatResult(box) {
     crafted.forEach(id => {
       const it = ITEMS[id], n = r.need[id], made = r.crafts[id] * it.out;
       const tr = el("tr");
-      [it.n + (it.mod ? " " : ""), String(r.crafts[id]), String(made), String(n), it.at].forEach((v, i) => {
+      [it.n, String(r.crafts[id]), String(made), String(n), madeIn(it)].forEach((v, i) => {
         const td = el("td"); td.textContent = v;
-        if (i === 0 && it.mod) td.appendChild(el("span", "chip opt", "check JEI"));
+        if (i === 0 && it.atm) { td.append(" "); td.appendChild(el("span", "chip opt", "ATM10 recipe")); }
         tr.appendChild(td);
       });
       t.querySelector("tbody").appendChild(tr);
@@ -2457,11 +2537,12 @@ function stepEl(s) {
     if (s.recipes) {
       const r = document.createElement("div"); r.className = "recipes";
       const linked = s.recipes.some(x => ITEM_ALIAS[x[0]]);
-      r.innerHTML = `<div class="blk-label">Key ingredients</div><table><thead><tr><th>Item</th><th>Main ingredients</th><th>Made in</th>${linked ? "<th></th>" : ""}</tr></thead><tbody></tbody></table><div class="rnote">Exact grid and counts: hover the item in JEI and press R.</div>`;
+      r.innerHTML = `<div class="blk-label">Key ingredients</div><table><thead><tr><th>Item</th><th>Main ingredients</th><th>Made in</th>${linked ? "<th></th>" : ""}</tr></thead><tbody></tbody></table><div class="rnote">Amounts come from this pack\'s recipe files. The exact grid: hover the item in JEI and press R.</div>`;
       const tb = r.querySelector("tbody");
       s.recipes.forEach(([a, b, c]) => {
         const tr = document.createElement("tr");
-        [a, b, c].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
+        const real = ITEM_ALIAS[a] && ITEMS[ITEM_ALIAS[a]];
+        [a, real ? recipeText(ITEM_ALIAS[a]) : b, real ? madeIn(real) : c].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
         if (linked) {
           const td = document.createElement("td");
           if (ITEM_ALIAS[a]) {
@@ -2481,6 +2562,14 @@ function stepEl(s) {
       g.querySelector(".dh").textContent = s.diagram.h;
       g.querySelector("pre").textContent = s.diagram.d;
       det.appendChild(g);
+    }
+    if (FIND_FOR[s.id]) {
+      const m = document.createElement("div"); m.className = "mat-step";
+      const btn = document.createElement("button"); btn.type = "button"; btn.className = "tbtn"; btn.textContent = "Where to find it";
+      btn.addEventListener("click", () => openFind(FIND_FOR[s.id]));
+      m.appendChild(btn);
+      const note = document.createElement("span"); note.textContent = " Where it is, and how to stop gathering it by hand."; m.appendChild(note);
+      det.appendChild(m);
     }
     if (MAT_FOR[s.id]) {
       const m = document.createElement("div"); m.className = "mat-step";

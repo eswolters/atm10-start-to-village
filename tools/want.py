@@ -96,6 +96,18 @@ WANT += L(FD, ("steak", "minecraft:cooked_beef"), ("cooked_chicken", "minecraft:
           ("golden_carrot", "minecraft:golden_carrot"), ("brick", "minecraft:brick"), ("chiseled_stone_bricks", "minecraft:chiseled_stone_bricks"),
           ("anvil", "minecraft:anvil"), ("lead", "minecraft:lead"), ("rail", "minecraft:rail"))
 
+WANT += L(FD, ("flint_knife", "farmersdelight:flint_knife"), ("cutting_board", "farmersdelight:cutting_board"), ("cooking_pot", "farmersdelight:cooking_pot"))
+MA = "Mystical Agriculture"
+WANT += L(MA, ("infusion_altar", "mysticalagriculture:infusion_altar"), ("infusion_pedestal", "mysticalagriculture:infusion_pedestal"),
+          ("infusion_crystal", "mysticalagriculture:infusion_crystal"), ("inferium_seeds", "mysticalagriculture:inferium_seeds"),
+          ("inferium_farmland", "mysticalagriculture:inferium_farmland"), ("prosperity_seed_base", "mysticalagriculture:prosperity_seed_base"),
+          ("prosperity_ingot", "mysticalagriculture:prosperity_ingot"))
+FX = "Flux Networks"
+WANT += L(FX, ("flux_core", "fluxnetworks:flux_core"), ("flux_controller", "fluxnetworks:flux_controller"), ("flux_plug", "fluxnetworks:flux_plug"),
+          ("flux_point", "fluxnetworks:flux_point"), ("flux_configurator", "fluxnetworks:flux_configurator"))
+WANT += L(MC, ("sophisticatedstorage_barrel", "sophisticatedstorage:barrel"), ("hopper", "minecraft:hopper"))
+WANT += L(CT, ("shape_tool", "minecolonies:shapetool"))
+
 # registry id / tag -> slug, for ingredients that stand for a generic thing
 MAP = {
     "#minecraft:planks": "planks", "#minecraft:logs": "log", "#minecraft:logs_that_burn": "log", "#minecraft:oak_logs": "log", "#c:stripped_logs": "log", "#c:stripped_woods": "log",
@@ -116,7 +128,7 @@ MAP = {
     "#c:wool": "wool", "#minecraft:wool": "wool",
     "#c:storage_blocks/redstone": "redstone_block", "#c:drinks/milk": "milk_bucket", "#c:eggs": "egg", "#c:storage_blocks/coal": "coal_block", "#c:storage_blocks/gold": "gold_block", "#saplings": "sapling", "#minecraft:saplings": "sapling", "#logs": "log", "#c:ender_pearls": "ender_pearl", "#mekanism:tin": "tin_ingot", "#c:dusts/copper": "dust_copper", "#c:ingots/tin": "tin_ingot", "#ae2:all_nether_quartz": "nether_quartz", "#ae2:all_certus_quartz": "certus_quartz", "#ae2:all_fluix": "fluix_crystal", "#c:dusts/fluix": "fluix_dust", "minecraft:ender_pearl": "ender_pearl",
     "#c:glass_blocks/cheap": "glass", "#c:glass_panes": "glass_pane", "#c:glass_panes/colorless": "glass_pane", "#c:leathers": "leather", "#c:feathers": "feather",
-    "#c:buckets/empty": "bucket", "#c:buckets/lava": "lava_bucket", "#c:dusts/glowstone": "glowstone_dust", "#c:gems/emerald": "emerald", "#c:gems/lapis": "lapis_lazuli",
+    "#c:buckets/empty": "bucket", "#c:buckets/water": "water_bucket", "minecraft:farmland": "farmland", "#c:buckets/lava": "lava_bucket", "#c:dusts/glowstone": "glowstone_dust", "#c:gems/emerald": "emerald", "#c:gems/lapis": "lapis_lazuli",
     "#c:obsidians/normal": "obsidian", "#c:obsidians": "obsidian", "#c:rods/blaze": "blaze_rod", "#c:ingots/zinc": "zinc_ingot", "#c:nuggets/zinc": "zinc_nugget",
     "#c:dusts/gold": "dust_gold", "#c:dusts/iron": "dust_iron", "#c:ingots/osmium": "osmium_ingot", "#c:ingots/steel": "steel_ingot", "#c:ingots/vibranium": "vibranium_ingot",
     "#c:ingots/bronze": "bronze_ingot", "#c:circuits/basic": "basic_control_circuit", "#c:gems/amethyst": "amethyst_shard", "#c:crops/wheat": "wheat",
@@ -127,7 +139,8 @@ MAP = {
 LEAF = {k: "" for k in ["sapling", "chicken", "milk_bucket", "cocoa_beans", "nether_wart", "rabbit_foot", "saddle", "gilded_blackstone", "wheat_seeds", "leather", "wheat", "apple", "egg", "beef", "porkchop", "bone", "flint", "gravel", "dirt", "honeycomb", "obsidian", "blaze_rod", "amethyst_shard", "ender_pearl",
                         "feather", "sugar_cane", "lapis_lazuli", "poppy", "carrot", "cactus", "kelp", "glowstone_dust", "emerald", "lava_bucket", "raw_zinc", "raw_osmium", "clay_ball", "vibranium_ingot", "raw_tin", "uraninite", "sky_stone_block",
                         "raw_tin", "uraninite", "sky_stone_block", "silicon_press", "calculation_processor_press", "engineering_processor_press", "logic_processor_press", "water_bucket", "rabbit_hide", "honey_bottle","log", "cobblestone", "sand", "raw_iron", "raw_copper", "raw_gold", "redstone", "coal", "diamond", "string", "wool", "andesite", "certus_quartz",
-                        "nether_quartz", "slime_ball", "netherrack"]}
+                        "nether_quartz", "slime_ball", "netherrack", "inferium_essence", "prosperity_shard", "flux_dust", "farmland", "bone", "flint"]}
 ALLOW = {"minecraft", "create", "ae2", "mekanism", "powah", "minecolonies", "structurize", "ironfurnaces", "pipez", "laserio", "functionalstorage", "sophisticatedbackpacks",
-         "advancedperipherals", "computercraft", "waystones", "domum_ornamentum", "kubejs", "alltheores", "allthemodium"}
+         "advancedperipherals", "computercraft", "waystones", "domum_ornamentum", "kubejs", "alltheores", "allthemodium",
+         "farmersdelight", "mysticalagriculture", "fluxnetworks", "sophisticatedstorage"}
 PICK = {"cake": "farmersdelight:cake_from_milk_bottle", "dielectric_rod": "powah:crafting/dielectric_rod", "dielectric_rod_horizontal": "powah:crafting/dielectric_rod_h", "fluix_crystal": "ae2:transform/fluix_crystals", "iron_ingot": "minecraft:iron_ingot_from_smelting_raw_iron", "gold_ingot": "minecraft:gold_ingot_from_smelting_raw_gold", "copper_ingot": "minecraft:copper_ingot_from_smelting_raw_copper"}

@@ -13,16 +13,17 @@ OVERRIDE = {
     "crafting_storage_4k": "4k Crafting Storage", "cell_component_1k": "1k Cell Component", "cell_component_4k": "4k Cell Component", "item_storage_cell_1k": "1k Storage Cell",
     "item_storage_cell_4k": "4k Storage Cell", "terminal": "ME Terminal", "controller": "ME Controller", "drive": "ME Drive", "p2p_tunnel": "ME P2P Tunnel",
     "laser_card_item": "Item Card (Laser IO)", "laser_filter_basic": "Basic Filter (Laser IO)", "pipez_item_pipe": "Item Pipe (Pipez)", "pipez_basic_upgrade": "Basic Upgrade (Pipez)",
-    "stone": "Stone", "hut_field": "Scarecrow (field)", "hut_plantation_field": "Plantation field marker", "hut_citizen": "Residence",
+    "stone": "Stone", "sophisticatedstorage_barrel": "Barrel (Sophisticated Storage)", "hut_field": "Scarecrow (field)", "hut_plantation_field": "Plantation field marker", "hut_citizen": "Residence",
 }
+GROUPFIX = {"ender_eye": "Powah"}   # reached from two mods; keep the original heading
 out = {}
 for slug, v in I.items():
+    if slug in GROUPFIX: v["grp"] = GROUPFIX[slug]
     flags = (1 if v["atm"] else 0) | (2 if v["want"] else 0)
     row = [OVERRIDE.get(slug, v["n"]), v["out"], v["in"], v["at"], v["grp"], flags]
     if v["also"] or v["tools"]: row += [v["also"], v["tools"]]
     out[slug] = row
-unk = {k: (OVERRIDE.get(k) or d["names"].get(k, k)) for k in sorted(set(d.get("unresolved", {})) | {"precision_mechanism", "sturdy_sheet", "sophisticatedstorage_barrel", "track"})}
-unk["sophisticatedstorage_barrel"] = "Barrel (Sophisticated Storage)"
+unk = {k: (OVERRIDE.get(k) or d["names"].get(k, k)) for k in sorted(set(d.get("unresolved", {})) | {"precision_mechanism", "sturdy_sheet", "track"})}
 unk["track"] = "Track"
 regs = {}
 for slug, reg in d.get("regs", {}).items():

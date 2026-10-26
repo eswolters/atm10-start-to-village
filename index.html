@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Hollowmere Town Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column. Each step carries a layer stripe: moss = surface town, teal = hidden undercroft tech, slate = planning. */
+:root {
+  --bg: #eceee8;
+  --panel: #f7f8f4;
+  --fg: #1d241f;
+  --muted: #5a645c;
+  --line: #cfd5cb;
+  --moss: #3b6a37;
+  --moss-soft: #dbe7d4;
+  --tech: #1f7480;
+  --tech-soft: #d3e8ea;
+  --slate: #5d6577;
+  --slate-soft: #e1e3ea;
+  --done: #8a948b;
+  --code-bg: #e2e6dd;
+  --f-display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --f-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131714; --panel: #1b201c; --fg: #e2e6df; --muted: #9aa49b; --line: #2f3830;
+    --moss: #8fc07c; --moss-soft: #263423; --tech: #62c4d0; --tech-soft: #18313a;
+    --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131714; --panel: #1b201c; --fg: #e2e6df; --muted: #9aa49b; --line: #2f3830;
+  --moss: #8fc07c; --moss-soft: #263423; --tech: #62c4d0; --tech-soft: #18313a;
+  --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--f-body); font-size: 17px; line-height: 1.55;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
+.wrap {
+  max-width: 820px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+header.intro { padding-block: 40px 20px; }
+.eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(36px, 7vw, 54px); line-height: 1.05; margin: 6px 0 12px; text-wrap: balance; }
+.lede { margin: 0; max-width: 62ch; color: var(--fg); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 15px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+.sw.s { background: var(--moss); } .sw.u { background: var(--tech); } .sw.p { background: var(--slate); }
+
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.bar .wrap { padding-block: 12px; display: flex; flex-direction: column; gap: 10px; }
+.bar-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.meter { flex: 1 1 200px; height: 10px; background: var(--line); border-radius: 2px; overflow: hidden; display: flex; }
+.meter i { display: block; height: 100%; transition: width .3s; }
+.meter i.s { background: var(--moss); } .meter i.u { background: var(--tech); } .meter i.p { background: var(--slate); }
+.count { font-family: var(--f-mono); font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sync { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.seg button { font: inherit; font-size: 14px; background: transparent; color: var(--fg); border: 0; padding: 5px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+select, .chk-lbl { font: inherit; font-size: 14px; }
+select { background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; max-width: 100%; }
+.chk-lbl { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); cursor: pointer; }
+button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--tech); outline-offset: 2px; }
+
+main { padding-block: 24px 64px; display: flex; flex-direction: column; gap: 14px; }
+details.phase { border-top: 1px solid var(--line); }
+details.phase > summary {
+  list-style: none; cursor: pointer; padding-block: 16px 10px;
+  display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: baseline;
+}
+details.phase > summary::-webkit-details-marker { display: none; }
+.ph-num { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.ph-title { font-family: var(--f-display); font-size: 27px; line-height: 1.15; text-wrap: balance; min-width: 0; }
+.ph-count { font-family: var(--f-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ph-count.full { color: var(--moss); }
+.ph-sub { grid-column: 2 / 4; color: var(--muted); font-size: 15px; margin: 0; }
+.ph-chev { transition: transform .2s; display: inline-block; }
+details.phase[open] .ph-chev { transform: rotate(90deg); }
+
+ol.steps { list-style: none; margin: 6px 0 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+li.step {
+  background: var(--panel); border: 1px solid var(--line); border-left-width: 4px;
+  border-radius: 3px; padding: 12px 14px; display: grid; grid-template-columns: 26px 1fr; gap: 0 10px;
+}
+li.step.s { border-left-color: var(--moss); }
+li.step.u { border-left-color: var(--tech); }
+li.step.p { border-left-color: var(--slate); }
+li.step input[type="checkbox"] { width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--moss); cursor: pointer; }
+li.step.u input[type="checkbox"] { accent-color: var(--tech); }
+.st-body { min-width: 0; }
+.st-head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.st-title { font-weight: 700; font-size: 17px; cursor: pointer; }
+.chips { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.chip { font-family: var(--f-mono); font-size: 11px; padding: 1px 6px; border-radius: 2px; background: var(--slate-soft); color: var(--fg); white-space: nowrap; }
+li.step.s .chip.layer { background: var(--moss-soft); color: var(--moss); }
+li.step.u .chip.layer { background: var(--tech-soft); color: var(--tech); }
+.st-text { margin-top: 4px; color: var(--fg); }
+.st-text p { margin: 0 0 6px; }
+.st-text ul { margin: 4px 0 6px; padding-left: 20px; }
+.st-text li { margin: 2px 0; }
+.tip { margin-top: 6px; font-size: 15px; color: var(--muted); }
+.tip b { color: var(--fg); font-weight: 500; }
+code { font-family: var(--f-mono); font-size: .86em; background: var(--code-bg); padding: 1px 4px; border-radius: 2px; overflow-wrap: anywhere; }
+li.step.isdone .st-title { text-decoration: line-through; color: var(--done); }
+li.step.isdone .st-text, li.step.isdone .tip { color: var(--done); }
+li.step.isdone .st-text { display: none; }
+li.step.isdone .tip { display: none; }
+li.step.isdone.peek .st-text, li.step.isdone.peek .tip { display: block; }
+
+.codebox { margin-top: 8px; border: 1px solid var(--line); border-radius: 3px; background: var(--code-bg); }
+.codebox-head { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.codebox-head button { font: inherit; font-size: 12px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 3px; padding: 3px 9px; cursor: pointer; }
+.codebox pre { margin: 0; padding: 10px 12px; overflow-x: auto; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.5; }
+.codebox pre code { background: none; padding: 0; font-size: inherit; }
+
+.note { border: 1px dashed var(--line); padding: 12px 14px; border-radius: 3px; font-size: 15px; color: var(--muted); }
+.empty { color: var(--muted); font-style: italic; padding: 8px 0 16px; }
+.reset-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.reset-row button { font: inherit; font-size: 14px; background: transparent; border: 1px solid var(--line); color: var(--fg); padding: 4px 10px; border-radius: 3px; cursor: pointer; }
+.reset-row button.danger { border-color: var(--tech); }
+
+@media (max-width: 560px) {
+  body { font-size: 16px; }
+  .ph-title { font-size: 23px; }
+  .ph-sub { grid-column: 1 / 4; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="intro wrap">
+  <div class="eyebrow">All the Mods 10 · MineColonies town · new world → full automation</div>
+  <h1>Hollowmere Town Plan</h1>
+  <p class="lede">A medieval MineColonies town on the surface, with its high-tech core hidden underneath in an <em>undercroft</em>. Each step teaches you one system and feeds the next: Create, Mekanism, Powah, AE2, then a ComputerCraft script that fills the colony's requests from your ME system. Tick steps off as you go. Your progress is saved.</p>
+  <div class="legend">
+    <span><i class="sw p"></i>Planning</span>
+    <span><i class="sw s"></i>Surface town (MineColonies)</span>
+    <span><i class="sw u"></i>Undercroft (hidden tech)</span>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="bar-top">
+      <div class="meter" id="meter" role="img" aria-label="Overall progress"></div>
+      <span class="count" id="count">0 / 0</span>
+      <span class="sync" id="sync">Loading progress…</span>
+    </div>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="Layer filter">
+        <button type="button" data-layer="all" aria-pressed="true">All</button>
+        <button type="button" data-layer="s" aria-pressed="false">Surface</button>
+        <button type="button" data-layer="u" aria-pressed="false">Undercroft</button>
+      </div>
+      <select id="modFilter" aria-label="Filter by mod"><option value="">Every mod</option></select>
+      <label class="chk-lbl"><input type="checkbox" id="hideDone"> Hide finished steps</label>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
+
+<footer class="wrap" style="padding-block: 0 48px; display:flex; flex-direction:column; gap:14px;">
+  <div class="note">ATM10 updates add and remove mods. If an item named here doesn't show up in JEI, check the ATM10 quest book for that chapter, or use the closest equivalent. Recipes change between versions, so look them up in JEI rather than relying on memory.</div>
+  <div class="reset-row">
+    <span id="resetMsg">Start over in a new world?</span>
+    <button type="button" id="resetBtn">Clear all ticks</button>
+    <button type="button" id="resetYes" class="danger" hidden>Yes, clear them</button>
+    <button type="button" id="resetNo" hidden>Keep them</button>
+  </div>
+</footer>
+
+<script>
+const PHASES = [
+{
+  id: "plan", title: "Plan before you place a block", sub: "Ten minutes of planning saves hours of moving buildings later.",
+  steps: [
+    { id: "p-site", layer: "p", t: "Choose the town site", mods: ["MineColonies"],
+      b: `<p>Look for a wide, fairly flat area (plains, meadow or a forest edge) with a river or lake beside it and trees nearby. The fisher needs open water, and the forester needs room for a tree plot.</p>
+      <ul><li>Stay away from your spawn base and other big builds. The colony claims chunks around the Town Hall, and the claim grows as you level it up.</li>
+      <li>Build only in the Overworld. The ATM Mining and Other dimensions are meant for resource gathering and can be reset by pack updates.</li></ul>` },
+    { id: "p-layers", layer: "p", t: "Sketch the two layers", mods: [],
+      b: `<p>Decide now where the hidden tech goes. A good default:</p>
+      <ul><li><b>Surface:</b> the town itself. Only MineColonies buildings, decorations, roads, and machines that pass for medieval (Create windmills and water wheels).</li>
+      <li><b>Undercroft:</b> a large vault roughly 15–25 blocks under the town centre, for AE2, Mekanism, Powah and storage.</li>
+      <li><b>Mine district:</b> at least about 50 blocks from the vault. The Miner's Hut digs a shaft and tunnels that would hit your vault otherwise.</li></ul>`,
+      tip: `<b>Why:</b> building footprints include a few blocks of foundation, and the builder clears whatever is in the way. If you keep the vault deep and away from the mine, it stays safe.` },
+    { id: "p-style", layer: "p", t: "Pick one blueprint style", mods: ["MineColonies", "Structurize"],
+      b: `<p>For a medieval fantasy look, use <b>Medieval Spruce</b> or <b>Medieval Dark Oak</b> for the core of the town. <b>Shire</b> works for a hobbit-style quarter, and <b>Fortress</b> works for the walls and guard district. The Build Tool lists the styles installed in your ATM10 version, so browse them there.</p>
+      <p>Use one style for most buildings so they all need the same materials. That keeps the builders' shopping list short and easier to automate.</p>` },
+    { id: "p-quests", layer: "p", t: "Open the ATM10 quest book", mods: ["FTB Quests"],
+      b: `<p>The quest book has chapters for MineColonies, Create, Mekanism, AE2 and more, and the quests often give useful rewards. Use it next to this plan. Quests cover how each mod works, and this plan covers the order to do things in.</p>` },
+  ]
+},
+{
+  id: "survive", title: "Survive and gear up", sub: "Days 1–3. Collect what the colony will need and get tools to keep you alive.",
+  steps: [
+    { id: "s-wood", layer: "s", t: "Stockpile wood and stone", mods: [],
+      b: `<p>Gather about 4–6 stacks of logs (match your style: spruce or dark oak) and a few stacks of cobblestone. The first builder's huts and residences mostly use planks, logs, slabs, stairs, fences and cobble.</p>` },
+    { id: "s-pack", layer: "s", t: "Craft a backpack and early storage", mods: ["Sophisticated Backpacks", "Functional Storage"],
+      b: `<p>A Sophisticated Backpack frees up inventory space right away. For a temporary base, a few Functional Storage drawers keep logs, cobble and dirt sorted.</p>` },
+    { id: "s-iron", layer: "s", t: "Get iron gear and a better furnace", mods: ["Iron Furnaces"],
+      b: `<p>Iron tools and armour, plus an Iron Furnace (or better) so you can smelt quickly. Keep spare iron: you'll be giving citizens axes, pickaxes and hoes soon.</p>` },
+    { id: "s-food", layer: "s", t: "Start food crops", mods: ["Farmer's Delight"],
+      b: `<p>Plant a small wheat, carrot and potato patch and collect any other seeds you find. These seeds start the colony's farm fields later, and Farmer's Delight meals keep you fed in the meantime.</p>` },
+    { id: "s-way", layer: "s", t: "Put a waystone at the town site", mods: ["Waystones"],
+      b: `<p>Craft or find a waystone, place it where the town square will go, and set your bed there. From now on, every trip to the mines or the Mining dimension ends with a quick warp home.</p>` },
+  ]
+},
+{
+  id: "found", title: "Found the colony", sub: "Town Hall, the first builder, homes and food. The town starts running itself here.",
+  steps: [
+    { id: "f-camp", layer: "s", t: "Place a Supply Camp (or Supply Ship)", mods: ["MineColonies"],
+      b: `<p>Craft a Supply Camp (land) or Supply Ship (water); check JEI for the recipe. Its chest holds starter materials. Craft a <b>Build Tool</b> too. You'll use it to place every building, with a ghost preview, rotation and style choice.</p>` },
+    { id: "f-hall", layer: "s", t: "Place and claim the Town Hall", mods: ["MineColonies"],
+      b: `<p>Put the Town Hall where you want the centre of town. Right-click it to create the colony, name it, and set the colony's default style in the Town Hall settings. The first citizens appear.</p>` },
+    { id: "f-builder", layer: "s", t: "Build the first Builder's Hut", mods: ["MineColonies"],
+      b: `<p>Place the Builder's Hut with the Build Tool, open its GUI, and request a level 1 build. A citizen becomes the builder and builds their own hut first.</p>
+      <p>Craft a <b>Clipboard</b>. It lists every open request in the colony. Put the requested items in the hut's chest. Keep doing this until you have couriers.</p>`,
+      tip: `<b>Habit:</b> check the Clipboard every time you come home. Once automation is running, it shows what your ME system is failing to supply.` },
+    { id: "f-homes", layer: "s", t: "Residences and a Tavern", mods: ["MineColonies"],
+      b: `<p>Build two Residences so every citizen has a bed. The Tavern adds more beds and brings in <b>visitors</b> you can recruit by paying the item they ask for. This is how you grow the population early on.</p>` },
+    { id: "f-forester", layer: "s", t: "Forester's Hut", mods: ["MineColonies"],
+      b: `<p>Give the forester an axe and mark a forest area for them. They cut and replant trees, and from now on most of your wood comes from them.</p>` },
+    { id: "f-farm", layer: "s", t: "Farmer's Hut with fields", mods: ["MineColonies"],
+      b: `<p>Build the hut, place field blocks next to it, assign seeds to each field and give the farmer a hoe. Grow wheat, carrots and potatoes first. Later, add beetroot and crops from other mods so the cook has more ingredients.</p>` },
+    { id: "f-fish", layer: "s", t: "Fisher's Hut on the water", mods: ["MineColonies"],
+      b: `<p>The fisher needs a fishing rod and a fair amount of open water in front of the hut. Fish gives the town a second food source.</p>` },
+    { id: "f-cook", layer: "s", t: "Restaurant with a cook", mods: ["MineColonies"],
+      b: `<p>Citizens who eat well work faster and are happier. The cook needs raw food and fuel. Keep food varied: in recent MineColonies versions, citizens get unhappy if they eat the same thing all the time.</p>` },
+    { id: "f-warehouse", layer: "s", t: "Warehouse and Courier's Hut", mods: ["MineColonies"],
+      b: `<p>This is where colony automation starts. The Warehouse stores the colony's goods, and <b>couriers</b> carry items between it and every hut that asks for something. Once it's built, you stop filling builder chests by hand. You put items in the Warehouse instead.</p>`,
+      tip: `<b>Plan ahead:</b> place the Warehouse right above where the undercroft will be, so cables from below can reach it without crossing the town.` },
+    { id: "f-postbox", layer: "s", t: "Postbox and Stash", mods: ["MineColonies"],
+      b: `<p>A <b>Postbox</b> lets you order any item from the Warehouse and have it delivered to you. A <b>Stash</b> is a drop box: anything you put in it gets carried to the Warehouse by couriers. The Stash will later be where your AE2 system puts items into the colony.</p>` },
+  ]
+},
+{
+  id: "undercroft", title: "Dig the undercroft: first hidden tech", sub: "Create and Mekanism double your ore. Nothing modern is visible from the street.",
+  steps: [
+    { id: "u-vault", layer: "u", t: "Carve the vault and a hidden way in", mods: [],
+      b: `<p>Dig a room about 32×32 and 8+ blocks tall, 15–25 blocks below the town centre. Hide the entrance: a staircase in the Tavern cellar, a trapdoor under a market stall, or a second waystone placed only inside the vault.</p>`,
+      tip: `<b>Why:</b> MineColonies builders only touch blocks inside a building's footprint, so a deep vault outside those footprints stays untouched.` },
+    { id: "u-windmill", layer: "s", t: "Raise a Create windmill or water wheel", mods: ["Create"],
+      b: `<p>A windmill bearing with sails (or a water wheel in the river) looks completely medieval on the surface. Run a shaft straight down into the vault to bring rotational power below.</p>` },
+    { id: "u-create", layer: "u", t: "Create basics: alloy, press, millstone", mods: ["Create"],
+      b: `<p>Make Andesite Alloy, then a Mechanical Press, a Millstone and a Mechanical Mixer. These unlock Create's machines and the first useful automation.</p>` },
+    { id: "u-crush", layer: "u", t: "Crushing wheels and fan washing for extra ore", mods: ["Create"],
+      b: `<p>Crushing wheels turn raw ore into crushed ore with bonus output. Encased fans blowing through water wash it into extra nuggets. That's your first ore multiplier, with no electricity needed.</p>` },
+    { id: "u-power", layer: "u", t: "First electricity: Powah", mods: ["Powah"],
+      b: `<p>Craft a Powah Furnator or Thermo Generator, then Energy Cells for storage. Later, Powah reactors are a compact way to run the whole undercroft. Keep generators below ground and don't put solar panels on the rooftops.</p>` },
+    { id: "u-mek", layer: "u", t: "Mekanism ore processing (2× → 3× → 4×)", mods: ["Mekanism"],
+      b: `<ul><li><b>2×:</b> Enrichment Chamber → smelter.</li>
+      <li><b>3×:</b> add a Purification Chamber (needs oxygen from an Electrolytic Separator).</li>
+      <li><b>4×:</b> add a Chemical Injection Chamber (hydrogen chloride).</li>
+      <li><b>5×</b> comes later with the Chemical Dissolution Chamber and Washer.</li></ul>
+      <p>Upgrade one stage at a time. Each stage teaches you a new Mekanism mechanic (gases, slurries).</p>` },
+    { id: "u-pipes", layer: "u", t: "Connect machines with Pipez or Laser IO", mods: ["Pipez", "Laser IO"],
+      b: `<p>Pipez is the quick option. Laser IO sends items, fluids and energy wirelessly between nodes, which keeps a vault tidy and is easy to hide behind walls.</p>` },
+  ]
+},
+{
+  id: "ae2", title: "Build the AE2 brain", sub: "One digital storage and autocrafting network that everything else plugs into.",
+  steps: [
+    { id: "a-meteor", layer: "u", t: "Find meteorites for inscriber presses", mods: ["AE2"],
+      b: `<p>Craft a Meteorite Compass and find meteorites for the four presses (Calculation, Engineering, Logic, Silicon) and for budding certus quartz.</p>` },
+    { id: "a-certus", layer: "u", t: "Grow certus and automate processors", mods: ["AE2"],
+      b: `<p>Put budding certus around growth accelerators to farm quartz. Then automate the Inscribers so processors are always in stock. Every AE2 part needs them.</p>` },
+    { id: "a-core", layer: "u", t: "ME Controller, Drive and Crafting Terminal", mods: ["AE2"],
+      b: `<p>Build the controller, a drive with storage cells, and a Crafting Terminal. Then send all undercroft machine output into the network.</p>` },
+    { id: "a-autocraft", layer: "u", t: "Autocrafting: Pattern Providers and a Crafting CPU", mods: ["AE2"],
+      b: `<p>Set up Pattern Providers next to Molecular Assemblers, plus a Crafting CPU. Write patterns for what the colony asks for most:</p>
+      <ul><li>Planks, sticks, slabs, stairs, fences and fence gates for your style's wood</li>
+      <li>Stone bricks, smooth stone, glass and glass panes</li>
+      <li>Torches, lanterns, ladders, doors, trapdoors, chests, iron bars</li></ul>` },
+    { id: "a-wireless", layer: "u", t: "Wireless terminal for the town", mods: ["AE2"],
+      b: `<p>Hide a Wireless Access Point in the vault (or under the town square) and carry a Wireless Crafting Terminal. You can reach the whole network from anywhere in town.</p>
+      <p>Add-ons such as ExtendedAE, Applied Mekanistics and Applied Flux connect AE2 to Mekanism gases and energy. Try them once the basics work.</p>` },
+  ]
+},
+{
+  id: "grow", title: "Grow the town to levels 2–3", sub: "More workers, production chains, and a colony that crafts for itself.",
+  steps: [
+    { id: "g-hall", layer: "s", t: "Upgrade the Town Hall, then add builders", mods: ["MineColonies"],
+      b: `<p>Most huts can't be upgraded past the Town Hall's level, so upgrade it first. Then add a second and third Builder's Hut and split jobs between them.</p>` },
+    { id: "g-mine", layer: "s", t: "Miner's Hut in the mine district", mods: ["MineColonies"],
+      b: `<p>Give the miner pickaxes. They dig levels downward and bring back ore, cobble and stone. Keep this hut far from the vault, as planned.</p>` },
+    { id: "g-crafters", layer: "s", t: "Crafting huts: Sawmill, Stonemason, Blacksmith, Smeltery", mods: ["MineColonies"],
+      b: `<p>Crafting huts let the colony make what builders need. <b>Teach them recipes</b> in each hut's GUI, and builders' requests then go straight to the matching crafter.</p>
+      <ul><li><b>Sawmill:</b> wooden parts</li><li><b>Stonemason:</b> stone pieces</li><li><b>Blacksmith:</b> tools and armour for citizens</li><li><b>Smeltery / Stone Smeltery:</b> ingots, stone, bricks</li></ul>` },
+    { id: "g-domum", layer: "s", t: "Domum Ornamentum blocks", mods: ["Domum Ornamentum", "MineColonies"],
+      b: `<p>Many styles use Domum Ornamentum blocks (timber frames, shingles, paper walls) made in the <b>Architect's Cutter</b>. Teach those recipes to the Sawmill or Stonemason so the colony makes them itself. These blocks are hard to autocraft in AE2, so leaving them to the colony is the easier route.</p>` },
+    { id: "g-raw", layer: "s", t: "Raw-material huts", mods: ["MineColonies"],
+      b: `<p>Crusher (gravel and sand), Sifter, Glassblower, Composter, Plantation (sugar cane, cactus, bamboo), Florist, Dyer. Add the herders (Shepherd, Cowhand, Swineherd, Chicken Herder) for wool, leather and meat, and a Beekeeper for honey.</p>` },
+    { id: "g-knowledge", layer: "s", t: "Library, School and University", mods: ["MineColonies"],
+      b: `<p>The Library raises citizens' skills, the School teaches children, and the University unlocks <b>research</b>. Research adds new buildings, worker improvements and more. Start the Civilian and Technology research early.</p>` },
+    { id: "g-safety", layer: "s", t: "Guards, Hospital and Graveyard", mods: ["MineColonies"],
+      b: `<p>Raids start once the colony grows. Build Guard Towers or Barracks, a Hospital for sick citizens, and a Graveyard. Wall the town with Fortress-style decorations if you like the look.</p>` },
+    { id: "g-happy", layer: "s", t: "Keep happiness up", mods: ["MineColonies"],
+      b: `<p>Happiness depends on housing, varied food, safety and having tools. If production slows down, check the Town Hall's happiness page first. A Mystical Site gives a happiness bonus.</p>` },
+  ]
+},
+{
+  id: "link", title: "Connect the colony to AE2", sub: "The goal of the whole plan: colony requests get filled by your ME network.",
+  steps: [
+    { id: "l-see", layer: "u", t: "Show colony stock in AE2", mods: ["AE2", "MineColonies"],
+      b: `<p>Run a cable (or a P2P tunnel) up under the Warehouse and put an <b>ME Storage Bus</b> on one of its racks. Your terminal now shows what the colony has stored. Set the bus to extract only, so AE2 doesn't use the rack as overflow storage.</p>`,
+      tip: `<b>Why:</b> this lets you take colony output (logs, wool, food) into AE2 and see what the town is missing, without leaving the vault.` },
+    { id: "l-stock", layer: "u", t: "Keep basic materials topped up", mods: ["AE2", "MineColonies"],
+      b: `<p>Put a <b>Stash</b> on top of a hidden ME Export Bus, filtered to bulk materials: logs, planks, cobble, stone bricks, glass, sand, dirt. Couriers carry what lands in the Stash to the Warehouse.</p>
+      <p>This regulates itself: when the Warehouse is full, the Stash stops emptying and the bus stops exporting. Add a Level Emitter if you want AE2 to always keep a reserve.</p>` },
+    { id: "l-cc", layer: "u", t: "Request filler: CC:Tweaked and Advanced Peripherals", mods: ["CC:Tweaked", "Advanced Peripherals", "AE2"],
+      b: `<p>Place an Advanced Computer with a <b>Colony Integrator</b> (it must be inside the colony) and an <b>ME Bridge</b> connected to your network. Put the Stash on the side of the bridge set by <code>OUT</code> in the script. The script reads every open colony request, sends the item from AE2 if you have it, and starts an autocraft if you don't.</p>
+      <p>Save it with <code>edit startup.lua</code> so it runs every time the computer starts.</p>`,
+      code: true,
+      tip: `<b>Check:</b> Advanced Peripherals has renamed some functions and fields between versions. If the script errors, run <code>lua</code> on the computer and inspect <code>peripheral.getNames()</code> and one result of <code>getRequests()</code>. If you'd rather not edit it yourself, community MineColonies + AE2 request scripts already exist and are more complete.` },
+    { id: "l-skip", layer: "u", t: "Decide what stays manual", mods: ["MineColonies"],
+      b: `<p>Leave out items with special data (enchanted gear, tools of a specific level) and food, which the cook handles. Leave Domum Ornamentum blocks to the colony's crafters. Add these to the script's <code>SKIP</code> list so it doesn't keep trying to fill them.</p>` },
+  ]
+},
+{
+  id: "engines", title: "Resource engines", sub: "Steady raw materials into AE2, so the town never stalls.",
+  steps: [
+    { id: "e-ma", layer: "u", t: "Mystical Agriculture crop room", mods: ["Mystical Agriculture"],
+      b: `<p>Inferium first, then resource seeds for iron, copper, coal, stone, wood and dyes. Light the room with glowstone, add Growth Accelerators, and automate harvesting (Create Mechanical Harvesters or a block breaker) into AE2.</p>` },
+    { id: "e-mining", layer: "u", t: "Automated mining in the Mining dimension", mods: ["Mekanism", "FTB Chunks", "AE2"],
+      b: `<p>Set up a Mekanism Digital Miner in the ATM Mining dimension and force-load its chunks with FTB Chunks. Send the output home with a Quantum Entangloporter or an AE2 Quantum Network Bridge, straight into ore processing.</p>` },
+    { id: "e-mobs", layer: "u", t: "Mob farm", mods: ["Industrial Foregoing"],
+      b: `<p>String, bones, gunpowder and arrows supply the Fletcher, the guards and lots of crafting recipes. Keep it far from town so mobs don't spawn near citizens.</p>` },
+    { id: "e-train", layer: "s", t: "Create trains to outposts", mods: ["Create"],
+      b: `<p>A railway dressed in timber and cobble connects the town to a quarry or an outlying farm village. Trains carry bulk goods into a station whose lower level opens into the undercroft. It's the most medieval-looking way to move materials.</p>` },
+    { id: "e-power", layer: "u", t: "Scale up power", mods: ["Powah", "Mekanism", "Flux Networks"],
+      b: `<p>Powah reactors or Mekanism generators in the vault, with Flux Networks sending power wirelessly to outposts. You'll need the extra power once 5× ore processing and a large crafting system are both running.</p>` },
+  ]
+},
+{
+  id: "crown", title: "Finish the town", sub: "Level 5 buildings and decorations. Afterwards you only top up raw materials.",
+  steps: [
+    { id: "c-five", layer: "s", t: "Town Hall and key huts to level 5", mods: ["MineColonies"],
+      b: `<p>With the request filler running, upgrades mostly build themselves. Watch the Clipboard for anything AE2 can't supply and add a pattern or a resource engine for it.</p>` },
+    { id: "c-late", layer: "s", t: "Late-game huts", mods: ["MineColonies"],
+      b: `<p>Enchanter's Tower, Alchemist, Mechanic, Concrete Mixer, and the Nether Mine (Netherworker) for nether goods. Each one comes from research or needs higher-level huts.</p>` },
+    { id: "c-decor", layer: "s", t: "Decorations and roads", mods: ["Structurize", "MineColonies"],
+      b: `<p>The Build Tool also has decorations: walls, gates, wells, lamp posts, market stalls. Use the Structurize Shape Tool for roads and town walls, and let builders build the decorations for you.</p>` },
+    { id: "c-scan", layer: "s", t: "Save your own builds as blueprints", mods: ["Structurize"],
+      b: `<p>The Scan Tool saves any area as a blueprint, such as your hidden vault entrance or a disguised train station. You can then place copies with the Build Tool and builders will build them. This way the hidden tech grows with the town.</p>` },
+    { id: "c-done", layer: "p", t: "The town runs itself", mods: [],
+      b: `<p>Final check: an open request on the Clipboard gets filled without you doing anything, couriers keep the Warehouse stocked, and AE2 always has spare raw materials. All that's left is deciding what to build next.</p>` },
+  ]
+}
+];
+
+const LUA = `-- startup.lua : fill MineColonies requests from AE2
+local colony = peripheral.find("colony_integrator") or peripheral.find("colonyIntegrator")
+local me     = peripheral.find("me_bridge") or peripheral.find("meBridge")
+assert(colony, "No Colony Integrator found")
+assert(me, "No ME Bridge found")
+
+local OUT  = "up"   -- side of the ME Bridge the Stash sits on
+local SKIP = {      -- items the colony should make itself
+  ["minecraft:enchanted_book"] = true,
+}
+local crafting = {}  -- item name -> true while a craft job runs
+
+local function amount(item)
+  if not item then return 0 end
+  return item.count or item.amount or 0
+end
+
+local function fill(name, need)
+  if SKIP[name] then return end
+  local have = amount(me.getItem({ name = name }))
+  if have > 0 then
+    me.exportItem({ name = name, count = math.min(have, need) }, OUT)
+    crafting[name] = nil
+  elseif not crafting[name] and me.isItemCraftable({ name = name }) then
+    me.craftItem({ name = name, count = need })
+    crafting[name] = true
+    print("Crafting " .. need .. "x " .. name)
+  end
+end
+
+while true do
+  local ok, requests = pcall(colony.getRequests)
+  if ok and requests then
+    for _, req in ipairs(requests) do
+      local first = req.items and req.items[1]
+      if first then fill(first.name, req.count or 1) end
+    end
+  end
+  sleep(30)
+end`;
+
+/* ---------- state ---------- */
+let done = {};
+let layer = "all", modSel = "", hideDone = false;
+let store = null, saveTimer = null, saving = false, pending = false;
+const LS_KEY = "hollowmere-progress";
+
+function lsRead() { try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch (e) { return {}; } }
+function lsWrite() { try { localStorage.setItem(LS_KEY, JSON.stringify(done)); } catch (e) {} }
+function lsPrefs() { try { return JSON.parse(localStorage.getItem(LS_KEY + "-prefs") || "{}") || {}; } catch (e) { return {}; } }
+function lsSavePrefs() { try { localStorage.setItem(LS_KEY + "-prefs", JSON.stringify({ layer, modSel, hideDone })); } catch (e) {} }
+
+const syncEl = document.getElementById("sync");
+function setSync(t) { syncEl.textContent = t; }
+
+/* ---------- render ---------- */
+const allSteps = PHASES.flatMap(p => p.steps);
+const mods = [...new Set(allSteps.flatMap(s => s.mods))].sort((a, b) => a.localeCompare(b));
+const modFilter = document.getElementById("modFilter");
+mods.forEach(m => { const o = document.createElement("option"); o.value = m; o.textContent = m; modFilter.appendChild(o); });
+
+const LAYER_NAME = { s: "Surface", u: "Undercroft", p: "Planning" };
+const main = document.getElementById("main");
+const openState = {};
+
+function visible(s) {
+  if (layer !== "all" && s.layer !== layer) return false;
+  if (modSel && !s.mods.includes(modSel)) return false;
+  if (hideDone && done[s.id]) return false;
+  return true;
+}
+
+function render() {
+  main.textContent = "";
+  PHASES.forEach((ph, i) => {
+    const d = document.createElement("details");
+    d.className = "phase";
+    d.open = openState[ph.id] !== false;
+    d.addEventListener("toggle", () => { openState[ph.id] = d.open; });
+    const nDone = ph.steps.filter(s => done[s.id]).length;
+    const sum = document.createElement("summary");
+    sum.innerHTML = `<span class="ph-num"><span class="ph-chev">›</span> Phase ${i + 1}</span>
+      <span class="ph-title"></span>
+      <span class="ph-count ${nDone === ph.steps.length ? "full" : ""}">${nDone}/${ph.steps.length}</span>
+      <p class="ph-sub"></p>`;
+    sum.querySelector(".ph-title").textContent = ph.title;
+    sum.querySelector(".ph-sub").textContent = ph.sub;
+    d.appendChild(sum);
+
+    const ol = document.createElement("ol");
+    ol.className = "steps";
+    const vis = ph.steps.filter(visible);
+    vis.forEach(s => ol.appendChild(stepEl(s)));
+    if (!vis.length) {
+      const e = document.createElement("p");
+      e.className = "empty";
+      e.textContent = ph.steps.every(s => done[s.id]) && hideDone ? "Every step in this phase is finished." : "No steps match the current filter.";
+      d.appendChild(e);
+    } else d.appendChild(ol);
+    main.appendChild(d);
+  });
+  renderMeter();
+}
+
+function stepEl(s) {
+  const li = document.createElement("li");
+  li.className = `step ${s.layer}${done[s.id] ? " isdone" : ""}`;
+  const cb = document.createElement("input");
+  cb.type = "checkbox"; cb.id = "cb-" + s.id; cb.checked = !!done[s.id];
+  cb.addEventListener("change", () => toggle(s.id, cb.checked));
+  const body = document.createElement("div");
+  body.className = "st-body";
+  const chips = [`<span class="chip layer">${LAYER_NAME[s.layer]}</span>`]
+    .concat(s.mods.map(m => `<span class="chip">${m}</span>`)).join("");
+  body.innerHTML = `<div class="st-head"><label class="st-title" for="cb-${s.id}"></label><span class="chips">${chips}</span></div>
+    <div class="st-text">${s.b}</div>${s.tip ? `<div class="tip">${s.tip}</div>` : ""}`;
+  body.querySelector(".st-title").textContent = s.t;
+  if (s.code) body.querySelector(".st-text").appendChild(codeBox());
+  if (done[s.id]) {
+    const peek = document.createElement("button");
+    peek.type = "button";
+    peek.className = "chip";
+    peek.style.cssText = "border:0;cursor:pointer;font-family:var(--f-mono)";
+    peek.textContent = "show";
+    peek.addEventListener("click", () => {
+      li.classList.toggle("peek");
+      peek.textContent = li.classList.contains("peek") ? "hide" : "show";
+    });
+    body.querySelector(".chips").appendChild(peek);
+  }
+  li.append(cb, body);
+  return li;
+}
+
+function codeBox() {
+  const box = document.createElement("div");
+  box.className = "codebox";
+  box.innerHTML = `<div class="codebox-head"><span>startup.lua</span><button type="button">Copy</button></div><pre><code></code></pre>`;
+  box.querySelector("code").textContent = LUA;
+  const btn = box.querySelector("button");
+  btn.addEventListener("click", () => {
+    const done_ = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy", 1600); };
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents(box.querySelector("code"));
+      const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.textContent = "Selected: press Ctrl+C";
+    };
+    try { navigator.clipboard.writeText(LUA).then(done_, fallback); } catch (e) { fallback(); }
+  });
+  return box;
+}
+
+function renderMeter() {
+  const total = allSteps.length;
+  const meter = document.getElementById("meter");
+  meter.textContent = "";
+  ["p", "s", "u"].forEach(l => {
+    const n = allSteps.filter(s => s.layer === l && done[s.id]).length;
+    const i = document.createElement("i");
+    i.className = l; i.style.width = (n / total * 100) + "%";
+    meter.appendChild(i);
+  });
+  const n = allSteps.filter(s => done[s.id]).length;
+  document.getElementById("count").textContent = `${n} / ${total} steps`;
+  meter.setAttribute("aria-label", `${n} of ${total} steps finished`);
+}
+
+/* ---------- saving ---------- */
+function toggle(id, val) {
+  if (val) done[id] = true; else delete done[id];
+  lsWrite();
+  render();
+  queueSave();
+}
+
+function queueSave() {
+  if (!store) return;
+  clearTimeout(saveTimer);
+  setSync("Saving…");
+  saveTimer = setTimeout(flush, 700);
+}
+
+async function flush() {
+  if (!store) return;
+  if (saving) { pending = true; return; }
+  saving = true;
+  try {
+    await store.set({ done, updatedAt: Date.now() });
+    setSync("Saved to your account");
+  } catch (e) {
+    setSync("Saved in this browser only");
+  }
+  saving = false;
+  if (pending) { pending = false; flush(); }
+}
+
+/* ---------- filters ---------- */
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+  layer = b.dataset.layer;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  lsSavePrefs(); render();
+}));
+modFilter.addEventListener("change", () => { modSel = modFilter.value; lsSavePrefs(); render(); });
+const hideBox = document.getElementById("hideDone");
+hideBox.addEventListener("change", () => { hideDone = hideBox.checked; lsSavePrefs(); render(); });
+
+const resetBtn = document.getElementById("resetBtn"), resetYes = document.getElementById("resetYes"),
+      resetNo = document.getElementById("resetNo"), resetMsg = document.getElementById("resetMsg");
+resetBtn.addEventListener("click", () => { resetBtn.hidden = true; resetYes.hidden = false; resetNo.hidden = false; resetMsg.textContent = "Clear every tick? This can't be undone."; });
+resetNo.addEventListener("click", () => { resetBtn.hidden = false; resetYes.hidden = true; resetNo.hidden = true; resetMsg.textContent = "Start over in a new world?"; });
+resetYes.addEventListener("click", () => {
+  done = {}; lsWrite(); render(); queueSave();
+  resetNo.click(); resetMsg.textContent = "All ticks cleared.";
+});
+
+/* ---------- boot ---------- */
+(function boot() {
+  done = lsRead();
+  const prefs = lsPrefs();
+  if (prefs.layer) layer = prefs.layer;
+  if (prefs.modSel && mods.includes(prefs.modSel)) modSel = prefs.modSel;
+  hideDone = !!prefs.hideDone;
+  modFilter.value = modSel; hideBox.checked = hideDone;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.layer === layer)));
+  render();
+  setSync("Saved in this browser");
+
+  (async () => {
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+      if (!db || !user) return;
+      const id = await user.id();
+      if (!id) return;
+      store = db.doc(`data/users/${id}/progress`);
+      const snap = await store.get();
+      if (snap.exists) {
+        const remote = (snap.data() || {}).done || {};
+        done = Object.assign({}, remote);
+        lsWrite();
+        render();
+      } else if (Object.keys(done).length) {
+        await store.set({ done, updatedAt: Date.now() });
+      }
+      setSync("Saved to your account");
+    } catch (e) {
+      store = null;
+      setSync("Saved in this browser");
+    }
+  })();
+})();
+</script>
+
+</body>
+</html>

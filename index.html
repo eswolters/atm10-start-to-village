@@ -1533,12 +1533,44 @@ const PHASES = [
         "Automate harvesting (Mystical Agriculture's harvester or a Create harvester) into AE2",
         "Write AE2 patterns: essence → resources",
       ] },
-    { id: "e-mob", layer: "u", t: "Mob farm", mods: ["Industrial Foregoing"],
-      why: `<p>Guards need arrows, the Fletcher needs feathers and string, and many recipes need bones and gunpowder. A mob farm supplies these. Build it far from town so it doesn't affect citizens.</p>`,
+    { id: "e-pots", layer: "u", t: "A compact crop farm with Botany Pots", mods: ["Botany Pots", "Mystical Agriculture"],
+      why: `<p>The crop room above needs floor space and lights. <b>Botany Pots</b> grow the same Mystical Agriculture seeds in one block each. This pack has the Botany Pots add-on for Mystical Agriculture, so a pot accepts MA seeds as crops and the MA farmlands as soils: Inferium farmland adds 15% growth, and the bonus rises to 35% for Supremium. A <b>Hopper Botany Pot</b> has a hopper built in, so a row of them over a chest or pipe makes a small farm that empties itself. You still need the seeds and essence from the crop room step.</p>`,
+      warn: "Check how long each seed takes and which soils it accepts in JEI (look for the Botany Pots recipes) before you build a whole row.",
       subs: [
-        "Build a dark-room spawner or use an Industrial Foregoing mob farm",
-        "Send drops into AE2",
+        "Craft a Botany Pot (5 terracotta around a flower pot, so dig plenty of clay and smelt it), then a Hopper Botany Pot by adding a hopper",
+        "Make seeds for iron, copper, coal or stone first, as in the crop room step",
+        "Put a soil in the pot, then the seed, and wait for it to grow",
+        "Place a row of Hopper Botany Pots over a chest or a pipe",
+        "Send the harvest into AE2 with a Pipez or Laser IO line",
+        "Swap in better farmland (Inferium, then Prudentium and up) for faster growth",
+        "Write AE2 patterns for essence → resources, as in the crop room step",
+      ] },
+    { id: "e-mob", layer: "u", t: "Mob farm", mods: ["Mob Grinding Utils"],
+      why: `<p>Guards need arrows, the Fletcher needs feathers and string, and many recipes need bones and gunpowder. A mob farm supplies these. This one uses <b>Mob Grinding Utils</b>: plain blocks, no power. Mobs spawn in a dark room, <b>Entity Conveyors</b> and a <b>Fan</b> move them along, <b>Spikes</b> kill them, and an <b>Absorption Hopper</b> vacuums up the drops and XP into a chest. Build it far from town so it doesn't affect citizens.</p>`,
+      warn: "Mobs killed by Spikes do not count as player kills, so drops that need a player kill will not appear. The Mob Masher (Saw) does count as a player kill, but it needs diamonds.",
+      subs: [
+        "Dig a room at least 20 blocks from town and light-proof it: solid walls and roof, or Tinted Glass, and no torches inside",
+        "Lay a floor of Entity Conveyors: mobs can spawn on them, and they carry mobs along",
+        "Put a Fan behind the conveyors, facing the kill end, to push mobs along",
+        "At the kill end place a row of Spikes: mobs that reach them die and drop their loot and XP",
+        "Place an Absorption Hopper over the spikes (it vacuums items and XP in a 7×7×7 area) and set its output side to a chest",
+        "Light the outside of the room so nothing spawns around it",
+        "Send the chest into AE2 with a Pipez or Laser IO line",
         "Remember to force-load the chunk if it's outside your normal play area",
+      ] },
+    { id: "e-bees", layer: "s", t: "A bee farm with Productive Bees", mods: ["Productive Bees"],
+      why: `<p><b>Productive Bees</b> turns bees into a quiet material supply. Bees in an <b>Advanced Beehive</b> drop honeycombs into the hive's own inventory, so there is no shearing, and a <b>Centrifuge</b> turns combs into useful items and honey. Start with the easy part: honey and combs. Metal bees (iron, copper, tin and more) are a big project. They come from breeding, and the main route needs the Crystalline Bee, which only comes from a Quartz Nest placed in the Nether, so plan a Nether trip. The quest book's Productive Bees chapter and the guide book it rewards list every bee and its parents.</p>`,
+      warn: "Bees only make combs if they have their flower, and most bees need a specific one. Vanilla bees take any flower. Check each bee's flower in JEI.",
+      subs: [
+        "Craft a vanilla Beehive (planks and honeycomb) and put it near flowers, or find a wild nest and shear it for combs",
+        "Craft Bee Cages (2 planks and a honey bottle) and capture a few bees by right-clicking them",
+        "Craft an Advanced Beehive (a vanilla beehive, 2 honeycombs, a campfire, shears and 4 planks) and put the bees in",
+        "Put the bees' flower, or a Feeding Slab holding it, in front of the hive",
+        "Craft Honey Treats (a honeycomb and a honey bottle), then right-click a Wood Nest with one to lure a bee: it works in any Overworld biome",
+        "Build a Centrifuge (7 iron ingots around a grindstone) and process the combs. A Powered Centrifuge is faster",
+        "Put an Expansion Box on top of each hive for more bees and upgrade slots",
+        "Pipe the hive and centrifuge outputs into AE2",
+        "Later: breed metal bees. The quest book chapter lists each bee's parents",
       ] },
   ]
 }
@@ -1591,6 +1623,7 @@ const EXTRA = {
       ["The drill doesn't turn", "Too much stress: you're asking for more than the water wheel gives. Remove a drill or add a second wheel."],
       ["The drill turns but nothing appears", "The drill doesn't point exactly at the block where cobble forms. Ponder (W) shows the right position."],
     ],
+    tip: "<b>Want a ready-made generator?</b> Cobblegen Galore adds Block Generators that take a water source on one side and a lava source on the other and make blocks without flowing liquid. A Stone Block Generator is 6 smooth stone around 2 glass. Search <i>Block Generator</i> in JEI to see every recipe (cobblestone, stone, andesite, diorite, granite, tuff, basalt and more) and how to set it up. Do the Create build first, because it teaches rotation and stress.",
     next: "More water wheels in a row add up their capacity. A larger water wheel gives more." },
   "u-vault": { check: "No mobs spawn in the vault, and you can reach it from town without being seen." },
   "u-create-basics": { fix: [["The network stops and the shafts show red particles", "It's overstressed. Lower the speed (RPM) or add another source."]] },
@@ -1669,9 +1702,11 @@ const EXTRA = {
     ] },
   "e-ma": { opt: true, next: "Higher-tier farmland and more accelerators. Essence from many crops can go into the same AE2 pattern." },
   "e-mining": { opt: true, fix: [["The miner stops when you leave", "Its chunk isn't force-loaded. Check the FTB Chunks map."]] },
-  "e-trains": { opt: true },
+  "e-trains": { opt: true, tip: "Sturdy Sheets start from obsidian powder (crush obsidian). A Cobblegen Galore Block Generator can make the obsidian: see the tip in <i>Scale up power</i>." },
   "e-mob": { opt: true },
-  "e-power": { next: "Measure first: put an Energy Detector or look at the cell's input/output, and add generation 20% above use." },
+  "e-pots": { opt: true },
+  "e-bees": { opt: true },
+  "e-power": { tip: "<b>Obsidian for Flux Cores:</b> each batch of Flux Cores needs 4 obsidian. A Cobblegen Galore Block Generator has an obsidian recipe (water on one side, lava on the other). It uses up the lava source each time, so keep the lava topped up. Check it in JEI under Block Generator.", next: "Measure first: put an Energy Detector or look at the cell's input/output, and add generation 20% above use." },
   "c-late": { opt: true },
   "c-scan": { opt: true },
 };
@@ -2195,6 +2230,7 @@ raw("milk_bucket", "Milk bucket", CAT_FARM, "Use an empty bucket on a cow.", [["
 raw("cocoa_beans", "Cocoa beans", CAT_FARM, "Cocoa pods grow on jungle logs in jungle biomes. Plant beans on a jungle log to grow more.", [["By hand", "Harvest pods in a jungle.", "s-food"]]);
 raw("wheat_seeds", "Wheat seeds", CAT_FARM, "Break tall grass.", [["By hand", "Break grass.", "s-food"], ["Colony", "The Farm grows its own seeds.", "f-farm"]]);
 raw("nether_wart", "Nether wart", CAT_OTHER, "Found in Nether fortresses, where it grows on soul sand. Replant it to farm it.", [["By hand", "Harvest it in a Nether fortress.", "s-ores"]]);
+raw("honey_bottle", "Honey bottle", CAT_FARM, "Use a glass bottle on a full beehive or bee nest. The Apiary (Beekeeper) also makes honey.", [["By hand", "Bottle a full hive.", "e-bees"], ["Colony", "The Apiary (Beekeeper) produces honey and honeycomb.", "g-raw"]]);
 raw("flint", "Flint", CAT_EARTH, "Gravel drops it now and then when you dig it.", [["By hand", "Dig gravel with a shovel until it drops.", "s-food"]]);
 raw("water_bucket", "Water bucket", CAT_OTHER, "Use a bucket on any water source.", [["By hand", "Scoop it from a lake or river.", "s-food"]]);
 raw("farmland", "Farmland", CAT_FARM, "Till dirt or grass with a hoe. It needs water within 4 blocks to stay wet.", [["By hand", "Hoe the ground next to water.", "s-food"]]);
@@ -2299,16 +2335,19 @@ const MAT_FOR = {
   "s-food": { items: [["flint_knife", 1], ["cutting_board", 1], ["cooking_pot", 1]] },
   "c-decor": { items: [["build_tool", 1]] },
   "e-ma": { items: [["infusion_altar", 1], ["infusion_pedestal", 8], ["infusion_crystal", 1], ["inferium_seeds", 1], ["inferium_farmland", 9], ["growth_accelerator", 4]], sug: true },
-  "e-mob": { items: [["hopper", 4], ["chest", 2], ["bucket", 2], ["iron_sword", 1]], sug: true },
+  "e-mob": { items: [["mgu_spikes", 4], ["mgu_entity_conveyor", 12], ["mgu_fan", 1], ["mgu_absorption_hopper", 1], ["mgu_tinted_glass", 16], ["chest", 1]], sug: true },
+  "e-pots": { items: [["hopper_botany_pot", 4], ["chest", 1]], sug: true },
+  "e-bees": { items: [["advanced_oak_beehive", 1], ["bee_cage", 4], ["honey_treat", 4], ["oak_wood_nest", 1], ["stone_nest", 1], ["centrifuge", 1]], sug: true },
   "e-power": { items: [["reactor_starter", 1], ["flux_controller", 1], ["flux_plug", 2], ["flux_point", 2]], sug: true },
 };
 
 /* steps that point at things you gather, with the cards to open on the Materials tab */
 /* where the optional side projects (the last section of the guide) pay off: step id -> [side step, why] */
 const SIDE_FOR = {
+  "e-ma": [["e-pots", "Short on space? Botany Pots grow the same seeds one block each."]],
   "s-ores": [["e-ma", "Much later, Mystical Agriculture can grow iron, copper and coal as crops, so you will need to mine less."]],
   "u-create-ore": [["e-ma", "If iron or copper still runs short after the ore line, a crop room can grow them instead."]],
-  "g-raw": [["e-mob", "The Fletcher needs string and feathers, and many recipes need bones and gunpowder. A mob farm keeps all of them coming."]],
+  "g-raw": [["e-mob", "The Fletcher needs string and feathers, and many recipes need bones and gunpowder. A mob farm keeps all of them coming."], ["e-bees", "The Apiary only makes honey and honeycomb. A bee farm can also make other items from combs."]],
   "g-guards": [["e-mob", "Archers use arrows, and skeletons drop arrows and bones. A mob farm supplies them without you hunting."]],
   "l-stash": [["e-ma", "Seeds for wood, stone, coal and iron can fill the Warehouse for you."], ["e-mob", "Bones, string and feathers can flow into AE2 the same way."]],
   "c-five": [["e-ma", "Level 5 buildings ask for huge stacks of materials. A crop room is the easiest way to keep up."]],
@@ -2317,6 +2356,8 @@ const SIDE_FOR = {
 const FIND_FOR = {
   "s-food": ["flint", "wheat_seeds", "farmland", "water_bucket"],
   "e-ma": ["inferium_essence", "prosperity_shard"],
+  "e-pots": ["inferium_essence", "prosperity_shard"],
+  "e-bees": ["honeycomb", "honey_bottle"],
   "e-power": ["flux_dust"],
   "s-wood": ["log", "cobblestone", "sand", "coal"],
   "s-ores": ["raw_iron", "raw_copper", "raw_gold", "redstone", "diamond", "coal", "raw_zinc", "raw_osmium", "raw_tin"],

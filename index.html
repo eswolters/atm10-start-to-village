@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one reading column. Each step carries a layer stripe: moss = surface town, teal = hidden undercroft tech, slate = planning. */
+/* Layout: one reading column. Each step carries a layer stripe: moss = surface town, teal = hidden undercroft tech, slate = planning. Steps open into sub-step checklists, recipe tables and layout sketches. */
 :root {
   --bg: #eceee8;
   --panel: #f7f8f4;
@@ -26,6 +26,7 @@
   --slate-soft: #e1e3ea;
   --done: #8a948b;
   --code-bg: #e2e6dd;
+  --warn: #8a5a12;
   --f-display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
   --f-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -34,14 +35,14 @@
   :root:not([data-theme="light"]) {
     --bg: #131714; --panel: #1b201c; --fg: #e2e6df; --muted: #9aa49b; --line: #2f3830;
     --moss: #8fc07c; --moss-soft: #263423; --tech: #62c4d0; --tech-soft: #18313a;
-    --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310;
+    --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310; --warn: #e0b060;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #131714; --panel: #1b201c; --fg: #e2e6df; --muted: #9aa49b; --line: #2f3830;
   --moss: #8fc07c; --moss-soft: #263423; --tech: #62c4d0; --tech-soft: #18313a;
-  --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310;
+  --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310; --warn: #e0b060;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -51,18 +52,20 @@ body {
 }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--panel); }
 .wrap {
-  max-width: 820px; margin: 0 auto;
+  max-width: 860px; margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 header.intro { padding-block: 40px 20px; }
 .eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(36px, 7vw, 54px); line-height: 1.05; margin: 6px 0 12px; text-wrap: balance; }
-.lede { margin: 0; max-width: 62ch; color: var(--fg); }
-.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 16px; font-size: 15px; color: var(--muted); }
+.lede { margin: 0 0 10px; max-width: 64ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; font-size: 15px; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .sw { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
 .sw.s { background: var(--moss); } .sw.u { background: var(--tech); } .sw.p { background: var(--slate); }
+.howto { margin-top: 14px; font-size: 15px; color: var(--muted); max-width: 70ch; }
+.howto kbd { font-family: var(--f-mono); font-size: 12px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; background: var(--panel); color: var(--fg); }
 
 .bar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
@@ -80,25 +83,28 @@ h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(36px, 7vw
 .seg button { font: inherit; font-size: 14px; background: transparent; color: var(--fg); border: 0; padding: 5px 11px; cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--line); }
 .seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
-select, .chk-lbl { font: inherit; font-size: 14px; }
-select { background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; max-width: 100%; }
+select, input[type="search"], .chk-lbl, .tbtn { font: inherit; font-size: 14px; }
+select, input[type="search"] { background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; max-width: 100%; }
+input[type="search"] { flex: 1 1 160px; min-width: 0; }
 .chk-lbl { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); cursor: pointer; }
+.tbtn { background: transparent; color: var(--fg); border: 1px solid var(--line); border-radius: 4px; padding: 5px 10px; cursor: pointer; }
 button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--tech); outline-offset: 2px; }
 
-main { padding-block: 24px 64px; display: flex; flex-direction: column; gap: 14px; }
+main { padding-block: 24px 48px; display: flex; flex-direction: column; gap: 14px; }
 details.phase { border-top: 1px solid var(--line); }
 details.phase > summary {
   list-style: none; cursor: pointer; padding-block: 16px 10px;
   display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: baseline;
 }
 details.phase > summary::-webkit-details-marker { display: none; }
-.ph-num { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+.ph-num { font-family: var(--f-mono); font-size: 13px; color: var(--muted); white-space: nowrap; }
 .ph-title { font-family: var(--f-display); font-size: 27px; line-height: 1.15; text-wrap: balance; min-width: 0; }
 .ph-count { font-family: var(--f-mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .ph-count.full { color: var(--moss); }
 .ph-sub { grid-column: 2 / 4; color: var(--muted); font-size: 15px; margin: 0; }
 .ph-chev { transition: transform .2s; display: inline-block; }
 details.phase[open] .ph-chev { transform: rotate(90deg); }
+.ph-intro { margin: 0 0 12px; max-width: 70ch; font-size: 16px; }
 
 ol.steps { list-style: none; margin: 6px 0 18px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 li.step {
@@ -108,29 +114,49 @@ li.step {
 li.step.s { border-left-color: var(--moss); }
 li.step.u { border-left-color: var(--tech); }
 li.step.p { border-left-color: var(--slate); }
-li.step input[type="checkbox"] { width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--moss); cursor: pointer; }
+input[type="checkbox"] { width: 20px; height: 20px; margin: 3px 0 0; accent-color: var(--moss); cursor: pointer; }
 li.step.u input[type="checkbox"] { accent-color: var(--tech); }
+li.step.p input[type="checkbox"] { accent-color: var(--slate); }
 .st-body { min-width: 0; }
 .st-head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
 .st-title { font-weight: 700; font-size: 17px; cursor: pointer; }
-.chips { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.chips { display: inline-flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 .chip { font-family: var(--f-mono); font-size: 11px; padding: 1px 6px; border-radius: 2px; background: var(--slate-soft); color: var(--fg); white-space: nowrap; }
 li.step.s .chip.layer { background: var(--moss-soft); color: var(--moss); }
 li.step.u .chip.layer { background: var(--tech-soft); color: var(--tech); }
-.st-text { margin-top: 4px; color: var(--fg); }
-.st-text p { margin: 0 0 6px; }
-.st-text ul { margin: 4px 0 6px; padding-left: 20px; }
-.st-text li { margin: 2px 0; }
-.tip { margin-top: 6px; font-size: 15px; color: var(--muted); }
+.st-prog { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.st-toggle { font: inherit; font-family: var(--f-mono); font-size: 12px; background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 3px; padding: 0 7px; cursor: pointer; margin-left: auto; }
+.st-detail { margin-top: 6px; display: flex; flex-direction: column; gap: 10px; }
+.st-why { margin: 0; }
+.st-why p { margin: 0 0 6px; }
+.st-why p:last-child { margin-bottom: 0; }
+.st-why ul { margin: 4px 0 6px; padding-left: 20px; }
+
+.blk-label { font-family: var(--f-mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+ul.subs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+ul.subs li { display: grid; grid-template-columns: 22px 1fr; gap: 0 8px; align-items: start; }
+ul.subs input[type="checkbox"] { width: 17px; height: 17px; margin-top: 4px; }
+ul.subs label { cursor: pointer; min-width: 0; }
+ul.subs li.sdone label { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+.recipes { overflow-x: auto; }
+.recipes table { border-collapse: collapse; width: 100%; font-size: 15px; }
+.recipes th, .recipes td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.recipes th { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.recipes td:first-child { font-weight: 500; white-space: nowrap; }
+.recipes .rnote { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.diagram { border: 1px solid var(--line); border-radius: 3px; background: var(--code-bg); }
+.diagram .dh { padding: 5px 10px; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.diagram pre { margin: 0; padding: 10px 12px; overflow-x: auto; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.45; }
+
+.tip { font-size: 15px; color: var(--muted); }
 .tip b { color: var(--fg); font-weight: 500; }
+.warn { font-size: 15px; color: var(--warn); }
 code { font-family: var(--f-mono); font-size: .86em; background: var(--code-bg); padding: 1px 4px; border-radius: 2px; overflow-wrap: anywhere; }
 li.step.isdone .st-title { text-decoration: line-through; color: var(--done); }
-li.step.isdone .st-text, li.step.isdone .tip { color: var(--done); }
-li.step.isdone .st-text { display: none; }
-li.step.isdone .tip { display: none; }
-li.step.isdone.peek .st-text, li.step.isdone.peek .tip { display: block; }
 
-.codebox { margin-top: 8px; border: 1px solid var(--line); border-radius: 3px; background: var(--code-bg); }
+.codebox { border: 1px solid var(--line); border-radius: 3px; background: var(--code-bg); }
 .codebox-head { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
 .codebox-head button { font: inherit; font-size: 12px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 3px; padding: 3px 9px; cursor: pointer; }
 .codebox pre { margin: 0; padding: 10px 12px; overflow-x: auto; font-family: var(--f-mono); font-size: 12.5px; line-height: 1.5; }
@@ -146,19 +172,21 @@ li.step.isdone.peek .st-text, li.step.isdone.peek .tip { display: block; }
   body { font-size: 16px; }
   .ph-title { font-size: 23px; }
   .ph-sub { grid-column: 1 / 4; }
+  li.step { padding: 10px 10px; grid-template-columns: 24px 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
 <header class="intro wrap">
-  <div class="eyebrow">All the Mods 10 · MineColonies town · new world → full automation</div>
+  <div class="eyebrow">All the Mods 10 · MineColonies town · new world → full automation · solo</div>
   <h1>Hollowmere Town Plan</h1>
-  <p class="lede">A medieval MineColonies town on the surface, with its high-tech core hidden underneath in an <em>undercroft</em>. Each step teaches you one system and feeds the next: Create, Mekanism, Powah, AE2, then a ComputerCraft script that fills the colony's requests from your ME system. Tick steps off as you go. Your progress is saved.</p>
+  <p class="lede">A medieval MineColonies town on the surface, with its high-tech core hidden underneath in an <em>undercroft</em>. Each step explains why it matters, then breaks into small sub-steps you tick off. Many steps also have a table of key ingredients and a sketch of the machine layout. The systems build on each other: Create, Powah, Mekanism, AE2, and finally a ComputerCraft script that fills the colony's requests from your ME system.</p>
   <div class="legend">
     <span><i class="sw p"></i>Planning</span>
     <span><i class="sw s"></i>Surface town (MineColonies)</span>
     <span><i class="sw u"></i>Undercroft (hidden tech)</span>
   </div>
+  <p class="howto">Recipes list the <b>key ingredients</b>. For the exact grid, hover an item in JEI and press <kbd>R</kbd> (how to make it) or <kbd>U</kbd> (what it's used in). For AE2 parts, hold <kbd>G</kbd> over an item to open AE2's in-game guide.</p>
 </header>
 
 <div class="bar">
@@ -175,7 +203,10 @@ li.step.isdone.peek .st-text, li.step.isdone.peek .tip { display: block; }
         <button type="button" data-layer="u" aria-pressed="false">Undercroft</button>
       </div>
       <select id="modFilter" aria-label="Filter by mod"><option value="">Every mod</option></select>
-      <label class="chk-lbl"><input type="checkbox" id="hideDone"> Hide finished steps</label>
+      <input type="search" id="q" placeholder="Search steps, e.g. warehouse" aria-label="Search steps">
+      <label class="chk-lbl"><input type="checkbox" id="hideDone"> Hide finished</label>
+      <button type="button" class="tbtn" id="expandAll">Expand all</button>
+      <button type="button" class="tbtn" id="collapseAll">Collapse all</button>
     </div>
   </div>
 </div>
@@ -183,7 +214,7 @@ li.step.isdone.peek .st-text, li.step.isdone.peek .tip { display: block; }
 <main class="wrap" id="main"></main>
 
 <footer class="wrap" style="padding-block: 0 48px; display:flex; flex-direction:column; gap:14px;">
-  <div class="note">ATM10 updates add and remove mods. If an item named here doesn't show up in JEI, check the ATM10 quest book for that chapter, or use the closest equivalent. Recipes change between versions, so look them up in JEI rather than relying on memory.</div>
+  <div class="note">Written for solo play on a recent ATM10 (Minecraft 1.21.1, NeoForge). ATM10 updates add and remove mods and change recipes, so treat ingredient lists as a guide and JEI as the authority. The request-filler script targets Advanced Peripherals for 1.21.1 and also handles the older function names.</div>
   <div class="reset-row">
     <span id="resetMsg">Start over in a new world?</span>
     <button type="button" id="resetBtn">Clear all ticks</button>
@@ -193,314 +224,1057 @@ li.step.isdone.peek .st-text, li.step.isdone.peek .tip { display: block; }
 </footer>
 
 <script>
+/* Step fields: t title, layer p/s/u, mods, why (html), subs (html strings, each a tickable sub-step),
+   recipes [item, key ingredients, made in], diagram {h, d}, tip, warn, code */
 const PHASES = [
 {
-  id: "plan", title: "Plan before you place a block", sub: "Ten minutes of planning saves hours of moving buildings later.",
+  id: "plan", title: "Plan before you place a block",
+  sub: "Ten minutes of planning saves hours of moving buildings later.",
+  intro: "MineColonies buildings are big and hard to move once built. The town and the tech underneath also have to stay out of each other's way. Decide the layout first.",
   steps: [
     { id: "p-site", layer: "p", t: "Choose the town site", mods: ["MineColonies"],
-      b: `<p>Look for a wide, fairly flat area (plains, meadow or a forest edge) with a river or lake beside it and trees nearby. The fisher needs open water, and the forester needs room for a tree plot.</p>
-      <ul><li>Stay away from your spawn base and other big builds. The colony claims chunks around the Town Hall, and the claim grows as you level it up.</li>
-      <li>Build only in the Overworld. The ATM Mining and Other dimensions are meant for resource gathering and can be reset by pack updates.</li></ul>` },
-    { id: "p-layers", layer: "p", t: "Sketch the two layers", mods: [],
-      b: `<p>Decide now where the hidden tech goes. A good default:</p>
-      <ul><li><b>Surface:</b> the town itself. Only MineColonies buildings, decorations, roads, and machines that pass for medieval (Create windmills and water wheels).</li>
-      <li><b>Undercroft:</b> a large vault roughly 15–25 blocks under the town centre, for AE2, Mekanism, Powah and storage.</li>
-      <li><b>Mine district:</b> at least about 50 blocks from the vault. The Miner's Hut digs a shaft and tunnels that would hit your vault otherwise.</li></ul>`,
-      tip: `<b>Why:</b> building footprints include a few blocks of foundation, and the builder clears whatever is in the way. If you keep the vault deep and away from the mine, it stays safe.` },
-    { id: "p-style", layer: "p", t: "Pick one blueprint style", mods: ["MineColonies", "Structurize"],
-      b: `<p>For a medieval fantasy look, use <b>Medieval Spruce</b> or <b>Medieval Dark Oak</b> for the core of the town. <b>Shire</b> works for a hobbit-style quarter, and <b>Fortress</b> works for the walls and guard district. The Build Tool lists the styles installed in your ATM10 version, so browse them there.</p>
-      <p>Use one style for most buildings so they all need the same materials. That keeps the builders' shopping list short and easier to automate.</p>` },
+      why: `<p>The Town Hall claims a block of chunks around itself, and the claim grows as the colony levels up. Citizens walk everywhere, so a flat site means shorter trips and fewer stuck citizens. The fisher needs a body of open water, and the forester needs a patch of trees it can cut and replant.</p>`,
+      subs: [
+        "Find a plains, meadow or forest-edge biome with at least 150×150 blocks of mostly flat ground",
+        "Check there's a river or lake at least 10×10 blocks next to it (for the fisher)",
+        "Check there's a forest close by, or room to plant one (for the forester)",
+        "Make sure it's at least 200 blocks from anything you've built that you don't want inside the colony border",
+        "Stand in the middle, press <kbd>F3</kbd> and write down the coordinates of the future town square",
+        "Mark the centre with a tall pillar or a torch tower so you can find it again",
+      ],
+      warn: `Build only in the Overworld. The ATM Mining and Other dimensions are for gathering resources and can be reset by pack updates.` },
+    { id: "p-layers", layer: "p", t: "Sketch the two layers and the mine district", mods: [],
+      why: `<p>Three areas must stay apart. The <b>surface town</b> has only MineColonies buildings, decorations and machines that look medieval. The <b>undercroft</b> is a large vault under the town holding all the modern tech. The <b>mine district</b> is where the colony's Miner digs down. A mine shaft dug into your vault would be a disaster.</p>`,
+      subs: [
+        "Pick where the Warehouse will go: right above the undercroft, so cables reach it easily",
+        "Pick the mine district at least 50 blocks from the undercroft, at the edge of the colony",
+        "Plan the vault depth: its ceiling at least 12 blocks below the lowest building foundation",
+        "Pick a hidden entrance spot (Tavern cellar, under a market stall, or behind a waterfall)",
+      ],
+      diagram: { h: "Cross-section (not to scale)", d:
+`        windmill            Town Hall      Warehouse               Miner's Hut
+          /||               ______           _____                    |##|
+ ~~river~~/||~~~~~~~______|_____|______|_____|_______________________|##|____  surface
+           ||          (foundations go 3-6 blocks down)               |##|
+           ||                                                         |##|  mine shaft
+           || shaft                                                   |##|  and tunnels
+   ........||.......................|..............                   |##|
+   :  UNDERCROFT  (Y about -10)     | cable up to the Warehouse       |##|
+   :  AE2 · Mekanism · Powah ·      |                                 |##|
+   :  Create machines               |                                 |##|
+   :................................:                                 |##|
+            at least 12 blocks of rock above      <-- 50+ blocks gap --> ` } },
+    { id: "p-style", layer: "p", t: "Pick a blueprint style", mods: ["MineColonies", "Structurize"],
+      why: `<p>Every building comes in several <b>styles</b>, which are full sets of blueprints. They share a footprint and a job but use different blocks. Using one style for most of the town keeps the materials list short: if every building wants spruce logs, spruce planks and stone bricks, it's much easier to keep those stocked automatically.</p>
+      <p>Good choices for a medieval fantasy town are <b>Medieval Spruce</b> or <b>Medieval Dark Oak</b> for the core, <b>Fortress</b> for walls and guard buildings, and <b>Shire</b> for a cosy side quarter. ATM10 also includes extra community style packs. You'll browse all of them in the Build Tool once the colony exists.</p>`,
+      subs: [
+        "Decide your main wood type based on the style (spruce or dark oak are typical)",
+        "Plan a tree farm of that wood type for the forester",
+        "Note a second style for walls and towers if you want contrast",
+      ] },
+    { id: "p-solo", layer: "p", t: "Understand solo chunk loading", mods: ["MineColonies", "FTB Chunks"],
+      why: `<p>In singleplayer, the world only runs near you. When you're in the mines, the Mining dimension or far away exploring, the colony is <b>frozen</b>: builders stop building and farms stop growing. Machines in the undercroft stop too, unless their chunks are force-loaded.</p>`,
+      subs: [
+        "Plan to idle or do crafting near the town whenever you can: that's when it grows",
+        "Later, force-load the undercroft chunks with FTB Chunks so ore processing and crafting keep running",
+        "Don't force-load the whole colony: it's large and will hurt performance",
+      ],
+      tip: `<b>FTB Chunks:</b> open the map (<kbd>M</kbd>), then claim chunks by dragging with the left mouse button. Force-load claimed chunks with Shift+click. Your force-load limit is shown on the map screen.` },
     { id: "p-quests", layer: "p", t: "Open the ATM10 quest book", mods: ["FTB Quests"],
-      b: `<p>The quest book has chapters for MineColonies, Create, Mekanism, AE2 and more, and the quests often give useful rewards. Use it next to this plan. Quests cover how each mod works, and this plan covers the order to do things in.</p>` },
+      why: `<p>The quest book has chapters for MineColonies, Create, Mekanism, AE2 and more, and finished quests often give useful rewards. Use it alongside this plan: quests explain how each mod works, and this plan gives you the order.</p>`,
+      subs: [
+        "Open the quest book and look through the chapters",
+        "Pin the MineColonies and AE2 chapters so you see their progress",
+      ] },
   ]
 },
 {
-  id: "survive", title: "Survive and gear up", sub: "Days 1–3. Collect what the colony will need and get tools to keep you alive.",
+  id: "survive", title: "Survive and gear up",
+  sub: "Days 1–3. Collect what the colony will need and get tools to keep you alive.",
+  intro: "The colony needs a lot of basic materials before citizens can supply themselves. Stockpile now, so the first builder never sits waiting.",
   steps: [
     { id: "s-wood", layer: "s", t: "Stockpile wood and stone", mods: [],
-      b: `<p>Gather about 4–6 stacks of logs (match your style: spruce or dark oak) and a few stacks of cobblestone. The first builder's huts and residences mostly use planks, logs, slabs, stairs, fences and cobble.</p>` },
-    { id: "s-pack", layer: "s", t: "Craft a backpack and early storage", mods: ["Sophisticated Backpacks", "Functional Storage"],
-      b: `<p>A Sophisticated Backpack frees up inventory space right away. For a temporary base, a few Functional Storage drawers keep logs, cobble and dirt sorted.</p>` },
-    { id: "s-iron", layer: "s", t: "Get iron gear and a better furnace", mods: ["Iron Furnaces"],
-      b: `<p>Iron tools and armour, plus an Iron Furnace (or better) so you can smelt quickly. Keep spare iron: you'll be giving citizens axes, pickaxes and hoes soon.</p>` },
-    { id: "s-food", layer: "s", t: "Start food crops", mods: ["Farmer's Delight"],
-      b: `<p>Plant a small wheat, carrot and potato patch and collect any other seeds you find. These seeds start the colony's farm fields later, and Farmer's Delight meals keep you fed in the meantime.</p>` },
-    { id: "s-way", layer: "s", t: "Put a waystone at the town site", mods: ["Waystones"],
-      b: `<p>Craft or find a waystone, place it where the town square will go, and set your bed there. From now on, every trip to the mines or the Mining dimension ends with a quick warp home.</p>` },
+      why: `<p>The first buildings use wood and stone almost exclusively. A level 1 hut typically needs 1–3 stacks of planks, half a stack of logs, plus slabs, stairs, fences, a few glass panes and torches. The exact list depends on the style and building, and the Build Tool shows it before you place.</p>`,
+      subs: [
+        "Chop 6 stacks of logs of your style's main wood",
+        "Replant every sapling you get, and keep a stack of them for the forester",
+        "Mine 4 stacks of cobblestone",
+        "Collect 1 stack of sand and smelt it into glass",
+        "Make 64 torches (charcoal works if you have no coal)",
+      ] },
+    { id: "s-tools", layer: "s", t: "Stone tools, then iron gear", mods: ["Iron Furnaces"],
+      why: `<p>You'll be mining a lot in the first days. Iron tools and armour keep you alive, and an Iron Furnace smelts faster than a vanilla furnace. Its upgrades (gold, diamond, and further) make it faster again. Keep spare iron, because citizens need tools: foresters need axes, farmers need hoes, miners need pickaxes.</p>`,
+      subs: [
+        "Craft stone tools and a vanilla furnace",
+        "Mine iron at Y 16 (or in mountains around Y 232) until you have 3 stacks of raw iron",
+        "Craft a full set of iron armour, a shield and iron tools",
+        "Craft an Iron Furnace (iron ingots around a furnace)",
+        "Put 3 spare iron axes, pickaxes and hoes in a chest for future citizens",
+      ],
+      recipes: [
+        ["Iron Furnace", "8 iron ingots + furnace", "crafting table"],
+        ["Furnace upgrade kits", "materials of the next tier + the previous furnace's tier", "crafting table, applied by right-clicking the furnace"],
+      ] },
+    { id: "s-pack", layer: "s", t: "Backpack and early storage", mods: ["Sophisticated Backpacks", "Functional Storage"],
+      why: `<p>A backpack frees up inventory space for the long mining trips ahead. Drawers keep large amounts of one item (cobble, logs, dirt) in a single block, and you can see how many are stored.</p>`,
+      subs: [
+        "Craft a Sophisticated Backpack",
+        "Add a Pickup Upgrade so mined blocks go straight into the pack",
+        "Build 6–8 drawers for logs, planks, cobble, dirt, sand and gravel",
+        "Later: upgrade the backpack (iron → gold → diamond) and add a Magnet Upgrade",
+      ],
+      recipes: [
+        ["Backpack", "leather, string, chest", "crafting table"],
+        ["Pickup Upgrade", "upgrade base + hopper and other items (check JEI)", "crafting table"],
+        ["Oak Drawer (1×1)", "planks around a chest", "crafting table"],
+      ] },
+    { id: "s-food", layer: "s", t: "Start food crops and Farmer's Delight", mods: ["Farmer's Delight"],
+      why: `<p>Farmer's Delight meals give long-lasting saturation, so you spend less time eating. Every seed you collect now can be planted later in colony fields, giving the cook more ingredients.</p>`,
+      subs: [
+        "Plant a 9×9 field of wheat, carrots and potatoes next to water",
+        "Collect any rice, cabbage, tomato and onion you find (wild crops)",
+        "Craft a Flint Knife, a Cutting Board and a Cooking Pot",
+        "Cook a batch of stew or soup for the first mining trip",
+      ] },
+    { id: "s-ores", layer: "s", t: "Mining trip for tech ores", mods: ["Mekanism", "Create"],
+      why: `<p>Each tech mod needs its own ore. <b>Osmium</b> is the Mekanism metal. <b>Zinc</b> is Create's metal and goes into brass. Lots of <b>redstone</b> goes into Mekanism circuits and AE2. A few <b>diamonds</b> are needed for AE2 engineering processors.</p>`,
+      subs: [
+        "Mine about 1 stack of osmium ore (Mekanism)",
+        "Mine about 1 stack of zinc ore (Create)",
+        "Mine 2 stacks of copper ore (around Y 48)",
+        "Mine 3 stacks of redstone (deepslate level, Y −59)",
+        "Find 10+ diamonds (Y −59)",
+        "Mine 2 stacks of coal for early power and torches",
+        "Bring back any tin, lead or uranium ore you find. Don't smelt it yet, Mekanism doubles it later",
+      ],
+      tip: `<b>Why keep raw ore:</b> smelting raw ore directly gives 1 ingot. Once Create or Mekanism is running, the same ore gives 1.75× to 5× as much. Store raw ore you don't need right away.` },
+    { id: "s-waystone", layer: "s", t: "Put a waystone at the town site", mods: ["Waystones"],
+      why: `<p>A waystone lets you teleport home from any other waystone, or with a Warp Scroll/Warp Stone. You'll travel back and forth constantly, so this saves a lot of time.</p>`,
+      subs: [
+        "Craft a Warp Stone (ender pearls and amethyst, check JEI)",
+        "Craft a waystone or take one from a village",
+        "Place it at the future town square and name it",
+        "Sleep in a bed at the site to set your spawn",
+      ] },
   ]
 },
 {
-  id: "found", title: "Found the colony", sub: "Town Hall, the first builder, homes and food. The town starts running itself here.",
+  id: "found", title: "Found the colony",
+  sub: "Town Hall, the first builder, homes, food and a warehouse.",
+  intro: "This phase sets up the core of MineColonies: the request system. Every hut asks for what it needs, and items move from you (and later the Warehouse and AE2) to whoever asked. Understanding requests is the key to automation later.",
   steps: [
-    { id: "f-camp", layer: "s", t: "Place a Supply Camp (or Supply Ship)", mods: ["MineColonies"],
-      b: `<p>Craft a Supply Camp (land) or Supply Ship (water); check JEI for the recipe. Its chest holds starter materials. Craft a <b>Build Tool</b> too. You'll use it to place every building, with a ghost preview, rotation and style choice.</p>` },
-    { id: "f-hall", layer: "s", t: "Place and claim the Town Hall", mods: ["MineColonies"],
-      b: `<p>Put the Town Hall where you want the centre of town. Right-click it to create the colony, name it, and set the colony's default style in the Town Hall settings. The first citizens appear.</p>` },
+    { id: "f-camp", layer: "s", t: "Place a Supply Camp", mods: ["MineColonies"],
+      why: `<p>The Supply Camp (on land) or Supply Ship (on water) is a small starter build. When placed, its rack contains the <b>Build Tool</b> and the <b>Town Hall</b> block, plus starter materials.</p>`,
+      subs: [
+        "Look up the Supply Camp recipe in JEI and craft it",
+        "Hold it and right-click to see a preview, rotate it so it fits, and confirm the placement",
+        "Open the rack in the camp and take the Build Tool and the Town Hall",
+        "Store the starter materials in your own chest for the builder later",
+      ] },
+    { id: "f-hall", layer: "s", t: "Place the Town Hall and create the colony", mods: ["MineColonies"],
+      why: `<p>The Town Hall block creates the colony: it sets the border, spawns the first four citizens, and is where you manage permissions, settings and citizens.</p>`,
+      subs: [
+        "Right-click with the Build Tool, choose the Town Hall, and pick your style",
+        "Move and rotate the preview into the town centre, then confirm",
+        "Right-click the Town Hall block and choose <b>Create Colony</b>, then name it",
+        "Check that four citizens spawned",
+        "Look through the Town Hall tabs: Information, Actions, Citizens, Settings and Permissions",
+        "In Settings, set the colony's default style to your chosen style",
+      ],
+      tip: `<b>The Town Hall block is placed, but the building isn't built yet.</b> Like every other building, a builder has to build or upgrade it.` },
     { id: "f-builder", layer: "s", t: "Build the first Builder's Hut", mods: ["MineColonies"],
-      b: `<p>Place the Builder's Hut with the Build Tool, open its GUI, and request a level 1 build. A citizen becomes the builder and builds their own hut first.</p>
-      <p>Craft a <b>Clipboard</b>. It lists every open request in the colony. Put the requested items in the hut's chest. Keep doing this until you have couriers.</p>`,
-      tip: `<b>Habit:</b> check the Clipboard every time you come home. Once automation is running, it shows what your ME system is failing to supply.` },
+      why: `<p>The builder builds and upgrades every building. A <b>builder can only build up to its own hut's level</b>: a level 1 builder builds level 1 buildings. That's why you upgrade the Builder's Hut first. The first builder builds their own hut.</p>`,
+      subs: [
+        "Craft the Builder's Hut block (JEI: planks around a central item)",
+        "Use the Build Tool to place it near the Town Hall",
+        "Open the hut GUI and choose <b>Build</b> for level 1",
+        "Check that a citizen became the builder (the Town Hall assigns the job automatically)",
+        "Craft a <b>Resource Scroll</b> and link it to the Builder's Hut (shift-right-click the hut). It shows what's still missing",
+        "Put the missing materials in the builder's hut chest until the hut is done",
+      ],
+      recipes: [
+        ["Hut blocks", "planks around a themed item (differs per hut)", "crafting table"],
+        ["Clipboard", "check JEI", "crafting table"],
+        ["Resource Scroll", "check JEI", "crafting table"],
+      ],
+      tip: `<b>Builder routine:</b> builders walk to the hut, take materials, build a section and come back. Having the materials there in advance means no waiting.` },
+    { id: "f-clipboard", layer: "s", t: "Learn the request system with the Clipboard", mods: ["MineColonies"],
+      why: `<p>Every hut that needs something creates a <b>request</b>. The colony tries to fill it in this order: <b>(1)</b> the Warehouse's stock, <b>(2)</b> a crafter hut that knows the recipe, <b>(3)</b> you. Requests that only you can fill appear on the <b>Clipboard</b>. Later, the AE2 script reads exactly this list and fills it for you.</p>`,
+      subs: [
+        "Craft a Clipboard and link it to the Town Hall",
+        "Open it and read the open requests",
+        "Fill a request by hand: put the item in the requesting hut's chest",
+        "Check the request is gone from the Clipboard",
+      ] },
     { id: "f-homes", layer: "s", t: "Residences and a Tavern", mods: ["MineColonies"],
-      b: `<p>Build two Residences so every citizen has a bed. The Tavern adds more beds and brings in <b>visitors</b> you can recruit by paying the item they ask for. This is how you grow the population early on.</p>` },
-    { id: "f-forester", layer: "s", t: "Forester's Hut", mods: ["MineColonies"],
-      b: `<p>Give the forester an axe and mark a forest area for them. They cut and replant trees, and from now on most of your wood comes from them.</p>` },
+      why: `<p>Every citizen needs a bed, and homeless citizens get unhappy. Each <b>Residence</b> holds more citizens as it levels up. The <b>Tavern</b> has beds too, and attracts <b>visitors</b>: you can recruit them for an item they ask for. Recruiting visitors is how the population grows early on, and some visitors have high skills.</p>`,
+      subs: [
+        "Place two Residences and let the builder build them",
+        "Place the Tavern",
+        "Check visitors at the Tavern and recruit ones with useful skills",
+        "Keep a few spare items for recruiting (diamonds, emeralds, gold, cake and so on)",
+      ] },
+    { id: "f-jobs", layer: "s", t: "Assign the right citizens to the right jobs", mods: ["MineColonies"],
+      why: `<p>Every citizen has skills (for example Strength, Dexterity, Focus, Knowledge, Intelligence) and every job uses two of them. A citizen with the right skills works noticeably faster. The hut GUI shows the skills a job uses.</p>`,
+      subs: [
+        "Open the Town Hall's citizen list and compare skills",
+        "Swap citizens between huts so the highest skills match each job",
+        "Check that no citizen is unemployed",
+      ] },
+    { id: "f-forester", layer: "s", t: "Forester's Hut and a tree area", mods: ["MineColonies"],
+      why: `<p>Once the forester is running, it supplies most of your logs and saplings. It needs an axe, and a higher-level hut can use a better axe.</p>`,
+      subs: [
+        "Build the Forester's Hut L1",
+        "Give the forester an axe in the hut chest",
+        "Set the working area in the hut GUI (mark a forest area)",
+        "Turn on replanting and choose which saplings to plant",
+        "Put spare saplings in its chest",
+      ] },
     { id: "f-farm", layer: "s", t: "Farmer's Hut with fields", mods: ["MineColonies"],
-      b: `<p>Build the hut, place field blocks next to it, assign seeds to each field and give the farmer a hoe. Grow wheat, carrots and potatoes first. Later, add beetroot and crops from other mods so the cook has more ingredients.</p>` },
-    { id: "f-fish", layer: "s", t: "Fisher's Hut on the water", mods: ["MineColonies"],
-      b: `<p>The fisher needs a fishing rod and a fair amount of open water in front of the hut. Fish gives the town a second food source.</p>` },
-    { id: "f-cook", layer: "s", t: "Restaurant with a cook", mods: ["MineColonies"],
-      b: `<p>Citizens who eat well work faster and are happier. The cook needs raw food and fuel. Keep food varied: in recent MineColonies versions, citizens get unhappy if they eat the same thing all the time.</p>` },
+      why: `<p>The farmer works fields that you mark out with field blocks (the scarecrow). Each field can grow a different seed. Grow at least three crops, because the cook needs variety.</p>`,
+      subs: [
+        "Build the Farmer's Hut L1",
+        "Craft field blocks (scarecrows) and place them next to flat land",
+        "Assign a seed to each field (wheat, carrots, potatoes)",
+        "Give the farmer a hoe",
+        "Add beetroot and Farmer's Delight crops later",
+      ] },
+    { id: "f-fish", layer: "s", t: "Fisher's Hut", mods: ["MineColonies"],
+      why: `<p>Fish is a second, steady food source that doesn't need fields. The fisher needs a rod and a big enough body of water in front of the hut.</p>`,
+      subs: [
+        "Place the Fisher's Hut facing open water",
+        "Give the fisher a fishing rod",
+      ] },
+    { id: "f-cook", layer: "s", t: "Restaurant and cook", mods: ["MineColonies"],
+      why: `<p>Hungry citizens work slowly and get unhappy. The cook takes raw food and fuel and serves meals. Recent versions also care about <b>food variety</b> and <b>food quality</b>: citizens in higher-level homes expect better food. Check the Restaurant's menu to see what it can serve.</p>`,
+      subs: [
+        "Build the Restaurant",
+        "Give it fuel (coal or charcoal)",
+        "Set the menu in the GUI to the dishes your farms can supply",
+        "Check citizens' saturation in the Town Hall",
+      ] },
     { id: "f-warehouse", layer: "s", t: "Warehouse and Courier's Hut", mods: ["MineColonies"],
-      b: `<p>This is where colony automation starts. The Warehouse stores the colony's goods, and <b>couriers</b> carry items between it and every hut that asks for something. Once it's built, you stop filling builder chests by hand. You put items in the Warehouse instead.</p>`,
-      tip: `<b>Plan ahead:</b> place the Warehouse right above where the undercroft will be, so cables from below can reach it without crossing the town.` },
-    { id: "f-postbox", layer: "s", t: "Postbox and Stash", mods: ["MineColonies"],
-      b: `<p>A <b>Postbox</b> lets you order any item from the Warehouse and have it delivered to you. A <b>Stash</b> is a drop box: anything you put in it gets carried to the Warehouse by couriers. The Stash will later be where your AE2 system puts items into the colony.</p>` },
+      why: `<p>Colony automation starts here. The <b>Warehouse</b> holds the colony's stock in <b>racks</b>, and every level adds more. <b>Couriers</b> carry items between the Warehouse and the huts. Excess production goes to the Warehouse, and requests are filled from it first.</p>`,
+      subs: [
+        "Place the Warehouse above the planned undercroft and build it",
+        "Build one Courier's Hut (and add more as the colony grows)",
+        "Put your stockpiled planks, logs, cobble, glass and torches in the Warehouse racks",
+        "Check that builders' requests are now filled from the Warehouse",
+        "Craft a Postbox and order something from the Warehouse to test it",
+        "Craft a Stash. Anything you put in it is collected by couriers",
+      ],
+      tip: `<b>Plan ahead:</b> later, the Stash on top of a hidden ME Export Bus becomes the place where AE2 feeds items into the colony.` },
+    { id: "f-routine", layer: "s", t: "Set up a daily routine", mods: ["MineColonies"],
+      why: `<p>A colony grows steadily as long as no request stays open. Do this round whenever you come home.</p>`,
+      subs: [
+        "Check the Clipboard and fill what you can",
+        "Check the builder's Resource Scroll",
+        "Check happiness in the Town Hall",
+        "Check that every citizen has a job and a bed",
+      ] },
   ]
 },
 {
-  id: "undercroft", title: "Dig the undercroft: first hidden tech", sub: "Create and Mekanism double your ore. Nothing modern is visible from the street.",
+  id: "undercroft", title: "Dig the undercroft: first hidden tech",
+  sub: "Create, Powah and Mekanism. Nothing modern is visible from the street.",
+  intro: "This phase teaches three tech mods, each with a different kind of energy. Create uses rotation (speed and stress), Powah makes FE (Forge Energy, used by almost every machine), and Mekanism uses FE plus chemicals (gases) for advanced ore processing.",
   steps: [
-    { id: "u-vault", layer: "u", t: "Carve the vault and a hidden way in", mods: [],
-      b: `<p>Dig a room about 32×32 and 8+ blocks tall, 15–25 blocks below the town centre. Hide the entrance: a staircase in the Tavern cellar, a trapdoor under a market stall, or a second waystone placed only inside the vault.</p>`,
-      tip: `<b>Why:</b> MineColonies builders only touch blocks inside a building's footprint, so a deep vault outside those footprints stays untouched.` },
-    { id: "u-windmill", layer: "s", t: "Raise a Create windmill or water wheel", mods: ["Create"],
-      b: `<p>A windmill bearing with sails (or a water wheel in the river) looks completely medieval on the surface. Run a shaft straight down into the vault to bring rotational power below.</p>` },
-    { id: "u-create", layer: "u", t: "Create basics: alloy, press, millstone", mods: ["Create"],
-      b: `<p>Make Andesite Alloy, then a Mechanical Press, a Millstone and a Mechanical Mixer. These unlock Create's machines and the first useful automation.</p>` },
-    { id: "u-crush", layer: "u", t: "Crushing wheels and fan washing for extra ore", mods: ["Create"],
-      b: `<p>Crushing wheels turn raw ore into crushed ore with bonus output. Encased fans blowing through water wash it into extra nuggets. That's your first ore multiplier, with no electricity needed.</p>` },
-    { id: "u-power", layer: "u", t: "First electricity: Powah", mods: ["Powah"],
-      b: `<p>Craft a Powah Furnator or Thermo Generator, then Energy Cells for storage. Later, Powah reactors are a compact way to run the whole undercroft. Keep generators below ground and don't put solar panels on the rooftops.</p>` },
-    { id: "u-mek", layer: "u", t: "Mekanism ore processing (2× → 3× → 4×)", mods: ["Mekanism"],
-      b: `<ul><li><b>2×:</b> Enrichment Chamber → smelter.</li>
-      <li><b>3×:</b> add a Purification Chamber (needs oxygen from an Electrolytic Separator).</li>
-      <li><b>4×:</b> add a Chemical Injection Chamber (hydrogen chloride).</li>
-      <li><b>5×</b> comes later with the Chemical Dissolution Chamber and Washer.</li></ul>
-      <p>Upgrade one stage at a time. Each stage teaches you a new Mekanism mechanic (gases, slurries).</p>` },
-    { id: "u-pipes", layer: "u", t: "Connect machines with Pipez or Laser IO", mods: ["Pipez", "Laser IO"],
-      b: `<p>Pipez is the quick option. Laser IO sends items, fluids and energy wirelessly between nodes, which keeps a vault tidy and is easy to hide behind walls.</p>` },
+    { id: "u-vault", layer: "u", t: "Dig the vault and a hidden entrance", mods: [],
+      why: `<p>Builders only touch blocks within a building's footprint. A deep vault outside those footprints stays safe. A big open room is easier to expand than a set of small corridors.</p>`,
+      subs: [
+        "Dig a 32×32 room, 9 blocks tall, at about Y −10 to 0 below the town",
+        "Light it well (no mob spawns)",
+        "Make a staircase down from a hidden spot (Tavern cellar, trapdoor in a market stall)",
+        "Optional: put a second waystone in the vault for fast access",
+        "Mark out zones on the floor: power, ore processing, AE2, crafting",
+      ],
+      diagram: { h: "Vault floor plan (32×32)", d:
+`  +--------------------------------+
+  | POWER       |  ORE PROCESSING  |
+  | Powah gens  |  Create crushers |
+  | energy cells|  Mekanism chain  |
+  |-------------+------------------|
+  | AE2 CORE    |  CRAFTING        |
+  | controller  |  pattern provid. |
+  | drives      |  assemblers, CPU |
+  |-------------+------------------|
+  | stairs up to the Tavern cellar |
+  +--------------------------------+` } },
+    { id: "u-create-basics", layer: "u", t: "Learn Create: rotation, speed and stress", mods: ["Create"],
+      why: `<p>Create machines run on <b>rotation</b>. Each source (water wheel, windmill) gives <b>stress capacity</b> (SU), and each machine uses some of it, more at higher speed (RPM). If use goes above capacity the whole network stops. Use the <b>Engineer's Goggles</b> to see these numbers.</p>`,
+      subs: [
+        "Craft Andesite Alloy (andesite + iron or zinc nuggets)",
+        "Craft shafts, cogwheels and Andesite Casing",
+        "Craft Engineer's Goggles and wear them while building",
+        "Build a water wheel in a stream and look at its stress capacity with the goggles",
+      ],
+      recipes: [
+        ["Andesite Alloy", "andesite + iron nuggets (or zinc nuggets)", "crafting table, later Mixer"],
+        ["Shaft", "andesite alloy", "crafting table"],
+        ["Cogwheel", "shaft + planks", "crafting table"],
+        ["Andesite Casing", "andesite alloy + stripped log", "right-click to apply"],
+        ["Water Wheel", "planks around a shaft", "crafting table"],
+        ["Engineer's Goggles", "gold, leather, glass", "crafting table"],
+      ] },
+    { id: "u-windmill", layer: "s", t: "Raise a windmill in town", mods: ["Create"],
+      why: `<p>A Create windmill is exactly what you'd expect in a medieval town. It's also a good source of rotation: the more sails, the more stress capacity. A shaft running straight down carries the power into the vault.</p>`,
+      subs: [
+        "Build a stone tower 15+ blocks high in a style that fits the town",
+        "Place a Windmill Bearing at the top facing outward",
+        "Build a sail cross with at least 8 sail blocks (more sails = more stress capacity)",
+        "Glue it to the bearing (Super Glue) and right-click the bearing to start",
+        "Run a vertical shaft down through the tower into the vault",
+        "Check total stress capacity with the goggles",
+      ],
+      diagram: { h: "Windmill, side view", d:
+`      sails
+    ===+===         windmill bearing faces outward
+       |  [B]---- tower top
+       |  |#|
+          |#|  shaft down inside the tower
+          |#|
+  --------|#|-------- surface
+          |#|  12+ blocks of rock
+   =======|#|======= vault ceiling
+          |#| -> gearbox -> machines` } },
+    { id: "u-create-machines", layer: "u", t: "Basic Create machines", mods: ["Create"],
+      why: `<p>These machines unlock most Create recipes. The <b>Mechanical Press</b> makes metal sheets, the <b>Mixer</b> with a <b>Basin</b> mixes alloys (for example brass), and the <b>Millstone</b> grinds items. Brass needs heat from a <b>Blaze Burner</b> under the basin.</p>`,
+      subs: [
+        "Build a Mechanical Press over a Depot and press iron sheets",
+        "Build a Mixer over a Basin and automate Andesite Alloy",
+        "Catch a blaze in an Empty Blaze Burner (Nether)",
+        "Make brass: copper + zinc in a heated basin",
+        "Build a Millstone (useful for dyes and flour)",
+      ],
+      recipes: [
+        ["Mechanical Press", "andesite casing, shaft, iron block", "crafting table"],
+        ["Mechanical Mixer", "andesite casing, cogwheel, whisk", "crafting table"],
+        ["Basin", "andesite alloy", "crafting table"],
+        ["Empty Blaze Burner", "iron sheets, netherrack", "crafting table"],
+        ["Brass Ingot", "copper + zinc, heated", "Mixer + Basin + Blaze Burner"],
+      ] },
+    { id: "u-create-ore", layer: "u", t: "Ore doubling with crushing wheels and washing", mods: ["Create"],
+      why: `<p>Two <b>crushing wheels</b> turn raw ore into <b>crushed ore</b> with a chance of extra output and XP nuggets. An <b>encased fan</b> blowing through water <b>washes</b> crushed ore into nuggets, often with a bonus byproduct (for example redstone from iron). On average that's about 1.75× the ingots of smelting, with no electricity.</p>`,
+      subs: [
+        "Craft two Crushing Wheels and place them side by side, spinning toward each other",
+        "Put a chute or hopper on top so you can feed raw ore",
+        "Place a conveyor belt under the wheels",
+        "Put an Encased Fan blowing over the belt through a water source (washing)",
+        "Collect the nuggets at the end of the belt and press them into ingots",
+      ],
+      diagram: { h: "Create ore line", d:
+`  raw ore -> [chute]
+              (  )(  )   two crushing wheels, spinning toward each other
+                ||
+   ==========[belt]=============>  [depot/chest]
+        ^ fan --> water -->      nuggets + bonus
+       (washing)` } },
+    { id: "u-power", layer: "u", t: "First electricity with Powah", mods: ["Powah"],
+      why: `<p>Almost all tech uses <b>FE</b>. Powah generators are compact and easy to hide. Powah also has tiers: <b>Starter, Basic, Hardened, Blazing, Niotic, Spirited, Nitro</b>. You reach each tier by making its material in the <b>Energizing Orb</b>, so the orb is the core of Powah.</p>`,
+      subs: [
+        "Make Dielectric Paste (check JEI)",
+        "Craft a Furnator (burns coal or charcoal) or a Thermo Generator (heat source underneath + water)",
+        "Craft an Energy Cell and Energy Cables",
+        "Build the Energizing Orb with Energizing Rods around it",
+        "Make Energized Steel in the orb to reach the Hardened tier",
+        "Connect a Powah Ender Cell or cables to the ore and AE2 zones",
+      ],
+      recipes: [
+        ["Dielectric Paste", "clay, charcoal or coal, lava (check JEI)", "crafting table"],
+        ["Furnator", "dielectric casing + furnace (check JEI)", "crafting table"],
+        ["Energizing Orb", "glass + dielectric casing", "crafting table"],
+        ["Energized Steel", "iron + gold", "Energizing Orb, with power to the rods"],
+        ["Blazing Crystal", "blaze rod", "Energizing Orb"],
+      ] },
+    { id: "u-mek-start", layer: "u", t: "Mekanism basics: steel, alloys and circuits", mods: ["Mekanism"],
+      why: `<p>Mekanism needs four ingredients for nearly everything: <b>Steel</b>, <b>Osmium</b>, <b>Alloys</b> (Infused, Reinforced, Atomic) and <b>Control Circuits</b> (Basic, Advanced, Elite, Ultimate). The <b>Metallurgic Infuser</b> makes all of them, so it's the first machine to build.</p>`,
+      subs: [
+        "Craft the Metallurgic Infuser",
+        "Make Enriched Carbon (coal) and Steel (iron + carbon)",
+        "Make Basic Control Circuits (osmium + redstone)",
+        "Make Infused Alloy (iron + redstone)",
+        "Craft a Steel Casing, the base of most machines",
+        "Craft an Energy Cube and Universal Cables",
+      ],
+      recipes: [
+        ["Metallurgic Infuser", "iron, redstone, furnace, osmium", "crafting table"],
+        ["Steel Ingot", "iron + carbon", "Metallurgic Infuser"],
+        ["Basic Control Circuit", "osmium + redstone", "Metallurgic Infuser"],
+        ["Infused Alloy", "iron + redstone", "Metallurgic Infuser"],
+        ["Reinforced Alloy", "infused alloy + diamond", "Metallurgic Infuser"],
+        ["Steel Casing", "steel, glass, osmium", "crafting table"],
+      ] },
+    { id: "u-mek-ore", layer: "u", t: "Mekanism ore processing: 2×, 3×, 4×", mods: ["Mekanism"],
+      why: `<p>Each stage adds a step in front of the previous one. <b>2×</b>: the Enrichment Chamber turns 1 ore into 2 dusts. <b>3×</b>: the Purification Chamber uses oxygen to make 3 clumps per ore. <b>4×</b>: the Chemical Injection Chamber uses hydrogen chloride to make 4 shards per ore. Build one stage at a time, since each stage teaches a new piece of chemistry.</p>`,
+      subs: [
+        "<b>2×:</b> Enrichment Chamber → Energized Smelter",
+        "Build an infinite water source (Electric Pump in a 3×3 water pool)",
+        "<b>3×:</b> Electrolytic Separator splits water into hydrogen + oxygen",
+        "<b>3×:</b> Purification Chamber (ore + oxygen → clumps), then crusher → enrichment → smelter",
+        "<b>4×:</b> Thermal Evaporation Plant makes brine, the separator turns brine into chlorine",
+        "<b>4×:</b> Chemical Infuser combines hydrogen + chlorine into hydrogen chloride",
+        "<b>4×:</b> Chemical Injection Chamber (ore + HCl → shards) in front of the 3× chain",
+        "Connect everything with Pipez or Mekanism pipes and test with a stack of iron ore",
+      ],
+      diagram: { h: "4× chain (each arrow is a pipe)", d:
+`  ore -> [Chem. Injection] -> shards -> [Purification] -> clumps
+              ^ HCl                          ^ O2
+         [Chem. Infuser]               [Electrolytic Sep.] <- water
+          ^ H2     ^ Cl2
+                                  clumps -> [Crusher] -> dirty dust
+   -> [Enrichment] -> dust -> [Energized Smelter] -> ingots -> storage` },
+      tip: `<b>5× (later):</b> Chemical Dissolution Chamber (sulfuric acid) → Chemical Washer → Chemical Crystallizer → the 4× chain. Leave this until power and chemicals are running smoothly.` },
+    { id: "u-mek-factory", layer: "u", t: "Upgrade machines to factories", mods: ["Mekanism"],
+      why: `<p>A <b>factory</b> processes several items at once (3, 5, 7 or 9 slots, by tier). <b>Speed and Energy Upgrades</b> make it faster and cheaper to run. One factory replaces a row of machines.</p>`,
+      subs: [
+        "Make a Basic Tier Installer and use it on the Enrichment Chamber",
+        "Add Speed and Energy Upgrades",
+        "Upgrade the Energized Smelter to a factory",
+        "Turn on auto-sort in the factory GUI",
+      ] },
+    { id: "u-logistics", layer: "u", t: "Logistics: Pipez and Laser IO", mods: ["Pipez", "Laser IO"],
+      why: `<p><b>Pipez</b> is simple: an item, fluid or energy pipe, with extract mode set per side using the wrench. <b>Laser IO</b> is cleaner: nodes connected by laser beams, and <b>cards</b> in each node decide what goes where (extract, insert, filter). Laser IO is easier to hide in walls and floors.</p>`,
+      subs: [
+        "Connect a test line with Pipez: chest → machine → chest",
+        "Craft a Laser Wrench and a few Laser Nodes",
+        "Link two nodes and put an Item Card set to Extract in one and Insert in the other",
+        "Add a filter to a card so only ore goes through",
+        "Replace the visible pipes in the vault with Laser IO",
+      ] },
   ]
 },
 {
-  id: "ae2", title: "Build the AE2 brain", sub: "One digital storage and autocrafting network that everything else plugs into.",
+  id: "ae2", title: "Build the AE2 brain",
+  sub: "One digital storage and autocrafting network that everything plugs into.",
+  intro: "AE2 (Applied Energistics 2) stores items as data and can craft automatically. Every machine in the undercroft will send its output into AE2, and AE2 supplies the colony. Hold G over an AE2 item to open its in-game guide.",
   steps: [
-    { id: "a-meteor", layer: "u", t: "Find meteorites for inscriber presses", mods: ["AE2"],
-      b: `<p>Craft a Meteorite Compass and find meteorites for the four presses (Calculation, Engineering, Logic, Silicon) and for budding certus quartz.</p>` },
-    { id: "a-certus", layer: "u", t: "Grow certus and automate processors", mods: ["AE2"],
-      b: `<p>Put budding certus around growth accelerators to farm quartz. Then automate the Inscribers so processors are always in stock. Every AE2 part needs them.</p>` },
-    { id: "a-core", layer: "u", t: "ME Controller, Drive and Crafting Terminal", mods: ["AE2"],
-      b: `<p>Build the controller, a drive with storage cells, and a Crafting Terminal. Then send all undercroft machine output into the network.</p>` },
-    { id: "a-autocraft", layer: "u", t: "Autocrafting: Pattern Providers and a Crafting CPU", mods: ["AE2"],
-      b: `<p>Set up Pattern Providers next to Molecular Assemblers, plus a Crafting CPU. Write patterns for what the colony asks for most:</p>
-      <ul><li>Planks, sticks, slabs, stairs, fences and fence gates for your style's wood</li>
-      <li>Stone bricks, smooth stone, glass and glass panes</li>
-      <li>Torches, lanterns, ladders, doors, trapdoors, chests, iron bars</li></ul>` },
-    { id: "a-wireless", layer: "u", t: "Wireless terminal for the town", mods: ["AE2"],
-      b: `<p>Hide a Wireless Access Point in the vault (or under the town square) and carry a Wireless Crafting Terminal. You can reach the whole network from anywhere in town.</p>
-      <p>Add-ons such as ExtendedAE, Applied Mekanistics and Applied Flux connect AE2 to Mekanism gases and energy. Try them once the basics work.</p>` },
+    { id: "a-concepts", layer: "u", t: "Learn the AE2 basics: channels, power and storage", mods: ["AE2"],
+      why: `<p>AE2 runs on <b>channels</b>. Each device (drive, terminal, bus) uses one channel. A regular cable carries 8 channels, and a <b>dense cable</b> carries 32. The <b>ME Controller</b> supplies 32 channels per face. Without a controller, a network supports at most 8 devices.</p>
+      <p>Storage lives in <b>cells</b> inside a <b>Drive</b>. Each cell holds a number of bytes and a limited number of item <b>types</b>, so 64 kinds of logs fill a cell faster than 64 stacks of one kind. AE2 runs on power through an <b>Energy Acceptor</b>.</p>`,
+      subs: [
+        "Open AE2's in-game guide (hold <kbd>G</kbd> over an AE2 item) and read the 'Getting Started' page",
+        "Read the guide page on channels",
+      ] },
+    { id: "a-meteor", layer: "u", t: "Find meteorites for presses and certus quartz", mods: ["AE2"],
+      why: `<p>In AE2 for 1.21, <b>certus quartz</b> and the <b>inscriber presses</b> come only from <b>meteorites</b>. There's no certus ore in the world. Each meteorite has a <b>mysterious cube</b> in its centre containing the presses, and <b>budding certus</b> around it, which grows crystals.</p>`,
+      subs: [
+        "Craft a Meteorite Compass (needs certus quartz, check JEI) or explore until you find a crater",
+        "Find a meteorite and mine the sky stone",
+        "Break the mysterious cube in the centre and take the 4 presses: Calculation, Engineering, Logic and Silicon",
+        "Collect all certus quartz crystals and buds",
+        "Look for <b>flawless budding certus</b> and leave it in place for now",
+      ],
+      warn: `Budding certus degrades one step when you mine it, even with Silk Touch: flawless becomes flawed. Read the AE2 guide's page on certus growth before moving it.` },
+    { id: "a-certus", layer: "u", t: "Certus quartz and fluix crystal farm", mods: ["AE2"],
+      why: `<p>AE2 needs lots of certus quartz and <b>fluix crystal</b>. Budding certus grows crystals, and a <b>Growth Accelerator</b> next to it makes them grow much faster. Fluix crystals are made by dropping charged certus, redstone and nether quartz into water.</p>`,
+      subs: [
+        "Place budding certus and surround it with Growth Accelerators (they need power)",
+        "Harvest fully grown crystals (automate this later; the AE2 guide shows a design)",
+        "Craft a Charger and charge certus crystals",
+        "Drop charged certus + redstone + nether quartz into water to make fluix",
+        "Make Silicon by smelting Certus Quartz Dust",
+      ],
+      recipes: [
+        ["Charger", "iron, copper, certus quartz", "crafting table"],
+        ["Growth Accelerator", "fluix, certus, quartz glass, iron", "crafting table"],
+        ["Fluix Crystal", "charged certus + redstone + nether quartz", "dropped in water"],
+        ["Silicon", "certus quartz dust", "furnace"],
+      ] },
+    { id: "a-processors", layer: "u", t: "Processors with the Inscriber", mods: ["AE2"],
+      why: `<p>Every AE2 part needs <b>processors</b>. You make them in two steps. First, print a circuit with a press: Calculation (certus), Engineering (diamond), Logic (gold) and Silicon (silicon). Then combine one printed circuit + redstone + printed silicon. Automate this early.</p>`,
+      subs: [
+        "Craft 4 Inscribers (one per press is simplest)",
+        "Put a press in each Inscriber's top slot",
+        "Print 16 of each circuit",
+        "Craft an extra Inscriber for assembly: circuit top, redstone middle, silicon bottom",
+        "Make 16 of each processor: Calculation, Engineering and Logic",
+        "Connect the inscribers with pipes or Laser IO so processors are made automatically",
+      ],
+      recipes: [
+        ["Inscriber", "iron, sticky piston, copper, fluix", "crafting table"],
+        ["Printed Calculation Circuit", "certus quartz crystal", "Inscriber + Calculation press"],
+        ["Printed Engineering Circuit", "diamond", "Inscriber + Engineering press"],
+        ["Printed Logic Circuit", "gold ingot", "Inscriber + Logic press"],
+        ["Processor", "printed circuit + redstone + printed silicon", "Inscriber, no press"],
+      ],
+      diagram: { h: "Inscriber slots", d:
+`  [ top    ]  printed circuit (or the press for printing)
+  [ middle ]  redstone        (or the material for printing)
+  [ bottom ]  printed silicon` } },
+    { id: "a-network", layer: "u", t: "Build the core network", mods: ["AE2"],
+      why: `<p>The controller is the heart, the drive holds storage, and the terminal is how you get at everything. Start small and expand.</p>`,
+      subs: [
+        "Craft an ME Controller and place it in the AE2 zone",
+        "Connect power via an Energy Acceptor to Powah or Mekanism",
+        "Craft an ME Drive and 4× 4k storage cells",
+        "Craft a Crafting Terminal and place it on a cable",
+        "Put everything from your chests into the network",
+        "Connect machine outputs (ore processing) with an Import Bus or direct pipes into an ME Interface",
+      ],
+      recipes: [
+        ["ME Controller", "smooth sky stone, fluix, engineering processor", "crafting table"],
+        ["ME Drive", "iron, engineering processor, fluix cable", "crafting table"],
+        ["Energy Acceptor", "iron, quartz glass, copper", "crafting table"],
+        ["Storage Cell Housing", "quartz glass, redstone, iron", "crafting table"],
+        ["1k Cell Component", "redstone, certus, logic processor", "crafting table"],
+        ["4k Component", "3× 1k components + quartz glass + calculation processor", "crafting table"],
+        ["Crafting Terminal", "terminal + crafting table + calculation processor", "crafting table"],
+      ],
+      diagram: { h: "Core network", d:
+`  [Powah] -> [Energy Acceptor]
+                  |
+  [Drive]==[ CONTROLLER ]==[Crafting Terminal]
+                  ||  dense cable (32 channels)
+           [ME Interface] <- pipe from ore processing` } },
+    { id: "a-autocraft", layer: "u", t: "Autocrafting", mods: ["AE2"],
+      why: `<p>AE2 crafts by following <b>patterns</b>. A <b>Pattern Provider</b> holds patterns and sends the ingredients to a machine. A <b>Molecular Assembler</b> next to it does crafting-table recipes. For other machines (furnace, Mekanism), you write a <b>processing pattern</b> and place the provider next to that machine. A <b>Crafting CPU</b> (crafting storage + co-processors) keeps track of the job.</p>`,
+      subs: [
+        "Craft a Pattern Encoding Terminal and a stack of Blank Patterns",
+        "Build a Crafting CPU: 1 crafting storage (4k+) and a few crafting units",
+        "Place a Pattern Provider with 2–3 Molecular Assemblers next to it",
+        "Write a crafting pattern for planks and test the autocraft",
+        "Write a processing pattern for glass (sand → glass) and put the provider next to a furnace",
+        "Build a second Pattern Provider for Mekanism processing patterns",
+      ],
+      recipes: [
+        ["Pattern Provider", "iron, crafting table, annihilation + formation core", "crafting table"],
+        ["Molecular Assembler", "iron, quartz glass, crafting table, cores", "crafting table"],
+        ["Annihilation Core", "nether quartz, fluix dust, logic processor", "crafting table"],
+        ["Formation Core", "certus quartz, fluix dust, logic processor", "crafting table"],
+        ["Crafting Unit", "iron, calculation + logic processor, fluix cable", "crafting table"],
+      ],
+      diagram: { h: "Crafting cell", d:
+`        [Assembler]
+  [Assembler][PATTERN PROVIDER][Assembler]   <- cable to network
+        [Assembler]
+  [CPU: storage + units + co-processors]  (blocks touching each other)` } },
+    { id: "a-colony-patterns", layer: "u", t: "Patterns for everything the colony uses", mods: ["AE2", "MineColonies"],
+      why: `<p>Builders mostly ask for the same blocks: planks, slabs, stairs, fences, doors, glass and stone bricks in your style. Once AE2 can make these, automation can fill almost every request.</p>`,
+      subs: [
+        "Patterns: planks, sticks, slabs, stairs, fences and fence gates (your wood type)",
+        "Patterns: doors, trapdoors, ladders, signs, chests, barrels",
+        "Patterns: stone bricks, cobblestone slabs/stairs/walls, smooth stone (furnace)",
+        "Patterns: glass, glass panes, torches, lanterns, iron bars, chains",
+        "Patterns: beds and wool in your style's colour",
+        "Look at the Resource Scroll of a level 2–3 building and add any missing patterns",
+      ] },
+    { id: "a-wireless", layer: "u", t: "Wireless access in town", mods: ["AE2"],
+      why: `<p>A <b>Wireless Access Point</b> lets you use the network from anywhere within range, without visible cables. With enough range it covers the whole town from the vault.</p>`,
+      subs: [
+        "Craft a Wireless Access Point and place it in the vault ceiling",
+        "Add Wireless Booster cards to extend the range",
+        "Craft a Wireless Crafting Terminal and link it to the network (in the access point)",
+        "Test it: open the terminal at the edge of town",
+      ] },
+    { id: "a-addons", layer: "u", t: "AE2 add-ons", mods: ["AE2", "Mekanism"],
+      why: `<p>ATM10 includes several AE2 add-ons. <b>Applied Mekanistics</b> stores Mekanism chemicals in AE2. <b>Applied Flux</b> stores FE in AE2 cells. <b>ExtendedAE</b> and <b>Advanced AE</b> add bigger pattern providers, larger crafting CPUs and more. You can start without them. Use each one when you have the problem it solves.</p>`,
+      subs: [
+        "Look through ExtendedAE in JEI: Extended Pattern Provider and Extended Drive",
+        "Use Applied Mekanistics if you want gases in AE2",
+        "Look through Advanced AE's Quantum Computer for very large crafts later",
+      ] },
   ]
 },
 {
-  id: "grow", title: "Grow the town to levels 2–3", sub: "More workers, production chains, and a colony that crafts for itself.",
+  id: "grow", title: "Grow the town to levels 2–3",
+  sub: "More workers, production chains, and a colony that crafts for itself.",
+  intro: "The bigger the colony, the more it makes itself. In this phase, crafter huts take over most of the work and you only supply raw materials.",
   steps: [
-    { id: "g-hall", layer: "s", t: "Upgrade the Town Hall, then add builders", mods: ["MineColonies"],
-      b: `<p>Most huts can't be upgraded past the Town Hall's level, so upgrade it first. Then add a second and third Builder's Hut and split jobs between them.</p>` },
+    { id: "g-order", layer: "s", t: "Upgrade in the right order", mods: ["MineColonies"],
+      why: `<p>A builder can only build up to its own hut's level, and many upgrades need other buildings or research first. So upgrade the Builder's Hut first, then the Town Hall, then the rest. The upgrade button in each hut shows what it still needs.</p>`,
+      subs: [
+        "Builder's Hut to L2",
+        "Town Hall to L2",
+        "Warehouse to L2 (more racks)",
+        "Residences to L2 (more beds)",
+        "A second Builder's Hut, then split building jobs between them",
+        "A third Builder's Hut before you start the level 3 upgrades",
+      ] },
     { id: "g-mine", layer: "s", t: "Miner's Hut in the mine district", mods: ["MineColonies"],
-      b: `<p>Give the miner pickaxes. They dig levels downward and bring back ore, cobble and stone. Keep this hut far from the vault, as planned.</p>` },
-    { id: "g-crafters", layer: "s", t: "Crafting huts: Sawmill, Stonemason, Blacksmith, Smeltery", mods: ["MineColonies"],
-      b: `<p>Crafting huts let the colony make what builders need. <b>Teach them recipes</b> in each hut's GUI, and builders' requests then go straight to the matching crafter.</p>
-      <ul><li><b>Sawmill:</b> wooden parts</li><li><b>Stonemason:</b> stone pieces</li><li><b>Blacksmith:</b> tools and armour for citizens</li><li><b>Smeltery / Stone Smeltery:</b> ingots, stone, bricks</li></ul>` },
+      why: `<p>The miner digs a vertical shaft and then mines tunnels (nodes) at each level, bringing back ore, cobble, stone and gravel. Upgrades let it dig deeper. The miner needs pickaxes and, depending on the hut, ladders, planks or cobble for the shaft and supports.</p>`,
+      subs: [
+        "Place the Miner's Hut in the mine district",
+        "Give the miner pickaxes (the hut level decides the minimum pickaxe level)",
+        "Put ladders, cobble, planks and torches in the Warehouse",
+        "Choose a mining level in the hut GUI",
+        "Upgrade later so the miner reaches deeper ore levels",
+      ] },
+    { id: "g-crafters", layer: "s", t: "Crafter huts and teaching recipes", mods: ["MineColonies"],
+      why: `<p>A <b>crafter hut</b> makes items that other huts request. You <b>teach</b> it recipes in the hut's GUI by putting the recipe in its crafting grid. Once taught, requests for that item go straight to the crafter, which requests its own ingredients. This is MineColonies' own form of autocrafting.</p>`,
+      subs: [
+        "<b>Sawmill:</b> teach planks, slabs, stairs, fences, doors and trapdoors",
+        "<b>Stonemason:</b> teach stone bricks, slabs, stairs and walls",
+        "<b>Blacksmith:</b> teach tools and armour for citizens",
+        "<b>Smeltery:</b> ores to ingots (give it fuel)",
+        "<b>Stone Smeltery:</b> cobble → stone, stone → smooth stone",
+        "<b>Glassblower:</b> sand → glass and panes",
+        "Check the Clipboard: requests should now go to crafters instead of you",
+      ] },
     { id: "g-domum", layer: "s", t: "Domum Ornamentum blocks", mods: ["Domum Ornamentum", "MineColonies"],
-      b: `<p>Many styles use Domum Ornamentum blocks (timber frames, shingles, paper walls) made in the <b>Architect's Cutter</b>. Teach those recipes to the Sawmill or Stonemason so the colony makes them itself. These blocks are hard to autocraft in AE2, so leaving them to the colony is the easier route.</p>` },
+      why: `<p>Many styles use <b>Domum Ornamentum</b> blocks: timber frames, shingles, paper walls and so on. You make these in the <b>Architect's Cutter</b> from regular blocks. They're hard to autocraft in AE2, so let the colony's Sawmill and Stonemason handle them.</p>`,
+      subs: [
+        "Craft an Architect's Cutter and look at what your style uses",
+        "Teach the Sawmill or Stonemason the DO blocks your buildings use",
+        "Check that builders' DO requests go to those crafters",
+      ] },
     { id: "g-raw", layer: "s", t: "Raw-material huts", mods: ["MineColonies"],
-      b: `<p>Crusher (gravel and sand), Sifter, Glassblower, Composter, Plantation (sugar cane, cactus, bamboo), Florist, Dyer. Add the herders (Shepherd, Cowhand, Swineherd, Chicken Herder) for wool, leather and meat, and a Beekeeper for honey.</p>` },
+      why: `<p>These huts produce basic materials that crafters need, so you stop supplying them yourself.</p>`,
+      subs: [
+        "<b>Crusher:</b> cobble → gravel → sand",
+        "<b>Sifter:</b> sifts gravel and sand for ores (needs meshes)",
+        "<b>Composter:</b> makes compost that speeds up farms",
+        "<b>Plantation:</b> sugar cane, cactus and bamboo",
+        "<b>Florist:</b> flowers for dyes",
+        "<b>Dyer:</b> dyes and dyed blocks",
+        "<b>Herders:</b> Shepherd (wool), Cowhand (leather, milk), Swineherd and Chicken Herder (meat, eggs, feathers)",
+        "<b>Beekeeper:</b> honey and honeycomb",
+        "<b>Fletcher:</b> arrows and bows for guards",
+      ] },
+    { id: "g-food", layer: "s", t: "Better food", mods: ["MineColonies"],
+      why: `<p>Citizens in higher-level homes expect more varied and better food. Without it, they get unhappy and work slower. Add more crops, animals and a Bakery so the Restaurant can make more dishes.</p>`,
+      subs: [
+        "Upgrade the Restaurant and check its menu",
+        "Build a Bakery (bread and other baked goods)",
+        "Add more crops to the farm: beetroot, Farmer's Delight crops",
+        "Check saturation and happiness in the Town Hall after a few days",
+      ] },
     { id: "g-knowledge", layer: "s", t: "Library, School and University", mods: ["MineColonies"],
-      b: `<p>The Library raises citizens' skills, the School teaches children, and the University unlocks <b>research</b>. Research adds new buildings, worker improvements and more. Start the Civilian and Technology research early.</p>` },
-    { id: "g-safety", layer: "s", t: "Guards, Hospital and Graveyard", mods: ["MineColonies"],
-      b: `<p>Raids start once the colony grows. Build Guard Towers or Barracks, a Hospital for sick citizens, and a Graveyard. Wall the town with Fortress-style decorations if you like the look.</p>` },
-    { id: "g-happy", layer: "s", t: "Keep happiness up", mods: ["MineColonies"],
-      b: `<p>Happiness depends on housing, varied food, safety and having tools. If production slows down, check the Town Hall's happiness page first. A Mystical Site gives a happiness bonus.</p>` },
+      why: `<p>The <b>Library</b> raises citizens' skills, the <b>School</b> teaches children (who later become adults with better skills), and the <b>University</b> unlocks <b>research</b>. Research unlocks new buildings, worker improvements and colony bonuses. The trees are Civilian, Combat and Technology.</p>`,
+      subs: [
+        "Build the Library",
+        "Build the School",
+        "Build the University and assign a researcher",
+        "Start the first Civilian research (happiness, birth rate)",
+        "Start the first Technology research (unlocks buildings)",
+        "Read the tree to see which research unlocks Enchanter, Alchemist and Mechanic",
+      ] },
+    { id: "g-guards", layer: "s", t: "Guards and defence", mods: ["MineColonies"],
+      why: `<p>As the colony grows, <b>raids</b> start: barbarians, pirates and so on attack the town. Guards protect citizens, and the colony's <b>security</b> also feeds into happiness. Guard Towers each hold one guard. Barracks hold several, and so do the Archery and Combat Academy, where guards train.</p>`,
+      subs: [
+        "Build 2 Guard Towers at the edge of town",
+        "Give guards weapons and armour (or let the Blacksmith make them)",
+        "Set patrol or follow modes in the tower GUI",
+        "Build Barracks once the colony reaches 20+ citizens",
+        "Build a wall around the town with Fortress-style decorations",
+      ] },
+    { id: "g-health", layer: "s", t: "Hospital and Graveyard", mods: ["MineColonies"],
+      why: `<p>Citizens can get sick. The <b>Hospital</b> treats them, using cures you supply. The <b>Graveyard</b> handles citizens who died, so their spot in the colony is cleaned up properly.</p>`,
+      subs: [
+        "Build the Hospital",
+        "Keep the cures it asks for in the Warehouse",
+        "Build the Graveyard",
+      ] },
+    { id: "g-happy", layer: "s", t: "Keep happiness high", mods: ["MineColonies"],
+      why: `<p>Happiness affects work speed and growth. It's made up of housing, food (saturation and variety), security, health, having tools and having work. A <b>Mystical Site</b> gives a direct bonus.</p>`,
+      subs: [
+        "Open the Town Hall's happiness page and find the lowest factor",
+        "Fix it (more beds, better food, more guards)",
+        "Build a Mystical Site",
+      ] },
   ]
 },
 {
-  id: "link", title: "Connect the colony to AE2", sub: "The goal of the whole plan: colony requests get filled by your ME network.",
+  id: "link", title: "Connect the colony to AE2",
+  sub: "The goal of the whole plan: colony requests filled by your ME network, with nothing for you to do.",
+  intro: "There are three layers. You can see colony stock in AE2. AE2 keeps basic materials topped up. A script fills every open request, crafting items when needed.",
   steps: [
-    { id: "l-see", layer: "u", t: "Show colony stock in AE2", mods: ["AE2", "MineColonies"],
-      b: `<p>Run a cable (or a P2P tunnel) up under the Warehouse and put an <b>ME Storage Bus</b> on one of its racks. Your terminal now shows what the colony has stored. Set the bus to extract only, so AE2 doesn't use the rack as overflow storage.</p>`,
-      tip: `<b>Why:</b> this lets you take colony output (logs, wool, food) into AE2 and see what the town is missing, without leaving the vault.` },
-    { id: "l-stock", layer: "u", t: "Keep basic materials topped up", mods: ["AE2", "MineColonies"],
-      b: `<p>Put a <b>Stash</b> on top of a hidden ME Export Bus, filtered to bulk materials: logs, planks, cobble, stone bricks, glass, sand, dirt. Couriers carry what lands in the Stash to the Warehouse.</p>
-      <p>This regulates itself: when the Warehouse is full, the Stash stops emptying and the bus stops exporting. Add a Level Emitter if you want AE2 to always keep a reserve.</p>` },
-    { id: "l-cc", layer: "u", t: "Request filler: CC:Tweaked and Advanced Peripherals", mods: ["CC:Tweaked", "Advanced Peripherals", "AE2"],
-      b: `<p>Place an Advanced Computer with a <b>Colony Integrator</b> (it must be inside the colony) and an <b>ME Bridge</b> connected to your network. Put the Stash on the side of the bridge set by <code>OUT</code> in the script. The script reads every open colony request, sends the item from AE2 if you have it, and starts an autocraft if you don't.</p>
-      <p>Save it with <code>edit startup.lua</code> so it runs every time the computer starts.</p>`,
+    { id: "l-how", layer: "p", t: "Understand how requests flow", mods: ["MineColonies"],
+      why: `<p>A hut makes a request. The colony checks the Warehouse first, then a crafter that knows the recipe. Only requests it can't solve itself end up with <b>you</b>, on the Clipboard. AE2 can join in at two points:</p>
+      <ul><li><b>Before the Warehouse:</b> keep the Warehouse stocked with basic materials, and most requests are filled at step 1.</li>
+      <li><b>At you:</b> a script reads the open requests (the same list as the Clipboard) and has AE2 deliver or craft them.</li></ul>`,
+      diagram: { h: "Request flow", d:
+`  Hut needs 32 spruce slabs
+        |
+        v
+  [Warehouse has them?] --yes--> courier delivers
+        | no
+        v
+  [Crafter knows the recipe?] --yes--> Sawmill crafts (requests planks)
+        | no
+        v
+  Clipboard: "for the player"   <-- the script reads this
+        |
+        v
+  AE2 exports/crafts -> Stash -> courier -> Warehouse -> hut` },
+      subs: [
+        "Open the Clipboard and identify which requests are 'for the player'",
+      ] },
+    { id: "l-see", layer: "u", t: "See colony stock in AE2", mods: ["AE2", "MineColonies"],
+      why: `<p>An <b>ME Storage Bus</b> on a Warehouse rack shows its contents in your terminal. That lets you take colony output (logs, wool, food) into AE2 and see what's running low. Set it to <b>extract only</b>, so AE2 doesn't use the rack for overflow storage.</p>`,
+      subs: [
+        "Run a cable from the vault up to under the Warehouse (hidden in walls or the floor)",
+        "Or use a P2P ME tunnel so you need only one thin cable",
+        "Put an ME Storage Bus on one of the Warehouse racks",
+        "Set the bus's access mode to extract only (Extract Only in the GUI)",
+        "Check you can see the rack's contents in the terminal",
+      ] },
+    { id: "l-stash", layer: "u", t: "Keep basic materials topped up via a Stash", mods: ["AE2", "MineColonies"],
+      why: `<p>An <b>Export Bus</b> under a <b>Stash</b> sends selected items from AE2. Couriers collect what lands in the Stash and take it to the Warehouse. This regulates itself: when the Warehouse is full, couriers stop collecting, the Stash fills up, and the bus stops.</p>`,
+      subs: [
+        "Place a Stash in the Warehouse cellar or behind a wall",
+        "Put an ME Export Bus directly under it",
+        "Set the bus filter to 9 bulk items: logs, planks, cobble, stone bricks, glass, sand, dirt, torches, slabs",
+        "Add an Acceleration Card for speed",
+        "Optional: add a Redstone Card and a Level Emitter so AE2 always keeps at least 1,000 of each",
+        "Check after a day that the Warehouse is filling",
+      ],
+      diagram: { h: "Stash feed (side view)", d:
+`  [ Stash ]   <- couriers pick up from here
+  [Export ]   filter: logs, planks, cobble...
+     ||
+     ||  cable down to the vault
+  [ AE2 network ]` } },
+    { id: "l-cc", layer: "u", t: "Request filler: CC:Tweaked + Advanced Peripherals", mods: ["CC:Tweaked", "Advanced Peripherals", "AE2"],
+      why: `<p>Advanced Peripherals' <b>Colony Integrator</b> lets a computer read the colony's open requests. These are exactly the requests the colony can't fill itself. The <b>ME Bridge</b> lets the same computer take items from AE2 or start an autocraft. The script below combines them: for every open request it sends the item to the Stash, or crafts it if it's not in stock.</p>`,
+      subs: [
+        "Craft an Advanced Computer (CC:Tweaked)",
+        "Craft a Colony Integrator and place it next to the computer, <b>inside the colony border</b>",
+        "Craft an ME Bridge, place it next to the computer, and connect it to the network with a cable",
+        "Place the Stash on top of the ME Bridge (or set <code>OUT</code> in the script to the side you use)",
+        "Open the computer and run <code>edit startup.lua</code>, then paste the script",
+        "Save it (Ctrl → Save), then restart the computer (Ctrl+R held down)",
+        "Test it: request something with the Postbox that only AE2 has and watch it appear in the Stash",
+      ],
+      diagram: { h: "Block layout", d:
+`            [Stash]
+               |
+  [Colony    ][ME Bridge][cable -> AE2]
+  [Integrator][ Computer ]
+  (all touching; Integrator must be inside the colony)` },
       code: true,
-      tip: `<b>Check:</b> Advanced Peripherals has renamed some functions and fields between versions. If the script errors, run <code>lua</code> on the computer and inspect <code>peripheral.getNames()</code> and one result of <code>getRequests()</code>. If you'd rather not edit it yourself, community MineColonies + AE2 request scripts already exist and are more complete.` },
+      tip: `<b>Troubleshooting:</b> run <code>lua</code> on the computer. <code>peripheral.getNames()</code> shows what's connected, and <code>peripheral.find("colony_integrator").getRequests()</code> shows the raw requests. If the script errors on a function name, check the peripheral list with <code>peripheral.getMethods("me_bridge")</code>.` },
     { id: "l-skip", layer: "u", t: "Decide what stays manual", mods: ["MineColonies"],
-      b: `<p>Leave out items with special data (enchanted gear, tools of a specific level) and food, which the cook handles. Leave Domum Ornamentum blocks to the colony's crafters. Add these to the script's <code>SKIP</code> list so it doesn't keep trying to fill them.</p>` },
+      why: `<p>Some requests are better handled elsewhere: food (the cook makes it), Domum Ornamentum blocks (colony crafters) and tools with specific enchantments. Add these to <code>SKIP</code> in the script.</p>`,
+      subs: [
+        "Watch the Clipboard for a day and note which requests AE2 can't fill",
+        "Add a pattern for the ones it should fill",
+        "Put the rest in <code>SKIP</code> (use the item ID from JEI, for example <code>minecraft:cooked_beef</code>)",
+      ] },
   ]
 },
 {
-  id: "engines", title: "Resource engines", sub: "Steady raw materials into AE2, so the town never stalls.",
+  id: "engines", title: "Resource engines",
+  sub: "A steady flow of raw materials into AE2, so the town never stalls.",
+  intro: "Automation only works if AE2 doesn't run dry. These engines turn power into raw materials, so mining becomes optional.",
   steps: [
     { id: "e-ma", layer: "u", t: "Mystical Agriculture crop room", mods: ["Mystical Agriculture"],
-      b: `<p>Inferium first, then resource seeds for iron, copper, coal, stone, wood and dyes. Light the room with glowstone, add Growth Accelerators, and automate harvesting (Create Mechanical Harvesters or a block breaker) into AE2.</p>` },
+      why: `<p>Mystical Agriculture grows resources as crops. <b>Essence</b> from <b>Inferium ore</b> goes into seeds, and the <b>Infusion Altar</b> combines them with essence and the resource. Each resource has a <b>tier</b> (Inferium, Prudentium, Tertium, Imperium, Supremium) and needs essence and farmland of that tier. Harvested essence becomes resources in a crafting grid.</p>`,
+      subs: [
+        "Mine Inferium and Prosperity ore and make Inferium seeds",
+        "Build the Infusion Altar with 8 pedestals around it",
+        "Upgrade essence to Prudentium and Tertium (crafting table)",
+        "Make seeds for wood, stone, coal, iron, copper and dyes first",
+        "Build a crop room under the town: lights, farmland, Growth Accelerators underneath",
+        "Automate harvesting (Mystical Agriculture's harvester or a Create harvester) into AE2",
+        "Write AE2 patterns: essence → resources",
+      ] },
     { id: "e-mining", layer: "u", t: "Automated mining in the Mining dimension", mods: ["Mekanism", "FTB Chunks", "AE2"],
-      b: `<p>Set up a Mekanism Digital Miner in the ATM Mining dimension and force-load its chunks with FTB Chunks. Send the output home with a Quantum Entangloporter or an AE2 Quantum Network Bridge, straight into ore processing.</p>` },
-    { id: "e-mobs", layer: "u", t: "Mob farm", mods: ["Industrial Foregoing"],
-      b: `<p>String, bones, gunpowder and arrows supply the Fletcher, the guards and lots of crafting recipes. Keep it far from town so mobs don't spawn near citizens.</p>` },
-    { id: "e-train", layer: "s", t: "Create trains to outposts", mods: ["Create"],
-      b: `<p>A railway dressed in timber and cobble connects the town to a quarry or an outlying farm village. Trains carry bulk goods into a station whose lower level opens into the undercroft. It's the most medieval-looking way to move materials.</p>` },
+      why: `<p>The ATM Mining dimension is made for mining. A Mekanism <b>Digital Miner</b> mines a large radius with filters, and a <b>Quantum Entangloporter</b> sends items home across dimensions. Since you play solo, the miner's chunk must be force-loaded.</p>`,
+      subs: [
+        "Find the way into the ATM Mining dimension (quest book)",
+        "Craft a Digital Miner (atomic alloys and robit parts, check JEI)",
+        "Set its filters to the ores you need (iron, copper, osmium, zinc...)",
+        "Force-load the chunk(s) with FTB Chunks",
+        "Craft two Quantum Entangloporters on the same frequency",
+        "Connect the home end to the 4× ore chain",
+      ] },
+    { id: "e-trains", layer: "s", t: "Create trains to outposts", mods: ["Create"],
+      why: `<p>A Create railway is the most medieval-looking way to move goods. Trains run on a <b>schedule</b> between <b>stations</b> and load and unload automatically. Use one to bring wood from a remote forest or stone from a quarry outpost into a station whose lower floor opens into the vault.</p>`,
+      subs: [
+        "Lay track to an outpost, with timber bridges and cobble embankments",
+        "Build a Train Station at each end",
+        "Build a train: Train Casing, Controls, bogeys and cargo (chests or vaults)",
+        "Write a schedule: go to outpost, wait for full, go home, wait for empty",
+        "Unload at home into Funnels → AE2",
+      ] },
+    { id: "e-mob", layer: "u", t: "Mob farm", mods: ["Industrial Foregoing"],
+      why: `<p>Guards need arrows, the Fletcher needs feathers and string, and many recipes need bones and gunpowder. A mob farm supplies these. Build it far from town so it doesn't affect citizens.</p>`,
+      subs: [
+        "Build a dark-room spawner or use an Industrial Foregoing mob farm",
+        "Send drops into AE2",
+        "Remember to force-load the chunk if it's outside your normal play area",
+      ] },
     { id: "e-power", layer: "u", t: "Scale up power", mods: ["Powah", "Mekanism", "Flux Networks"],
-      b: `<p>Powah reactors or Mekanism generators in the vault, with Flux Networks sending power wirelessly to outposts. You'll need the extra power once 5× ore processing and a large crafting system are both running.</p>` },
+      why: `<p>Running 4× ore processing, autocrafting and growth accelerators at once takes a lot of power. <b>Powah reactors</b> are compact. <b>Flux Networks</b> sends power wirelessly to outposts, so you need no visible cables.</p>`,
+      subs: [
+        "Build a Powah reactor (uraninite fuel, check its coolant in JEI)",
+        "Or build Mekanism generators",
+        "Craft a Flux Controller, Flux Plugs and Flux Points",
+        "Connect the vault and outposts on one flux network",
+      ] },
   ]
 },
 {
-  id: "crown", title: "Finish the town", sub: "Level 5 buildings and decorations. Afterwards you only top up raw materials.",
+  id: "crown", title: "Finish the town",
+  sub: "Level 5 buildings and decorations. Afterwards you only top up raw materials.",
+  intro: "With automation running, the final levels mostly build themselves. Your job is to keep an eye on what AE2 can't make.",
   steps: [
     { id: "c-five", layer: "s", t: "Town Hall and key huts to level 5", mods: ["MineColonies"],
-      b: `<p>With the request filler running, upgrades mostly build themselves. Watch the Clipboard for anything AE2 can't supply and add a pattern or a resource engine for it.</p>` },
+      why: `<p>Level 5 buildings need large amounts of materials. This is where the request filler shows its value.</p>`,
+      subs: [
+        "Builder's Huts to L5",
+        "Town Hall to L5",
+        "Warehouse to L5 and more couriers",
+        "All crafter huts to L3+",
+        "Residences to L4–L5",
+      ] },
     { id: "c-late", layer: "s", t: "Late-game huts", mods: ["MineColonies"],
-      b: `<p>Enchanter's Tower, Alchemist, Mechanic, Concrete Mixer, and the Nether Mine (Netherworker) for nether goods. Each one comes from research or needs higher-level huts.</p>` },
+      why: `<p>These huts become available through research or higher levels of other huts.</p>`,
+      subs: [
+        "Enchanter's Tower",
+        "Alchemist",
+        "Mechanic (redstone items)",
+        "Concrete Mixer",
+        "Nether Mine (Netherworker) for nether goods",
+      ] },
     { id: "c-decor", layer: "s", t: "Decorations and roads", mods: ["Structurize", "MineColonies"],
-      b: `<p>The Build Tool also has decorations: walls, gates, wells, lamp posts, market stalls. Use the Structurize Shape Tool for roads and town walls, and let builders build the decorations for you.</p>` },
+      why: `<p>The Build Tool also has <b>decorations</b>: walls, gates, wells, lamp posts and market stalls. The Structurize <b>Shape Tool</b> lays out roads and walls quickly, and builders build them like any other building.</p>`,
+      subs: [
+        "Lay main roads between districts",
+        "Build a town wall with gates",
+        "Add decorations: a well, market stalls, lamp posts",
+      ] },
     { id: "c-scan", layer: "s", t: "Save your own builds as blueprints", mods: ["Structurize"],
-      b: `<p>The Scan Tool saves any area as a blueprint, such as your hidden vault entrance or a disguised train station. You can then place copies with the Build Tool and builders will build them. This way the hidden tech grows with the town.</p>` },
+      why: `<p>The <b>Scan Tool</b> saves any area as a blueprint, which you can then place with the Build Tool and have builders build. This way your hidden entrances and disguised stations grow with the town.</p>`,
+      subs: [
+        "Craft a Scan Tool",
+        "Scan your hidden entrance or a disguised train station",
+        "Place a copy with the Build Tool and let a builder build it",
+      ] },
     { id: "c-done", layer: "p", t: "The town runs itself", mods: [],
-      b: `<p>Final check: an open request on the Clipboard gets filled without you doing anything, couriers keep the Warehouse stocked, and AE2 always has spare raw materials. All that's left is deciding what to build next.</p>` },
+      why: `<p>Final check. All that's left is deciding what to build next.</p>`,
+      subs: [
+        "An open request on the Clipboard is filled without you",
+        "Couriers keep the Warehouse stocked",
+        "AE2 always has spare raw materials",
+        "Power stays positive with everything running",
+      ] },
   ]
 }
 ];
 
 const LUA = `-- startup.lua : fill MineColonies requests from AE2
+-- Needs: Advanced Computer + Colony Integrator + ME Bridge (Advanced Peripherals)
 local colony = peripheral.find("colony_integrator") or peripheral.find("colonyIntegrator")
 local me     = peripheral.find("me_bridge") or peripheral.find("meBridge")
 assert(colony, "No Colony Integrator found")
 assert(me, "No ME Bridge found")
 
-local OUT  = "up"   -- side of the ME Bridge the Stash sits on
-local SKIP = {      -- items the colony should make itself
+local OUT      = "up"   -- side of the ME Bridge the Stash sits on
+local WAIT     = 30     -- seconds between checks
+local COOLDOWN = 300    -- seconds before re-sending the same request
+local SKIP = {          -- items the colony should make itself
   ["minecraft:enchanted_book"] = true,
 }
-local crafting = {}  -- item name -> true while a craft job runs
 
-local function amount(item)
-  if not item then return 0 end
+-- function names changed between Advanced Peripherals versions
+local isCraftable = me.isCraftable or me.isItemCraftable
+local isCrafting  = me.isCrafting  or me.isItemCrafting
+
+local sentAt = {}  -- request id -> time we last handled it
+
+local function stock(name)
+  local item = me.getItem({ name = name })
+  if type(item) ~= "table" then return 0 end
   return item.count or item.amount or 0
 end
 
-local function fill(name, need)
-  if SKIP[name] then return end
-  local have = amount(me.getItem({ name = name }))
+local function fill(req)
+  local first = req.items and req.items[1]
+  if not first or SKIP[first.name] then return end
+  local name, need = first.name, req.count or 1
+  local now = os.epoch("utc") / 1000
+  if sentAt[req.id] and now - sentAt[req.id] < COOLDOWN then return end
+
+  local have = stock(name)
   if have > 0 then
-    me.exportItem({ name = name, count = math.min(have, need) }, OUT)
-    crafting[name] = nil
-  elseif not crafting[name] and me.isItemCraftable({ name = name }) then
+    local sent = me.exportItem({ name = name, count = math.min(have, need) }, OUT)
+    if sent and sent > 0 then
+      print(("Sent %d x %s for %s"):format(sent, name, req.target or "?"))
+      sentAt[req.id] = now
+    end
+  elseif isCraftable and isCraftable({ name = name }) and not isCrafting({ name = name }) then
     me.craftItem({ name = name, count = need })
-    crafting[name] = true
-    print("Crafting " .. need .. "x " .. name)
+    print(("Crafting %d x %s"):format(need, name))
+    sentAt[req.id] = now - COOLDOWN + WAIT * 2  -- check again soon
   end
 end
 
 while true do
   local ok, requests = pcall(colony.getRequests)
-  if ok and requests then
+  if ok and type(requests) == "table" then
     for _, req in ipairs(requests) do
-      local first = req.items and req.items[1]
-      if first then fill(first.name, req.count or 1) end
+      local ok2, err = pcall(fill, req)
+      if not ok2 then print("Error: " .. tostring(err)) end
     end
+  else
+    print("Could not read requests: " .. tostring(requests))
   end
-  sleep(30)
+  sleep(WAIT)
 end`;
+
+/* ---------- ids ---------- */
+function hash(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
+}
+PHASES.forEach(ph => ph.steps.forEach(s => {
+  s.subs = (s.subs || []).map(html => ({ id: s.id + ":" + hash(html), html }));
+}));
+const allSteps = PHASES.flatMap(p => p.steps);
+/* one progress unit per sub-step; a step without sub-steps counts as one unit */
+function units(s) { return s.subs.length ? s.subs.map(x => x.id) : [s.id]; }
+const allUnits = allSteps.flatMap(s => units(s).map(id => ({ id, layer: s.layer })));
 
 /* ---------- state ---------- */
 let done = {};
-let layer = "all", modSel = "", hideDone = false;
+let layer = "all", modSel = "", hideDone = false, query = "";
+let openSteps = {};
 let store = null, saveTimer = null, saving = false, pending = false;
 const LS_KEY = "hollowmere-progress";
 
-function lsRead() { try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch (e) { return {}; } }
-function lsWrite() { try { localStorage.setItem(LS_KEY, JSON.stringify(done)); } catch (e) {} }
-function lsPrefs() { try { return JSON.parse(localStorage.getItem(LS_KEY + "-prefs") || "{}") || {}; } catch (e) { return {}; } }
-function lsSavePrefs() { try { localStorage.setItem(LS_KEY + "-prefs", JSON.stringify({ layer, modSel, hideDone })); } catch (e) {} }
+function lsGet(k, d) { try { return JSON.parse(localStorage.getItem(k) || "null") || d; } catch (e) { return d; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function lsWrite() { lsSet(LS_KEY, done); }
+function lsSavePrefs() { lsSet(LS_KEY + "-prefs", { layer, modSel, hideDone, openSteps }); }
 
 const syncEl = document.getElementById("sync");
 function setSync(t) { syncEl.textContent = t; }
 
+function stepDone(s) { return units(s).every(id => done[id]); }
+function stepCount(s) { return units(s).filter(id => done[id]).length; }
+
 /* ---------- render ---------- */
-const allSteps = PHASES.flatMap(p => p.steps);
 const mods = [...new Set(allSteps.flatMap(s => s.mods))].sort((a, b) => a.localeCompare(b));
 const modFilter = document.getElementById("modFilter");
 mods.forEach(m => { const o = document.createElement("option"); o.value = m; o.textContent = m; modFilter.appendChild(o); });
 
 const LAYER_NAME = { s: "Surface", u: "Undercroft", p: "Planning" };
 const main = document.getElementById("main");
-const openState = {};
+const openPhases = {};
+
+function plain(html) { const d = document.createElement("div"); d.innerHTML = html; return d.textContent.toLowerCase(); }
+const searchText = new Map(allSteps.map(s => [s.id,
+  (s.t + " " + s.mods.join(" ") + " " + plain(s.why || "") + " " + s.subs.map(x => plain(x.html)).join(" ") +
+   " " + (s.recipes || []).map(r => r.join(" ")).join(" ")).toLowerCase()]));
 
 function visible(s) {
   if (layer !== "all" && s.layer !== layer) return false;
   if (modSel && !s.mods.includes(modSel)) return false;
-  if (hideDone && done[s.id]) return false;
+  if (hideDone && stepDone(s)) return false;
+  if (query && !searchText.get(s.id).includes(query)) return false;
   return true;
 }
 
+function isOpen(s) {
+  if (s.id in openSteps) return openSteps[s.id];
+  return !stepDone(s);
+}
+
 function render() {
+  const y = window.scrollY;
   main.textContent = "";
   PHASES.forEach((ph, i) => {
     const d = document.createElement("details");
     d.className = "phase";
-    d.open = openState[ph.id] !== false;
-    d.addEventListener("toggle", () => { openState[ph.id] = d.open; });
-    const nDone = ph.steps.filter(s => done[s.id]).length;
+    d.open = openPhases[ph.id] !== false;
+    d.addEventListener("toggle", () => { openPhases[ph.id] = d.open; });
+    const total = ph.steps.length, nDone = ph.steps.filter(stepDone).length;
     const sum = document.createElement("summary");
     sum.innerHTML = `<span class="ph-num"><span class="ph-chev">›</span> Phase ${i + 1}</span>
       <span class="ph-title"></span>
-      <span class="ph-count ${nDone === ph.steps.length ? "full" : ""}">${nDone}/${ph.steps.length}</span>
+      <span class="ph-count ${nDone === total ? "full" : ""}">${nDone}/${total}</span>
       <p class="ph-sub"></p>`;
     sum.querySelector(".ph-title").textContent = ph.title;
     sum.querySelector(".ph-sub").textContent = ph.sub;
     d.appendChild(sum);
+    if (ph.intro) { const p = document.createElement("p"); p.className = "ph-intro"; p.textContent = ph.intro; d.appendChild(p); }
 
-    const ol = document.createElement("ol");
-    ol.className = "steps";
     const vis = ph.steps.filter(visible);
-    vis.forEach(s => ol.appendChild(stepEl(s)));
     if (!vis.length) {
       const e = document.createElement("p");
       e.className = "empty";
-      e.textContent = ph.steps.every(s => done[s.id]) && hideDone ? "Every step in this phase is finished." : "No steps match the current filter.";
+      e.textContent = hideDone && ph.steps.every(stepDone) ? "Every step in this phase is finished." : "No steps match the current filter.";
       d.appendChild(e);
-    } else d.appendChild(ol);
+    } else {
+      const ol = document.createElement("ol");
+      ol.className = "steps";
+      vis.forEach(s => ol.appendChild(stepEl(s)));
+      d.appendChild(ol);
+    }
     main.appendChild(d);
   });
   renderMeter();
+  window.scrollTo(0, y);
 }
 
 function stepEl(s) {
   const li = document.createElement("li");
-  li.className = `step ${s.layer}${done[s.id] ? " isdone" : ""}`;
+  const complete = stepDone(s), n = stepCount(s), tot = units(s).length;
+  li.className = `step ${s.layer}${complete ? " isdone" : ""}`;
+
   const cb = document.createElement("input");
-  cb.type = "checkbox"; cb.id = "cb-" + s.id; cb.checked = !!done[s.id];
-  cb.addEventListener("change", () => toggle(s.id, cb.checked));
+  cb.type = "checkbox"; cb.id = "cb-" + s.id;
+  cb.checked = complete;
+  cb.indeterminate = !complete && n > 0;
+  cb.setAttribute("aria-label", "Mark all of '" + s.t + "' finished");
+  cb.addEventListener("change", () => setMany(units(s), cb.checked));
+
   const body = document.createElement("div");
   body.className = "st-body";
   const chips = [`<span class="chip layer">${LAYER_NAME[s.layer]}</span>`]
     .concat(s.mods.map(m => `<span class="chip">${m}</span>`)).join("");
-  body.innerHTML = `<div class="st-head"><label class="st-title" for="cb-${s.id}"></label><span class="chips">${chips}</span></div>
-    <div class="st-text">${s.b}</div>${s.tip ? `<div class="tip">${s.tip}</div>` : ""}`;
+  const open = isOpen(s);
+  body.innerHTML = `<div class="st-head"><label class="st-title" for="cb-${s.id}"></label>
+      <span class="chips">${chips}</span>
+      ${s.subs.length ? `<span class="st-prog">${n}/${tot}</span>` : ""}
+      <button type="button" class="st-toggle" aria-expanded="${open}">${open ? "Hide" : "Details"}</button></div>`;
   body.querySelector(".st-title").textContent = s.t;
-  if (s.code) body.querySelector(".st-text").appendChild(codeBox());
-  if (done[s.id]) {
-    const peek = document.createElement("button");
-    peek.type = "button";
-    peek.className = "chip";
-    peek.style.cssText = "border:0;cursor:pointer;font-family:var(--f-mono)";
-    peek.textContent = "show";
-    peek.addEventListener("click", () => {
-      li.classList.toggle("peek");
-      peek.textContent = li.classList.contains("peek") ? "hide" : "show";
-    });
-    body.querySelector(".chips").appendChild(peek);
+  body.querySelector(".st-toggle").addEventListener("click", () => {
+    openSteps[s.id] = !isOpen(s); lsSavePrefs(); render();
+  });
+
+  if (open) {
+    const det = document.createElement("div");
+    det.className = "st-detail";
+    if (s.why) { const w = document.createElement("div"); w.className = "st-why"; w.innerHTML = s.why; det.appendChild(w); }
+    if (s.warn) { const w = document.createElement("div"); w.className = "warn"; w.innerHTML = "<b>Watch out:</b> " + s.warn; det.appendChild(w); }
+    if (s.subs.length) {
+      const wrap = document.createElement("div");
+      wrap.innerHTML = `<div class="blk-label">Steps</div>`;
+      const ul = document.createElement("ul"); ul.className = "subs";
+      s.subs.forEach(x => {
+        const sli = document.createElement("li");
+        if (done[x.id]) sli.className = "sdone";
+        const id = "sb-" + x.id.replace(/[^a-z0-9-]/gi, "_");
+        sli.innerHTML = `<input type="checkbox" id="${id}"${done[x.id] ? " checked" : ""}><label for="${id}">${x.html}</label>`;
+        sli.querySelector("input").addEventListener("change", e => setMany([x.id], e.target.checked));
+        ul.appendChild(sli);
+      });
+      wrap.appendChild(ul); det.appendChild(wrap);
+    }
+    if (s.recipes) {
+      const r = document.createElement("div"); r.className = "recipes";
+      r.innerHTML = `<div class="blk-label">Key ingredients</div><table><thead><tr><th>Item</th><th>Main ingredients</th><th>Made in</th></tr></thead><tbody></tbody></table><div class="rnote">Exact grid and counts: hover the item in JEI and press R.</div>`;
+      const tb = r.querySelector("tbody");
+      s.recipes.forEach(([a, b, c]) => {
+        const tr = document.createElement("tr");
+        [a, b, c].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
+        tb.appendChild(tr);
+      });
+      det.appendChild(r);
+    }
+    if (s.diagram) {
+      const g = document.createElement("div"); g.className = "diagram";
+      g.innerHTML = `<div class="dh"></div><pre></pre>`;
+      g.querySelector(".dh").textContent = s.diagram.h;
+      g.querySelector("pre").textContent = s.diagram.d;
+      det.appendChild(g);
+    }
+    if (s.code) det.appendChild(codeBox());
+    if (s.tip) { const t = document.createElement("div"); t.className = "tip"; t.innerHTML = s.tip; det.appendChild(t); }
+    body.appendChild(det);
   }
   li.append(cb, body);
   return li;
@@ -513,35 +1287,36 @@ function codeBox() {
   box.querySelector("code").textContent = LUA;
   const btn = box.querySelector("button");
   btn.addEventListener("click", () => {
-    const done_ = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy", 1600); };
+    const ok = () => { btn.textContent = "Copied"; setTimeout(() => btn.textContent = "Copy", 1600); };
     const fallback = () => {
       const r = document.createRange(); r.selectNodeContents(box.querySelector("code"));
       const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
       btn.textContent = "Selected: press Ctrl+C";
     };
-    try { navigator.clipboard.writeText(LUA).then(done_, fallback); } catch (e) { fallback(); }
+    try { navigator.clipboard.writeText(LUA).then(ok, fallback); } catch (e) { fallback(); }
   });
   return box;
 }
 
 function renderMeter() {
-  const total = allSteps.length;
+  const total = allUnits.length;
   const meter = document.getElementById("meter");
   meter.textContent = "";
   ["p", "s", "u"].forEach(l => {
-    const n = allSteps.filter(s => s.layer === l && done[s.id]).length;
+    const n = allUnits.filter(u => u.layer === l && done[u.id]).length;
     const i = document.createElement("i");
     i.className = l; i.style.width = (n / total * 100) + "%";
     meter.appendChild(i);
   });
-  const n = allSteps.filter(s => done[s.id]).length;
-  document.getElementById("count").textContent = `${n} / ${total} steps`;
-  meter.setAttribute("aria-label", `${n} of ${total} steps finished`);
+  const n = allUnits.filter(u => done[u.id]).length;
+  const steps = allSteps.filter(stepDone).length;
+  document.getElementById("count").textContent = `${steps}/${allSteps.length} steps · ${n}/${total} tasks`;
+  meter.setAttribute("aria-label", `${n} of ${total} tasks finished`);
 }
 
 /* ---------- saving ---------- */
-function toggle(id, val) {
-  if (val) done[id] = true; else delete done[id];
+function setMany(ids, val) {
+  ids.forEach(id => { if (val) done[id] = true; else delete done[id]; });
   lsWrite();
   render();
   queueSave();
@@ -568,7 +1343,7 @@ async function flush() {
   if (pending) { pending = false; flush(); }
 }
 
-/* ---------- filters ---------- */
+/* ---------- controls ---------- */
 document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
   layer = b.dataset.layer;
   document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
@@ -577,23 +1352,38 @@ document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click"
 modFilter.addEventListener("change", () => { modSel = modFilter.value; lsSavePrefs(); render(); });
 const hideBox = document.getElementById("hideDone");
 hideBox.addEventListener("change", () => { hideDone = hideBox.checked; lsSavePrefs(); render(); });
+let qTimer;
+document.getElementById("q").addEventListener("input", e => {
+  clearTimeout(qTimer);
+  qTimer = setTimeout(() => { query = e.target.value.trim().toLowerCase(); render(); }, 150);
+});
+document.getElementById("expandAll").addEventListener("click", () => {
+  allSteps.forEach(s => openSteps[s.id] = true);
+  PHASES.forEach(p => openPhases[p.id] = true);
+  lsSavePrefs(); render();
+});
+document.getElementById("collapseAll").addEventListener("click", () => {
+  allSteps.forEach(s => openSteps[s.id] = false);
+  lsSavePrefs(); render();
+});
 
 const resetBtn = document.getElementById("resetBtn"), resetYes = document.getElementById("resetYes"),
       resetNo = document.getElementById("resetNo"), resetMsg = document.getElementById("resetMsg");
 resetBtn.addEventListener("click", () => { resetBtn.hidden = true; resetYes.hidden = false; resetNo.hidden = false; resetMsg.textContent = "Clear every tick? This can't be undone."; });
 resetNo.addEventListener("click", () => { resetBtn.hidden = false; resetYes.hidden = true; resetNo.hidden = true; resetMsg.textContent = "Start over in a new world?"; });
 resetYes.addEventListener("click", () => {
-  done = {}; lsWrite(); render(); queueSave();
+  done = {}; openSteps = {}; lsWrite(); lsSavePrefs(); render(); queueSave();
   resetNo.click(); resetMsg.textContent = "All ticks cleared.";
 });
 
 /* ---------- boot ---------- */
 (function boot() {
-  done = lsRead();
-  const prefs = lsPrefs();
+  done = lsGet(LS_KEY, {});
+  const prefs = lsGet(LS_KEY + "-prefs", {});
   if (prefs.layer) layer = prefs.layer;
   if (prefs.modSel && mods.includes(prefs.modSel)) modSel = prefs.modSel;
   hideDone = !!prefs.hideDone;
+  openSteps = prefs.openSteps || {};
   modFilter.value = modSel; hideBox.checked = hideDone;
   document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.layer === layer)));
   render();
@@ -609,8 +1399,7 @@ resetYes.addEventListener("click", () => {
       store = db.doc(`data/users/${id}/progress`);
       const snap = await store.get();
       if (snap.exists) {
-        const remote = (snap.data() || {}).done || {};
-        done = Object.assign({}, remote);
+        done = Object.assign({}, (snap.data() || {}).done || {});
         lsWrite();
         render();
       } else if (Object.keys(done).length) {

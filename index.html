@@ -26,7 +26,7 @@
   --slate-soft: #e1e3ea;
   --done: #8a948b;
   --code-bg: #e2e6dd;
-  --warn: #8a5a12;
+  --warn: #8a5a12; --road: #b9a98a; --light: #e8a33d;
   --f-display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
   --f-body: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
@@ -35,14 +35,14 @@
   :root:not([data-theme="light"]) {
     --bg: #131714; --panel: #1b201c; --fg: #e2e6df; --muted: #9aa49b; --line: #2f3830;
     --moss: #8fc07c; --moss-soft: #263423; --tech: #62c4d0; --tech-soft: #18313a;
-    --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310; --warn: #e0b060;
+    --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310; --warn: #e0b060; --road: #6d634f; --light: #e8a33d;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #131714; --panel: #1b201c; --fg: #e2e6df; --muted: #9aa49b; --line: #2f3830;
   --moss: #8fc07c; --moss-soft: #263423; --tech: #62c4d0; --tech-soft: #18313a;
-  --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310; --warn: #e0b060;
+  --slate: #a4abbd; --slate-soft: #262a33; --done: #6b746c; --code-bg: #0f1310; --warn: #e0b060; --road: #6d634f; --light: #e8a33d;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -185,6 +185,47 @@ a { color: var(--tech); }
 .xbox.check { background: var(--moss-soft); border-color: transparent; }
 .xbox.fix { background: var(--panel); border-style: dashed; }
 .xbox.next { background: var(--slate-soft); border-color: transparent; }
+/* illustrations (inline SVG, themed through the page variables) */
+.fig { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.fig .ft { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.fig .pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 8px; }
+.fig .pn { border: 1px solid var(--line); border-radius: 3px; overflow: hidden; background: var(--panel); min-width: 0; }
+.fig .pl { font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-bottom: 1px solid var(--line); color: var(--muted); }
+.fig .pl.good { color: var(--moss); }
+.fig .pl.bad { color: var(--warn); }
+.fig svg { display: block; width: 100%; height: auto; }
+.fig figcaption { font-size: 14px; color: var(--muted); max-width: 70ch; }
+.fig .gr { fill: var(--moss-soft); }
+.fig .b { fill: var(--panel); stroke: var(--slate); stroke-width: 1.5; }
+.fig .rf { fill: var(--slate); stroke: var(--slate); stroke-width: 1; stroke-linejoin: round; }
+.fig .rd { fill: none; stroke: var(--road); stroke-linecap: round; }
+.fig .sq { fill: var(--road); }
+.fig .ln { fill: none; stroke: var(--slate); stroke-width: 2; stroke-linecap: round; }
+.fig .tr { fill: var(--moss); opacity: .8; }
+.fig .ac { fill: #b8322a; }
+.fig .fd { fill: var(--panel); stroke: var(--moss); stroke-dasharray: 3 2; }
+.fig .wl { fill: none; stroke: var(--slate); stroke-width: 4; stroke-linejoin: round; }
+.fig .wt { fill: var(--slate); }
+.fig .wa { fill: none; stroke: var(--tech); stroke-width: 8; opacity: .45; stroke-linecap: round; }
+.fig .tk { fill: var(--tech-soft); stroke: var(--tech); stroke-width: 1.5; }
+.fig .dash { fill: none; stroke: var(--tech); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.fig .t { fill: var(--muted); font: 9px var(--f-body); }
+.fig .tn { fill: var(--tech); font: 10px var(--f-body); }
+.pal { display: flex; flex-direction: column; gap: 8px; }
+.pal-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.pal-row button { font: inherit; font-size: 13px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 3px; padding: 3px 9px; cursor: pointer; }
+.pal-row button[aria-pressed="true"] { border-color: var(--fg); }
+.pal-sw { display: flex; flex-wrap: wrap; gap: 10px; font-size: 13px; color: var(--muted); }
+.pal-sw label { display: flex; align-items: center; gap: 5px; }
+.pal-sw input[type=color] { width: 30px; height: 24px; padding: 0; border: 1px solid var(--line); border-radius: 3px; background: none; cursor: pointer; }
+.ph-meta { display: flex; flex-wrap: wrap; gap: 2px 20px; margin: 0 0 12px; font-size: 15px; }
+.ph-meta b { font-weight: 500; }
+.ph-meta span:last-child { color: var(--muted); }
+.ph-wait { margin: 0 0 14px; }
+.chip.here, .chip.nextup { background: var(--moss); color: var(--bg); }
+.chip.here { margin-left: 8px; }
+.xbox.look { background: var(--panel); border-color: var(--moss); border-left-width: 4px; }
+.xbox.look .blk-label { color: var(--moss); }
 .xbox ul { margin: 2px 0 0; padding-left: 18px; }
 .xbox li { margin: 2px 0; }
 .fx-sym { font-weight: 500; }
@@ -237,13 +278,13 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
 <header class="intro wrap">
   <div class="eyebrow">All the Mods 10 · MineColonies town · new world → full automation · solo</div>
   <h1>Hollowmere Town Plan</h1>
-  <p class="lede">A medieval MineColonies town on the surface, with its high-tech core hidden underneath in an <em>undercroft</em>. Each step explains why it matters, then breaks into small sub-steps you tick off. Many steps also have a table of key ingredients and a sketch of the machine layout. The systems build on each other: Create, Powah, Mekanism, AE2, and finally a ComputerCraft script that fills the colony's requests from your ME system.</p>
+  <p class="lede">A medieval MineColonies town on the surface, with its high-tech core hidden underneath in an <em>undercroft</em>. Each step explains why it matters, then breaks into small sub-steps you tick off. Many steps also have a table of key ingredients and a sketch of the machine layout. The systems build on each other: Create, Powah, AE2, and finally a ComputerCraft script that fills the colony's requests from your ME system. Mekanism comes later as an optional upgrade, if the colony runs short of ore. Along the way, design advice keeps the town beautiful, and the last phase is a full beautification pass.</p>
   <div class="legend">
     <span><i class="sw p"></i>Planning</span>
     <span><i class="sw s"></i>Surface town (MineColonies)</span>
     <span><i class="sw u"></i>Undercroft (hidden tech)</span>
   </div>
-  <p class="howto">New to automation? Read the <a href="#learn">Learn</a> tab first: 10 minutes there makes every tech step easier. Stuck? The <a href="#fix">Fix it</a> tab lists common problems and their causes. In game: hover an item in JEI and press <kbd>R</kbd> (recipe) or <kbd>U</kbd> (uses). Hold <kbd>W</kbd> over a Create item for an animated Ponder scene, and <kbd>G</kbd> over an AE2 item for its guide.</p>
+  <p class="howto">New to automation? Read the <a href="#learn">Learn</a> tab first: 10 minutes there makes every tech step easier. Overwhelmed? Keep <b>Focus on current phase</b> ticked: only the phase you are in and its next step stay open. Time estimates are rough guesses for a first playthrough. Stuck? The <a href="#fix">Fix it</a> tab lists common problems and their causes. In game: hover an item in JEI and press <kbd>R</kbd> (recipe) or <kbd>U</kbd> (uses). Hold <kbd>W</kbd> over a Create item for an animated Ponder scene, and <kbd>G</kbd> over an AE2 item for its guide.</p>
 </header>
 
 <div class="bar">
@@ -266,6 +307,7 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
       </div>
       <select id="modFilter" aria-label="Filter by mod"><option value="">Every mod</option></select>
       <input type="search" id="q" placeholder="Search steps, e.g. warehouse" aria-label="Search steps">
+      <label class="chk-lbl"><input type="checkbox" id="focusMode"> Focus on current phase</label>
       <label class="chk-lbl"><input type="checkbox" id="essOnly"> Essentials only</label>
       <label class="chk-lbl"><input type="checkbox" id="hideDone"> Hide finished</label>
       <button type="button" class="tbtn" id="expandAll">Expand all</button>
@@ -290,7 +332,8 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
 
 <script>
 /* Step fields: t title, layer p/s/u, mods, why (html), subs (html strings, each a tickable sub-step),
-   recipes [item, key ingredients, made in], diagram {h, d}, tip, warn, code */
+   recipes [item, key ingredients, made in], diagram {h, d}, tip, warn, code
+   (per-step "look" boxes with design advice live in EXTRA) */
 const PHASES = [
 {
   id: "plan", title: "Plan before you place a block",
@@ -337,6 +380,26 @@ const PHASES = [
         "Plan a tree farm of that wood type for the forester",
         "Note a second style for walls and towers if you want contrast",
       ] },
+    { id: "p-vision", layer: "p", t: "Write a one-line vision and pick a palette", mods: ["MineColonies"],
+      why: `<p>Towns that look great have a <b>theme</b> and a <b>small palette</b>, and towns that look messy have neither. Decide now, while changing your mind is free. A one-line vision (for example <i>"a timber-framed river town under a stone keep on the hill"</i>) lets you judge every later choice: does this building belong?</p>
+      <p>A palette is just four decisions: one main wood, one stone, one roof colour, and one accent colour (for banners, shutters and flowers). Every building, road and wall then draws from the same four.</p>`,
+      subs: [
+        "Write your vision in one sentence and copy it to the top of the quest book notes or a sign in your base",
+        "Look at 5–10 screenshots of medieval towns or MineColonies showcases you like and note what they have in common",
+        "Pick the palette: main wood, stone, roof colour, accent colour",
+        "Pick one grand landmark for the town (a keep, cathedral, big tower, or a waterfall mill)",
+      ],
+      look: `Two or three materials per building, repeated across the town, always look better than ten different ones. The accent colour should be rare: when only banners and shutters are red, the red stands out. When everything is red, nothing does.` },
+    { id: "p-districts", layer: "p", t: "Sketch districts, main road and landmark", mods: ["MineColonies"],
+      why: `<p>Real towns grow around a <b>market square</b> and a few <b>main roads</b>, with different kinds of building clustered together: workshops, homes, farms, harbour. That grouping is what makes a town feel like a place instead of a scattering of huts. MineColonies will let you put huts anywhere, so you have to decide this yourself.</p>`,
+      subs: [
+        "Mark the market square at the town centre (about 15×15 blocks, left open for now)",
+        "Mark the main road from the square to the town entrance, and a second road crossing it",
+        "Assign districts: craft quarter, residential streets, farm belt, harbour, a noble hill for the keep",
+        "Keep farms and the forester on the outside, and the densest buildings around the square",
+        "Mark the keep or landmark on the highest ground you have, so it can be seen from everywhere",
+      ],
+      look: `Dense in the middle, loose at the edges. Leave 2–4 blocks between neighbouring buildings (room for gardens and paths) and never line them up perfectly. A slightly crooked street always looks more natural than a ruler-straight one.` },
     { id: "p-solo", layer: "p", t: "Understand solo chunk loading", mods: ["MineColonies", "FTB Chunks"],
       why: `<p>In singleplayer, the world only runs near you. When you're in the mines, the Mining dimension or far away exploring, the colony is <b>frozen</b>: builders stop building and farms stop growing. Machines in the undercroft stop too, unless their chunks are force-loaded.</p>`,
       subs: [
@@ -350,6 +413,14 @@ const PHASES = [
       subs: [
         "Open the quest book and look through the chapters",
         "Pin the MineColonies and AE2 chapters so you see their progress",
+      ] },
+    { id: "w-plan", layer: "s", t: "Town win: stake out the town", mods: [],
+      why: `<p>Marking the plan in the world makes it real, and it costs almost nothing. When you can stand in the future square and see where the road and the keep will go, every later choice gets easier.</p>`,
+      subs: [
+        "Mark the four corners of the market square with fence posts and torches",
+        "Run a line of torches along the main road from the gate to the square",
+        "Plant a tall pole with a banner on the hill where the keep will go",
+        "Stand at the future gate and look down the road: can you picture the town?",
       ] },
   ]
 },
@@ -420,6 +491,14 @@ const PHASES = [
         "Craft a waystone or take one from a village",
         "Place it at the future town square and name it",
         "Sleep in a bed at the site to set your spawn",
+      ] },
+    { id: "w-survive", layer: "s", t: "Town win: a waystone worth arriving at", mods: ["Waystones"],
+      why: `<p>Every trip home ends at this waystone, so it's the first thing you see of the town. A little care here gives you a nice moment every time you arrive.</p>`,
+      subs: [
+        "Build a small stone plinth or three steps around the waystone",
+        "Add two lanterns and a bench",
+        "Plant a flower bed and a tree beside it",
+        "Place a sign with the town's name",
       ] },
   ]
 },
@@ -537,6 +616,14 @@ const PHASES = [
         "Check happiness in the Town Hall",
         "Check that every citizen has a job and a bed",
       ] },
+    { id: "w-found", layer: "s", t: "Town win: the first street", mods: ["MineColonies", "Structurize"],
+      why: `<p>With the first buildings up, a road between them turns scattered huts into a street. It also helps citizens walk faster.</p>`,
+      subs: [
+        "Lay a 3-wide road from the Town Hall past the Builder's Hut, mixing gravel, coarse dirt and cobblestone",
+        "Place lantern posts every 8–10 blocks along it",
+        "Give each house a front garden, fence or hedge",
+        "Put a flower bed or tree beside the Town Hall's door",
+      ] },
   ]
 },
 {
@@ -585,12 +672,19 @@ const PHASES = [
           [Mechanical Drill]
                |  shaft
           (water wheel in a stream)` } },
+    { id: "w-first", layer: "s", t: "Town win: a smithy that hides the smelter", mods: ["Iron Furnaces"],
+      why: `<p>Your first machine is the first thing to disguise. A smelter inside a small smithy looks like it belongs in the town, and it's a good test for hiding the rest of the tech later.</p>`,
+      subs: [
+        "Build a small stone smithy around the smelter, with a chimney over the furnace",
+        "Add an anvil, a grindstone and a water trough outside",
+        "Make sure no pipes can be seen from outside",
+      ] },
   ]
 },
 {
   id: "undercroft", title: "Dig the undercroft: first hidden tech",
-  sub: "Create, Powah and Mekanism. Nothing modern is visible from the street.",
-  intro: "This phase teaches three tech mods, each with a different kind of energy. Create uses rotation (speed and stress), Powah makes FE (Forge Energy, used by almost every machine), and Mekanism uses FE plus chemicals (gases) for advanced ore processing.",
+  sub: "Create and Powah. Nothing modern is visible from the street.",
+  intro: "This phase teaches two tech mods with different kinds of energy: Create uses rotation (speed and stress), and Powah makes FE (Forge Energy, used by almost every machine). That is all AE2 needs. Mekanism comes later, in Phase 9, once you know whether you need it.",
   steps: [
     { id: "u-vault", layer: "u", t: "Dig the vault and a hidden entrance", mods: [],
       why: `<p>Builders only touch blocks within a building's footprint. A deep vault outside those footprints stays safe. A big open room is easier to expand than a set of small corridors.</p>`,
@@ -699,70 +793,6 @@ const PHASES = [
         ["Energized Steel", "iron + gold", "Energizing Orb, with power to the rods"],
         ["Blazing Crystal", "blaze rod", "Energizing Orb"],
       ] },
-    { id: "u-mek-start", layer: "u", t: "Mekanism basics: steel, alloys and circuits", mods: ["Mekanism"],
-      why: `<p>Mekanism needs four ingredients for nearly everything: <b>Steel</b>, <b>Osmium</b>, <b>Alloys</b> (Infused, Reinforced, Atomic) and <b>Control Circuits</b> (Basic, Advanced, Elite, Ultimate). The <b>Metallurgic Infuser</b> makes all of them, so it's the first machine to build.</p>`,
-      subs: [
-        "Craft the Metallurgic Infuser",
-        "Make Enriched Carbon (coal) and Steel (iron + carbon)",
-        "Make Basic Control Circuits (osmium + redstone)",
-        "Make Infused Alloy (iron + redstone)",
-        "Craft a Steel Casing, the base of most machines",
-        "Craft an Energy Cube and Universal Cables",
-      ],
-      recipes: [
-        ["Metallurgic Infuser", "iron, redstone, furnace, osmium", "crafting table"],
-        ["Steel Ingot", "iron + carbon", "Metallurgic Infuser"],
-        ["Basic Control Circuit", "osmium + redstone", "Metallurgic Infuser"],
-        ["Infused Alloy", "iron + redstone", "Metallurgic Infuser"],
-        ["Reinforced Alloy", "infused alloy + diamond", "Metallurgic Infuser"],
-        ["Steel Casing", "steel, glass, osmium", "crafting table"],
-      ] },
-    { id: "u-mek-sides", layer: "u", t: "Learn Mekanism side configuration", mods: ["Mekanism"],
-      why: `<p>Every Mekanism machine decides <b>per side</b> what it accepts and what it gives out. This is the number one reason pipes "don't work". Open a machine and click the <b>Side Configuration</b> tab (the wrench icon on the right edge of the GUI). You'll see the 6 faces of the block, each with a colour. The legend in the GUI tells you what each colour means, and the usual ones are below.</p>
-      <p>Next to it is <b>auto-eject</b>: when it's on, the machine pushes its output out of the output-coloured sides by itself, so the pipe doesn't have to extract.</p>`,
-      subs: [
-        "Open an Enrichment Chamber and click the Side Configuration tab",
-        "Find the faces that are input (where ore goes in) and output (where dust comes out)",
-        "Click a face to cycle its colour; Shift-click to reset it",
-        "Turn on auto-eject for items",
-        "Connect a pipe to the output-coloured side and check that dust comes out on its own",
-      ],
-      diagram: { h: "Side configuration screen (colours as most Mekanism machines use them)", d:
-`          [ top    ]
-  [ left ][ front  ][ right ]      grey   = nothing
-          [ bottom ]               red    = input  (items in)
-          [ back   ]               blue   = output (items out)
-                                   green  = energy
-  [Auto-eject: ON]                 yellow = extra input (e.g. gas)
-  Check the legend in the GUI: some machines use more colours.` } },
-    { id: "u-mek-ore", layer: "u", t: "Mekanism ore processing: 2×, 3×, 4×", mods: ["Mekanism"],
-      why: `<p>Each stage adds a step in front of the previous one. <b>2×</b>: the Enrichment Chamber turns 1 ore into 2 dusts. <b>3×</b>: the Purification Chamber uses oxygen to make 3 clumps per ore. <b>4×</b>: the Chemical Injection Chamber uses hydrogen chloride to make 4 shards per ore. Build one stage at a time, since each stage teaches a new piece of chemistry.</p>`,
-      subs: [
-        "<b>2×:</b> Enrichment Chamber → Energized Smelter",
-        "Build an infinite water source (Electric Pump in a 3×3 water pool)",
-        "<b>3×:</b> Electrolytic Separator splits water into hydrogen + oxygen",
-        "<b>3×:</b> Purification Chamber (ore + oxygen → clumps), then crusher → enrichment → smelter",
-        "<b>4×:</b> Thermal Evaporation Plant makes brine, the separator turns brine into chlorine",
-        "<b>4×:</b> Chemical Infuser combines hydrogen + chlorine into hydrogen chloride",
-        "<b>4×:</b> Chemical Injection Chamber (ore + HCl → shards) in front of the 3× chain",
-        "Connect everything with Pipez or Mekanism pipes and test with a stack of iron ore",
-      ],
-      diagram: { h: "4× chain (each arrow is a pipe)", d:
-`  ore -> [Chem. Injection] -> shards -> [Purification] -> clumps
-              ^ HCl                          ^ O2
-         [Chem. Infuser]               [Electrolytic Sep.] <- water
-          ^ H2     ^ Cl2
-                                  clumps -> [Crusher] -> dirty dust
-   -> [Enrichment] -> dust -> [Energized Smelter] -> ingots -> storage` },
-      tip: `<b>5× (later):</b> Chemical Dissolution Chamber (sulfuric acid) → Chemical Washer → Chemical Crystallizer → the 4× chain. Leave this until power and chemicals are running smoothly.` },
-    { id: "u-mek-factory", layer: "u", t: "Upgrade machines to factories", mods: ["Mekanism"],
-      why: `<p>A <b>factory</b> processes several items at once (3, 5, 7 or 9 slots, by tier). <b>Speed and Energy Upgrades</b> make it faster and cheaper to run. One factory replaces a row of machines.</p>`,
-      subs: [
-        "Make a Basic Tier Installer and use it on the Enrichment Chamber",
-        "Add Speed and Energy Upgrades",
-        "Upgrade the Energized Smelter to a factory",
-        "Turn on auto-sort in the factory GUI",
-      ] },
     { id: "u-logistics", layer: "u", t: "Logistics: Pipez and Laser IO", mods: ["Pipez", "Laser IO"],
       why: `<p><b>Pipez</b> is simple: an item, fluid or energy pipe, with extract mode set per side using the wrench. <b>Laser IO</b> is cleaner: nodes connected by laser beams, and <b>cards</b> in each node decide what goes where (extract, insert, filter). Laser IO is easier to hide in walls and floors.</p>`,
       subs: [
@@ -771,6 +801,14 @@ const PHASES = [
         "Link two nodes and put an Item Card set to Extract in one and Insert in the other",
         "Add a filter to a card so only ore goes through",
         "Replace the visible pipes in the vault with Laser IO",
+      ] },
+    { id: "w-undercroft", layer: "s", t: "Town win: the secret entrance", mods: [],
+      why: `<p>The entrance is where the hidden tech meets the town. Make it a story: a tavern cellar, a crypt, or a false well.</p>`,
+      subs: [
+        "Build the entrance as a cellar hatch in the Tavern (or a false well) that opens onto the vault stairs",
+        "Dress the room around it with barrels, crates and a table so it looks like a cellar",
+        "Light the stairs with lanterns",
+        "Check that nothing from the vault can be seen from the surface",
       ] },
   ]
 },
@@ -836,7 +874,7 @@ const PHASES = [
       why: `<p>The controller is the heart, the drive holds storage, and the terminal is how you get at everything. Start small and expand.</p>`,
       subs: [
         "Craft an ME Controller and place it in the AE2 zone",
-        "Connect power via an Energy Acceptor to Powah or Mekanism",
+        "Connect power via an Energy Acceptor to Powah",
         "Craft an ME Drive and 4× 4k storage cells",
         "Craft a Crafting Terminal and place it on a cable",
         "Put everything from your chests into the network",
@@ -865,7 +903,7 @@ const PHASES = [
         "Place a Pattern Provider with 2–3 Molecular Assemblers next to it",
         "Write a crafting pattern for planks and test the autocraft",
         "Write a processing pattern for glass (sand → glass) and put the provider next to a furnace",
-        "Build a second Pattern Provider for Mekanism processing patterns",
+        "Build a second Pattern Provider for another machine, such as the Create ore line",
       ],
       recipes: [
         ["Pattern Provider", "iron, crafting table, annihilation + formation core", "crafting table"],
@@ -901,8 +939,16 @@ const PHASES = [
       why: `<p>ATM10 includes several AE2 add-ons. <b>Applied Mekanistics</b> stores Mekanism chemicals in AE2. <b>Applied Flux</b> stores FE in AE2 cells. <b>ExtendedAE</b> and <b>Advanced AE</b> add bigger pattern providers, larger crafting CPUs and more. You can start without them. Use each one when you have the problem it solves.</p>`,
       subs: [
         "Look through ExtendedAE in JEI: Extended Pattern Provider and Extended Drive",
-        "Use Applied Mekanistics if you want gases in AE2",
+        "Use Applied Mekanistics if you want gases in AE2 (only after the Mekanism steps in Phase 9)",
         "Look through Advanced AE's Quantum Computer for very large crafts later",
+      ] },
+    { id: "w-ae2", layer: "s", t: "Town win: the market square", mods: [],
+      why: `<p>While your AE2 network crafts, the surface can get its heart: a paved square with a well and a few stalls. It gives the town a centre and gives you a reason to walk through it.</p>`,
+      subs: [
+        "Pave the market square with a mix of stone and gravel",
+        "Build a well in the centre",
+        "Raise 3 market stalls with awnings in your accent colour",
+        "Place lanterns at the four corners and a bench or two",
       ] },
   ]
 },
@@ -1002,6 +1048,14 @@ const PHASES = [
         "Fix it (more beds, better food, more guards)",
         "Build a Mystical Site",
       ] },
+    { id: "w-grow", layer: "s", t: "Town win: a gate and the first towers", mods: ["MineColonies", "Structurize"],
+      why: `<p>Guard Towers and walls are the town's skyline. Build them as real towers and the town gets its first proper silhouette.</p>`,
+      subs: [
+        "Build a gatehouse where the main road enters town",
+        "Raise the Guard Towers as stone towers with banners",
+        "Run a first stretch of wall, or a hedge and fence, between them",
+        "Walk in from the gate: the road and the landmark should be the first things you see",
+      ] },
   ]
 },
 {
@@ -1081,13 +1135,91 @@ const PHASES = [
         "Add a pattern for the ones it should fill",
         "Put the rest in <code>SKIP</code> (use the item ID from JEI, for example <code>minecraft:cooked_beef</code>)",
       ] },
+    { id: "w-link", layer: "s", t: "Town win: a working loading yard", mods: ["MineColonies"],
+      why: `<p>The Warehouse is plain and busy, and this is where the hidden AE2 cable meets the surface. A loading yard makes the plainness look intentional.</p>`,
+      subs: [
+        "Build a loading yard in front of the Warehouse with carts, barrels, crates and hay",
+        "Hide the Stash and the cable run behind a wall or a lean-to",
+        "Plant trees or a hedge along the Warehouse's blank walls",
+      ] },
   ]
 },
 {
   id: "engines", title: "Resource engines",
-  sub: "A steady flow of raw materials into AE2, so the town never stalls.",
-  intro: "Automation only works if AE2 doesn't run dry. These engines turn power into raw materials, so mining becomes optional.",
+  sub: "A steady flow of raw materials into AE2, so the town never stalls. Mekanism ore processing lives here.",
+  intro: "Automation only works if AE2 doesn't run dry. These engines turn power into raw materials, so mining becomes optional. Start with the decision step: most of this phase is optional until the colony actually runs short.",
   steps: [
+    { id: "e-choose", layer: "p", t: "Do you need more materials yet?", mods: ["AE2", "Create"],
+      why: `<p>The Create ore line from Phase 5 gives about 1.75× the ingots of plain smelting, which is enough for most of the colony. Mekanism's 3× and 4× ore processing is a large build with its own chemistry, so do it only when the colony really runs short. AE2 doesn't need Mekanism, and neither does anything earlier in this guide.</p>`,
+      subs: [
+        "Leave your AE2 network running for a day of play and write down the iron, copper and gold counts",
+        "Check again: if the counts keep falling while the colony builds, do the Mekanism steps below",
+        "If the counts are steady or rising, skip the Mekanism steps and go on to the mining and power steps",
+      ] },
+    { id: "u-mek-start", layer: "u", t: "Mekanism basics: steel, alloys and circuits", mods: ["Mekanism"],
+      why: `<p>Mekanism needs four ingredients for nearly everything: <b>Steel</b>, <b>Osmium</b>, <b>Alloys</b> (Infused, Reinforced, Atomic) and <b>Control Circuits</b> (Basic, Advanced, Elite, Ultimate). The <b>Metallurgic Infuser</b> makes all of them, so it's the first machine to build.</p>`,
+      subs: [
+        "Craft the Metallurgic Infuser",
+        "Make Enriched Carbon (coal) and Steel (iron + carbon)",
+        "Make Basic Control Circuits (osmium + redstone)",
+        "Make Infused Alloy (iron + redstone)",
+        "Craft a Steel Casing, the base of most machines",
+        "Craft an Energy Cube and Universal Cables",
+      ],
+      recipes: [
+        ["Metallurgic Infuser", "iron, redstone, furnace, osmium", "crafting table"],
+        ["Steel Ingot", "iron + carbon", "Metallurgic Infuser"],
+        ["Basic Control Circuit", "osmium + redstone", "Metallurgic Infuser"],
+        ["Infused Alloy", "iron + redstone", "Metallurgic Infuser"],
+        ["Reinforced Alloy", "infused alloy + diamond", "Metallurgic Infuser"],
+        ["Steel Casing", "steel, glass, osmium", "crafting table"],
+      ] },
+    { id: "u-mek-sides", layer: "u", t: "Learn Mekanism side configuration", mods: ["Mekanism"],
+      why: `<p>Every Mekanism machine decides <b>per side</b> what it accepts and what it gives out. This is the number one reason pipes "don't work". Open a machine and click the <b>Side Configuration</b> tab (the wrench icon on the right edge of the GUI). You'll see the 6 faces of the block, each with a colour. The legend in the GUI tells you what each colour means, and the usual ones are below.</p>
+      <p>Next to it is <b>auto-eject</b>: when it's on, the machine pushes its output out of the output-coloured sides by itself, so the pipe doesn't have to extract.</p>`,
+      subs: [
+        "Open an Enrichment Chamber and click the Side Configuration tab",
+        "Find the faces that are input (where ore goes in) and output (where dust comes out)",
+        "Click a face to cycle its colour; Shift-click to reset it",
+        "Turn on auto-eject for items",
+        "Connect a pipe to the output-coloured side and check that dust comes out on its own",
+      ],
+      diagram: { h: "Side configuration screen (colours as most Mekanism machines use them)", d:
+`          [ top    ]
+  [ left ][ front  ][ right ]      grey   = nothing
+          [ bottom ]               red    = input  (items in)
+          [ back   ]               blue   = output (items out)
+                                   green  = energy
+  [Auto-eject: ON]                 yellow = extra input (e.g. gas)
+  Check the legend in the GUI: some machines use more colours.` } },
+    { id: "u-mek-ore", layer: "u", t: "Mekanism ore processing: 2×, 3×, 4×", mods: ["Mekanism"],
+      why: `<p>Each stage adds a step in front of the previous one. <b>2×</b>: the Enrichment Chamber turns 1 ore into 2 dusts. <b>3×</b>: the Purification Chamber uses oxygen to make 3 clumps per ore. <b>4×</b>: the Chemical Injection Chamber uses hydrogen chloride to make 4 shards per ore. Build one stage at a time, since each stage teaches a new piece of chemistry.</p>`,
+      subs: [
+        "<b>2×:</b> Enrichment Chamber → Energized Smelter",
+        "Build an infinite water source (Electric Pump in a 3×3 water pool)",
+        "<b>3×:</b> Electrolytic Separator splits water into hydrogen + oxygen",
+        "<b>3×:</b> Purification Chamber (ore + oxygen → clumps), then crusher → enrichment → smelter",
+        "<b>4×:</b> Thermal Evaporation Plant makes brine, the separator turns brine into chlorine",
+        "<b>4×:</b> Chemical Infuser combines hydrogen + chlorine into hydrogen chloride",
+        "<b>4×:</b> Chemical Injection Chamber (ore + HCl → shards) in front of the 3× chain",
+        "Connect everything with Pipez or Mekanism pipes and test with a stack of iron ore",
+      ],
+      diagram: { h: "4× chain (each arrow is a pipe)", d:
+`  ore -> [Chem. Injection] -> shards -> [Purification] -> clumps
+              ^ HCl                          ^ O2
+         [Chem. Infuser]               [Electrolytic Sep.] <- water
+          ^ H2     ^ Cl2
+                                  clumps -> [Crusher] -> dirty dust
+   -> [Enrichment] -> dust -> [Energized Smelter] -> ingots -> storage` },
+      tip: `<b>5× (later):</b> Chemical Dissolution Chamber (sulfuric acid) → Chemical Washer → Chemical Crystallizer → the 4× chain. Leave this until power and chemicals are running smoothly.` },
+    { id: "u-mek-factory", layer: "u", t: "Upgrade machines to factories", mods: ["Mekanism"],
+      why: `<p>A <b>factory</b> processes several items at once (3, 5, 7 or 9 slots, by tier). <b>Speed and Energy Upgrades</b> make it faster and cheaper to run. One factory replaces a row of machines.</p>`,
+      subs: [
+        "Make a Basic Tier Installer and use it on the Enrichment Chamber",
+        "Add Speed and Energy Upgrades",
+        "Upgrade the Energized Smelter to a factory",
+        "Turn on auto-sort in the factory GUI",
+      ] },
     { id: "e-ma", layer: "u", t: "Mystical Agriculture crop room", mods: ["Mystical Agriculture"],
       why: `<p>Mystical Agriculture grows resources as crops. <b>Essence</b> from <b>Inferium ore</b> goes into seeds, and the <b>Infusion Altar</b> combines them with essence and the resource. Each resource has a <b>tier</b> (Inferium, Prudentium, Tertium, Imperium, Supremium) and needs essence and farmland of that tier. Harvested essence becomes resources in a crafting grid.</p>`,
       subs: [
@@ -1132,6 +1264,14 @@ const PHASES = [
         "Or build Mekanism generators",
         "Craft a Flux Controller, Flux Plugs and Flux Points",
         "Connect the vault and outposts on one flux network",
+      ] },
+    { id: "w-engines", layer: "s", t: "Town win: pretty farms and outposts", mods: ["MineColonies"],
+      why: `<p>Farms and outposts sit at the town's edge and frame it. Giving them care makes the edge of town look as good as the centre.</p>`,
+      subs: [
+        "Give the fields low fences, hedges and small paths between them",
+        "Build a barn next to the farms",
+        "Dress any train station or outpost as a gatehouse or stable",
+        "Put a signpost where the roads split",
       ] },
   ]
 },
@@ -1181,6 +1321,89 @@ const PHASES = [
         "Power stays positive with everything running",
       ] },
   ]
+},
+{
+  id: "beauty", title: "Make it look awesome",
+  sub: "Roads, landscaping, lighting and details that turn a working colony into a town you want to screenshot.",
+  intro: "A colony that runs itself is only half the goal. MineColonies builders place the buildings, but everything between the buildings (roads, trees, light, props) is yours, and that is what makes a town feel alive. Do this phase in rounds while waiting for builders and crafts, not all at the end.",
+  steps: [
+    { id: "b-roads", layer: "s", t: "Lay organic roads", mods: ["Structurize", "MineColonies"],
+      why: `<p>Roads tie the buildings together. Citizens also walk faster on road blocks, so this helps the colony too. The worst-looking roads are straight, one block type and exactly the same width everywhere.</p>`,
+      subs: [
+        "Lay the main road from the gate to the market square, 3–4 blocks wide, with a gentle curve",
+        "Mix 3 blocks in each road: for example gravel, coarse dirt and cobblestone, with random patches",
+        "Add stone-slab or stair edges where the road meets a building, and a small step up to doors",
+        "Branch narrower lanes (2 blocks) to the houses and put a dead-end or a small square at the end of some",
+        "Build bridges over water in stone with arches, or wood with railings",
+      ],
+      look: `Paths wear out near doors and wells and are narrower in alleys. Let the road swell into a small square wherever two roads meet, put a well, tree or bench in it, and the junction turns into a landmark.` },
+    { id: "b-land", layer: "s", t: "Landscape the gaps between buildings", mods: [],
+      why: `<p>Bare dirt and flat grass between buildings is the biggest giveaway of a "generated" town. Buildings are only the skeleton: plants, terrain and water are what make it look lived in.</p>`,
+      subs: [
+        "Replace bare dirt and builder scars with grass, moss, podzol or paths",
+        "Plant clusters of flowers and tall grass in groups of 3 or 5 (never evenly spaced)",
+        "Plant trees in groups of different heights, and keep a few big ones in the market square",
+        "Add hedges (leaf blocks with fences underneath) along property lines and the road",
+        "Raise a few mounds and dig a small pond or stream, so the ground isn't a flat sheet",
+        "Climb a wall or two with vines, and put moss and cracked variants on old stone",
+      ],
+      look: `Use odd numbers and uneven groups. Put the tallest plants at the back (next to walls) and the lowest in front (next to paths). Where land is flat, add height with terraces, steps, retaining walls and raised gardens.` },
+    { id: "b-skyline", layer: "s", t: "Shape the skyline and the walls", mods: ["MineColonies", "Structurize"],
+      why: `<p>The first impression of a town is its silhouette from a distance. A good skyline has a clear high point (the keep or church), mid-height roofs, and low outskirts, with a few spikes such as towers, chimneys and a windmill. Walls then frame the town.</p>`,
+      subs: [
+        "Raise the landmark on the highest ground, with the biggest building and the tallest tower",
+        "Alternate roof directions and heights between neighbours (some gable to the street, some sideways)",
+        "Place guard towers on corners and gates, not evenly spaced along a straight wall",
+        "Lay the wall with the Shape Tool, following the land, and let it climb hills instead of being flat",
+        "Build a proper gatehouse where the main road enters, with a drawbridge or portcullis",
+        "Add chimneys, weathervanes and small dormer windows to plain roofs",
+      ],
+      look: `A town wall that is a perfect rectangle looks like a fence. Let it bend around the hill, break at a river, and have a side gate or postern on one end. Walk 100 blocks away and check that you can read the shape: the landmark first, then the walls, then the roofs.` },
+    { id: "b-light", layer: "s", t: "Light the town properly", mods: [],
+      why: `<p>Lighting is half of how a town looks at night, and it also keeps monsters from spawning inside it. Torches stuck on walls and the ground look cheap. Use proper light sources and give each one a purpose.</p>`,
+      subs: [
+        "Place lantern posts along the main road, one every 8–10 blocks, and at every junction",
+        "Hang lanterns from house fronts and over doors, and put candles or lamps in windows",
+        "Add campfires or braziers in the market square and at the gates",
+        "Replace plain torches with lanterns, chains, wall lamps or glow lichen",
+        "Walk through the town at night and fill the dark spots until no mobs can spawn",
+      ],
+      look: `Keep one warm colour for the whole town: lanterns, candles and campfires are all orange-yellow. Cold lights (sea lanterns, glowstone) belong only in the undercroft. Put more light in the centre and less at the edges, so the town glows at night and fades into the dark at the outskirts.` },
+    { id: "b-props", layer: "s", t: "Add props and signs of life", mods: ["Structurize"],
+      why: `<p>People look closer at details than at the big shapes. Barrels, carts, hay bales, banners and signs tell a story: a baker has flour sacks, a smith has an anvil and a quench trough, and the harbour has crates and nets.</p>`,
+      subs: [
+        "Fill the market square with 4–6 stalls using wool awnings in your accent colour",
+        "Put a well in the square and a barrel or water trough near every workshop",
+        "Give each workshop a signature prop (anvil and grindstone, flour sacks, logs, lecterns, fishing nets)",
+        "Add carts, hay bales, fences with animals, and a chicken pen near the farms",
+        "Hang banners in your accent colour from the keep, the gates and the main street",
+        "Put flower boxes, hanging pots and shutters on windows",
+        "Check JEI for decoration mods (ATM10 usually has several) and pick what suits your vision",
+      ],
+      look: `Props should be placed where someone would really put them: a cart pulled up to a barn, a bench under a tree, a barrel by the downspout. Clusters of 2–3 related props tell more of a story than 20 random ones spread around.` },
+    { id: "b-hide", layer: "s", t: "Hide the technology", mods: ["Create", "Mekanism", "AE2"],
+      why: `<p>The idea of the town is that it looks medieval while the tech is underneath. Any exposed pipe, cable, glowing machine or large metal block on the surface breaks that. Look at everything that reaches the surface and give it a disguise.</p>`,
+      subs: [
+        "Disguise the hidden entrance: a cellar hatch, a false well, a bookshelf door, or a waterfall",
+        "Run the surface end of every cable and pipe inside a wall, a chimney or a hollow tree trunk",
+        "Turn ventilation and cooling into chimneys, bell towers or windmill tops",
+        "Hide the train station: a barn, stable or gatehouse, with tracks on a stone viaduct or in a tunnel",
+        "Replace shiny machine casings you can see from the surface with stone, planks or barrels",
+        "Fly above the town (spectator or elytra) and look down for anything that doesn't fit",
+      ],
+      look: `Use real medieval stand-ins: a windmill or watermill hides a rotation source, a smoking chimney hides a vent, and a well or cellar hides a stairway. If it looks like it belongs to the story, nobody will think of looking for the tech.` },
+    { id: "b-tour", layer: "s", t: "Take the grand tour and fix the weak spots", mods: [],
+      why: `<p>You can only fix what you notice. Look at your town the way a visitor would: arriving at the gate, walking down the main road, standing in the market square, and viewing it from a hill. Each view shows different problems.</p>`,
+      subs: [
+        "Walk in from the gate at eye level, and note the first thing you see (it should be good)",
+        "Stand in the market square, turn around slowly, and list anything bland, bare or crooked",
+        "View the town from the best hill using F5 and a long shot at sunrise or sunset",
+        "Walk at night and check lighting, and find the places that look empty or dead",
+        "Fix the five worst spots from your list, then tour again",
+        "Take screenshots (<kbd>F2</kbd>) of the gate, the square, the skyline and the night view",
+      ],
+      look: `Turn on a shader pack if your computer can run it (it makes lanterns and water look far better), and use <kbd>F1</kbd> to hide the interface for photos. The best time to take pictures is the hour after sunrise or before sunset.` },
+  ]
 }
 ];
 
@@ -1189,7 +1412,12 @@ const PHASES = [
    fix = [symptom, cause and fix] pairs (also listed on the Fix it tab), next = what to do when it feels slow */
 const EXTRA = {
   "p-quests": { opt: true },
-  "s-pack": { check: "Mined blocks go straight into the backpack instead of your inventory." },
+  "s-food": { opt: true },
+  "f-jobs": { opt: true },
+  "g-raw": { opt: true },
+  "g-health": { opt: true },
+  "g-knowledge": { opt: true },
+  "s-pack": { opt: true, check: "Mined blocks go straight into the backpack instead of your inventory." },
   "s-ores": { fix: [["Can't find zinc or osmium", "Check the ore in JEI (U on the ore) for the Y-levels where it generates. Mining in the ATM Mining dimension is faster once you can reach it."]] },
   "s-waystone": { check: "You can teleport to the town waystone from any other waystone." },
   "f-camp": { fix: [["The camp preview is red", "The spot isn't flat enough or something is in the way. Move it or flatten the ground."]] },
@@ -1239,19 +1467,21 @@ const EXTRA = {
   "u-create-ore": {
     check: "One stack of raw iron gives clearly more than one stack of ingots.",
     fix: [["Crushed ore isn't washed", "The fan must blow through water: put a water source in the fan's airflow, between the fan and the items."]],
-    next: "Move to Mekanism 3× and 4× once you have power. Keep this line for zinc and other metals Mekanism doesn't handle." },
+    next: "The Mekanism 3× and 4× chain in Phase 9 gives more ingots when you need them. Keep this line for zinc and other metals Mekanism doesn't handle." },
   "u-power": {
     check: "The Energy Cell's stored FE goes up while machines are running.",
     fix: [["Machines have no power", "Cables need to touch the machine on a side that accepts energy. Check the machine's side config."]],
     next: "When energy keeps dropping, add a second generator before adding more machines." },
-  "u-mek-start": { fix: [["The infuser does nothing", "It needs both an infuse type (redstone or carbon on the left) and the item. Check the bar on the left of the GUI."]] },
+  "u-mek-start": { opt: true, fix: [["The infuser does nothing", "It needs both an infuse type (redstone or carbon on the left) and the item. Check the bar on the left of the GUI."]] },
   "u-mek-sides": {
+    opt: true,
     check: "Dust leaves the Enrichment Chamber by itself through the output side.",
     fix: [
       ["The pipe pulls nothing out", "The pipe touches a side that isn't output. Change that face to the output colour, or move the pipe."],
       ["Items go in but nothing happens", "The input goes into the wrong slot (for example the energy slot). Check which colour that face has."],
     ] },
   "u-mek-ore": {
+    opt: true,
     check: "One iron ore gives 4 ingots at the end of the chain.",
     fix: [
       ["The chain is full and stops", "An output is backed up somewhere. Follow the chain and find the first machine with a full output slot."],
@@ -1309,18 +1539,58 @@ const EXTRA = {
   "c-scan": { opt: true },
 };
 
+/* Design advice per step, shown in a "Make it look good" box (steps in the Make it look awesome phase carry their own) */
+const LOOK = {
+  "p-site": "A slightly sloped site, or one with a river bend, makes a better town than a dead-flat plain. Choose a spot with one hill for the keep and open space on a second side for farms, and the town will be easy to compose.",
+  "p-style": "Mixing the main style with a second one for important buildings (keep, church, walls) gives you a built-up-over-time feel. Keep the roof colour the same across both and it will still read as one town.",
+  "f-hall": "Place the Town Hall on the edge of the market square, facing the main road, not in the middle of it. The square needs open space in front of its door, because that's where people will gather, and where your well and stalls go later.",
+  "f-homes": "Rotate the houses so they face the road at slightly different angles, and give each a front garden, a fence or a hedge. Put the Tavern near the gate or the square, where a tavern would be, and add a hanging sign.",
+  "f-forester": "Keep the working area outside the town as a woodland backdrop. Dense, tall trees behind the buildings frame the town and hide the edge of the world from the main views.",
+  "f-farm": "Place the fields in a belt on the outskirts and lay them out like a patchwork: different crops in different directions, split by low fences, hedges and small paths. Add a scarecrow and a barn at the edge.",
+  "f-fish": "Build a proper dock with posts and planks, and put a boat, nets and crates next to the hut. The waterfront can be the most picturesque corner of the town, so plan the view from the water too.",
+  "f-warehouse": "The Warehouse is large and boxy. Put it at the edge of the market square or by the road, with a loading yard in front (carts, barrels, crates), and plant trees or add a lean-to on the blank sides.",
+  "u-vault": "The entrance is where the town hides its secret. Pick a place that belongs in a medieval story: a cellar under the tavern, a crypt under the church, or a cave behind the waterfall. Then see if you can use that as a prop.",
+  "u-windmill": "This is a landmark. Put it on a small hill at the edge of town so it can be seen from far away, with a stone base, a miller's house and sacks and barrels around the door. Sails turning in the distance say 'village' better than anything else.",
+  "g-mine": "A mine needs an honest-looking entrance: a timbered tunnel mouth, a small headframe, a cart track and a spoil heap. Put it by the edge of town where a rocky outcrop already stands, and the miner's quarter becomes a characteristic district.",
+  "g-domum": "Domum Ornamentum lets you build custom facades: timber frames, shingles, beams and decorative bricks. Use it to upgrade plain walls on your landmark and the market square, not everywhere.",
+  "g-knowledge": "The Library, School and University are your intellectual landmarks. Group them around a quiet square or a green, with a fountain or a tree in the middle, and let them be some of the tallest buildings next to the keep.",
+  "g-guards": "Guard towers are a free chance to build a skyline. Put them on corners, hills and gates, not on a ruler-straight line. A tower on a rocky point with a banner looks far better than one in the middle of a field.",
+  "e-trains": "Let the track disappear. Run it through a tunnel in the hillside or across a stone viaduct, and make the station a stable, a barn or a gatehouse. A train arriving from a cave mouth under the keep is a great surprise.",
+  "c-five": "Level 5 buildings are the largest in the town. When each is finished, spend 10 minutes around it: adding a garden, steps, lanterns and a prop or two makes the difference between a building and a place.",
+  "c-decor": "The next phase (Make it look awesome) is where most of the beauty is made. For now, place the pieces that builders must build: gates, wells, lamp posts and market stalls.",
+};
+
+/* Per phase: goal (what to leave with), time (rough, first playthrough), wait (what to do while builders and machines work) */
+const PHASE_META = {
+  plan: { goal: "Pick the site, the style and a one-line vision, and mark the square and main road. Planning for an hour saves hours of moving buildings.", time: "30–60 minutes" },
+  survive: { goal: "Leave with iron gear, 6 stacks of logs, cobble and the tech ores.", time: "2–4 hours" },
+  found: { goal: "Citizens with homes, food and a Warehouse, and builders working without you.", time: "4–8 hours of play, plus waiting for builders",
+    wait: ["Do the Phase 4 projects: they don't need the colony", "Plant and fence the tree area and fields", "Craft spare tools for citizens and fill the Warehouse", "Stay near the town: the colony only grows while its chunks are loaded"] },
+  first: { goal: "Two small machines that run without you.", time: "1–2 hours" },
+  undercroft: { goal: "A hidden vault with a Create ore line and steady FE power.", time: "4–8 hours",
+    wait: ["Top up the builder's materials on each visit", "Fill requests on the Clipboard", "Dig and light the vault while buildings finish", "Do the Town win step: it's a nice break from machines"] },
+  ae2: { goal: "Everything in one network, with autocrafting for the colony's blocks.", time: "8–15 hours, mostly finding a meteorite and the certus farm" },
+  grow: { goal: "Town Hall L3, crafter huts taking requests, and guards on the walls.", time: "6–12 hours, plus waiting for upgrades",
+    wait: ["Teach the crafters their recipes", "Add patterns to AE2 for blocks that upgrades ask for", "Build the next Town win step", "Check happiness and requests on every visit"] },
+  link: { goal: "Colony requests filled by your ME network without you.", time: "2–4 hours" },
+  engines: { goal: "Raw materials rising while you're idle. Most of this is optional until the colony runs short.", time: "Varies. Do only what you need" },
+  crown: { goal: "Level 5 buildings and the last huts.", time: "Mostly waiting for builders" },
+  beauty: { goal: "A town you'd be proud to screenshot.", time: "As long as you like: about an hour per district" },
+};
+
 /* Checkpoint at the end of each phase: what you should have before moving on */
 const MILESTONES = {
-  plan: ["You've chosen and marked the town site, and know where the vault and mine district go", "You've chosen a main style and wood type"],
+  plan: ["You've chosen and marked the town site, and know where the vault and mine district go", "You've chosen a main style and wood type", "You have a one-line vision, a four-part palette and a marked market square, main road and landmark site"],
   survive: ["6 stacks of logs and 4 of cobble", "Full iron gear and spare tools for citizens", "About a stack each of osmium and zinc, plus redstone and 10+ diamonds", "A waystone home"],
   found: ["About 8–12 citizens, all with beds and jobs", "Builder's Hut, Residences, Tavern, Forester, Farmer, Fisher, Restaurant and Warehouse built", "Couriers deliver to builders without you"],
   first: ["A smelter that runs on its own", "A cobblestone generator powered by rotation", "You can explain extract vs insert, filters, and stress"],
-  undercroft: ["Hidden vault with an entrance", "Create power and an ore line", "Steady FE, with stored energy going up", "Mekanism 3× or 4× ore processing"],
+  undercroft: ["Hidden vault with an entrance", "Create power and an ore line", "Steady FE, with stored energy going up"],
   ae2: ["All your items in AE2", "Processors made automatically", "Autocrafting for planks, glass, slabs, stairs and other colony blocks"],
-  grow: ["Town Hall L3 and 3 builders", "Crafters handle most building requests", "University research running", "Guards in place and happiness at 7+"],
+  grow: ["Town Hall L3 and 3 builders", "Crafters handle most building requests", "University research running (optional)", "Guards in place and happiness at 7+"],
   link: ["Warehouse topped up from AE2", "The script fills requests, and the Clipboard is mostly empty"],
-  engines: ["AE2 stock of iron, copper and wood goes up while you're idle", "Power use stays below generation"],
+  engines: ["AE2 stock of iron, copper and wood goes up while you're idle", "Power use stays below generation", "If you needed it: Mekanism 3× or 4× ore processing runs"],
   crown: ["Town Hall L5, and the town builds itself as long as raw materials keep coming in"],
+  beauty: ["Roads, trees, flowers and lanterns fill the space between every pair of buildings", "The skyline has one clear landmark, and the walls follow the land", "No pipe, cable or machine can be seen from the surface", "You took gate, square, skyline and night screenshots, and you'd show them to a friend"],
 };
 
 /* Learn tab */
@@ -1337,6 +1607,22 @@ const CONCEPTS = [
   { t: "Tiers and upgrades", d: `Most tech mods have tiers: better versions of the same machine that are faster or bigger. Upgrades and cards (speed, energy, acceleration) go into a machine to improve it. Upgrade your bottleneck first.` },
   { t: "Loaded chunks", d: `Machines only run in loaded chunks. In singleplayer that means near you, or in chunks you've force-loaded. A factory that seems slow may simply have been switched off while you were away.` },
 ];
+
+/* Learn tab: design principles for the look of the town */
+const DESIGN = [
+  { t: "Theme and palette", d: `Write down one sentence of what the town is, and pick one wood, one stone, one roof colour and one accent. Every choice then has a test: does it fit? Most of what makes a town look <i>designed</i> is simply repeating a few materials.` },
+  { t: "Silhouette first", d: `From far away, you see only shape. Build a clear high point (keep, church, tall tower), mid-height roofs, and lower outskirts. Vary roof heights and directions between neighbours. If the skyline is a flat line, the town will look flat from everywhere.` },
+  { t: "Dense centre, loose edge", d: `Put buildings close together around the market square (2–3 blocks between them), and spread them out towards the edge, with gardens, farms and trees. The change of density makes the town feel like it grew outwards from the middle.` },
+  { t: "Break the grid", d: `Rotate buildings a little, curve roads, step walls with the terrain, and vary building footprints. The eye reads straight lines and perfect spacing as artificial. A little crookedness is the cheapest way to make a town feel natural.` },
+  { t: "Roads tell the story", d: `Roads connect the districts and lead the eye to the landmark. Make them curved, mixed (3 blocks types), and different in width. Let them widen at squares and junctions, and put a prop in each one.` },
+  { t: "Fill the in-between", d: `The empty space between buildings is where towns usually look bare. Gardens, hedges, fences, trees, flowers, stacks of firewood, wells and benches turn gaps into places. No patch of plain grass should be bigger than about 4×4 blocks.` },
+  { t: "Light is half the look", d: `Use lanterns, candles and campfires in one warm colour, spaced along roads, at doors and in the square. Light the centre more than the edges. Plain torches stuck on walls look unfinished, and cold light colours belong in the undercroft.` },
+  { t: "Detail where people look", d: `Spend your effort on the places a visitor sees first and longest: the gate, the main road, the market square and the landmark. A well-detailed square beats ten medium-detailed side streets. Details to add: signs, banners, shutters, flower boxes and props.` },
+  { t: "Hide the machine", d: `The best way to keep a secret is a good story. A windmill hides power, chimneys hide vents, a well hides a stairway, a barn hides a train. If a modern block is visible from the surface, replace it or cover it.` },
+  { t: "Judge from the right height", d: `Check your town at eye level (what you see when walking), from a hill (the skyline), from above (the layout) and at night (the light). Each view shows problems the others miss. Use <kbd>F5</kbd> for a third-person view and <kbd>F1</kbd> to hide the interface.` },
+];
+
+const DESIGN_VIS = { "Theme and palette": "palette", "Silhouette first": "skyline", "Dense centre, loose edge": "layout", "Break the grid": "walls", "Roads tell the story": "roads", "Light is half the look": "lighting", "Hide the machine": "hide" };
 
 const READ_MACHINE = [
   "<b>Energy bar</b> (usually on the left): if it's empty, the machine has no power.",
@@ -1396,6 +1682,9 @@ const MISTAKES = [
   ["Mixing styles everywhere", "Every new style adds new blocks to supply. Stick to one or two."],
   ["Overstressing Create", "Adding a machine to a full network stops all of it. Check capacity with goggles first."],
   ["Running out of power", "One machine too many drains everything. Keep generation 20% above use."],
+  ["Leaving the look for the very end", "By then every building is placed and the space between them is gone. Decide the palette, districts and roads in Phase 1, and decorate each district as it finishes."],
+  ["A perfect grid of identical buildings", "It reads as a housing estate. Rotate buildings, vary the spacing and curve the roads."],
+  ["Torches everywhere", "Plain torches look unfinished. Use lanterns on posts and doors, campfires in the square, and keep one warm colour."],
 ];
 
 const LUA = `-- startup.lua : fill MineColonies requests from AE2
@@ -1458,6 +1747,178 @@ while true do
   sleep(WAIT)
 end`;
 
+/* ---------- illustrations ---------- */
+/* Inline SVG, drawn from shapes so they follow the light/dark theme. "pair" figures show a common mistake next to the better version. */
+const S = (inner, label, vb = "0 0 300 160") => `<svg viewBox="${vb}" role="img" aria-label="${label}">${inner}</svg>`;
+const house = (x, base, w, h, r) => `<rect class="b" x="${x}" y="${base - h}" width="${w}" height="${h}"/><path class="rf" d="M${x - 2} ${base - h} L${x + w / 2} ${base - h - r} L${x + w + 2} ${base - h} Z"/>`;
+const bld = (cx, cy, w, h, rot, cls = "b") => `<rect class="${cls}" x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" transform="rotate(${rot} ${cx} ${cy})"/>`;
+const tree = (x, y, r = 6) => `<circle class="tr" cx="${x}" cy="${y}" r="${r}"/>`;
+
+const VIS = {
+  skyline: {
+    h: "Skyline from a distance",
+    cap: "Left: every roof the same height reads as a flat wall. Right: one clear landmark, mid-height houses, a windmill on a rise and trees to break the line.",
+    bad: () => S(`<rect class="gr" x="0" y="130" width="300" height="30"/>${Array.from({ length: 10 }, (_, i) => house(8 + i * 29, 130, 26, 36, 0)).join("")}`, "Flat skyline: ten identical buildings in a row"),
+    good: () => S(`<path class="gr" d="M0 160 V131 H196 Q236 131 252 104 Q268 100 300 100 V160Z"/>
+      ${house(10, 130, 28, 26, 12)}<rect class="rf" x="16" y="94" width="5" height="9"/>${house(42, 130, 24, 34, 14)}${house(70, 130, 30, 24, 10)}
+      ${tree(106, 122, 8)}
+      ${house(110, 130, 12, 80, 10)}${house(156, 130, 12, 80, 10)}
+      <rect class="b" x="122" y="62" width="34" height="68"/>${[0, 1, 2].map(i => `<rect class="rf" x="${122 + i * 12}" y="56" width="7" height="7"/>`).join("")}
+      <rect class="ac" x="135" y="74" width="8" height="20"/>
+      ${house(176, 130, 26, 30, 13)}${house(206, 130, 22, 22, 9)}${tree(238, 122, 7)}
+      <rect class="b" x="260" y="64" width="12" height="38"/><path class="rf" d="M258 64 L266 54 L274 64Z"/><path class="ln" d="M254 50 L278 74 M278 50 L254 74"/>`, "Varied skyline: a keep with towers, houses of different heights and a windmill on a rise"),
+  },
+  layout: {
+    h: "Town layout from above",
+    cap: "Left: an even grid with no centre, no roads and no edge. Right: roads curve into a market square, buildings sit at slight angles, packed near the centre and loose towards the fields and trees.",
+    bad: () => S(`<rect class="gr" width="300" height="160"/>${[0, 1, 2].flatMap(r => [0, 1, 2, 3, 4].map(c => bld(38 + c * 56, 30 + r * 50, 36, 28, 0))).join("")}`, "Grid layout: identical buildings evenly spaced with no roads"),
+    good: () => S(`<rect class="gr" width="300" height="160"/>
+      <rect class="fd" x="8" y="104" width="76" height="48"/><path class="ln" d="M8 116 H84 M8 128 H84 M8 140 H84" style="stroke:var(--moss);stroke-width:1"/>
+      <rect class="fd" x="214" y="116" width="78" height="38"/><path class="ln" d="M214 128 H292 M214 140 H292" style="stroke:var(--moss);stroke-width:1"/>
+      <path class="rd" stroke-width="8" d="M0 122 C70 114 110 100 150 80 C190 62 250 66 300 46"/>
+      <path class="rd" stroke-width="7" d="M150 0 C146 30 156 56 150 80"/>
+      <path class="rd" stroke-width="5" d="M150 80 C140 106 152 130 142 160"/>
+      <rect class="sq" x="132" y="67" width="36" height="26" rx="3"/><circle cx="150" cy="80" r="3.5" fill="var(--tech)"/>
+      ${bld(112, 52, 24, 17, -8)}${bld(188, 50, 26, 18, 10)}${bld(112, 100, 22, 16, 8)}${bld(190, 98, 24, 16, -10)}
+      ${bld(150, 42, 32, 18, 0, "b hall")}
+      ${bld(82, 78, 18, 14, -14)}${bld(222, 80, 20, 14, 12)}
+      ${bld(46, 58, 16, 12, -5)}${bld(256, 28, 16, 12, 8)}${bld(268, 84, 16, 12, 15)}${bld(30, 30, 16, 12, 3)}
+      ${tree(14, 82)}${tree(68, 22, 7)}${tree(96, 16, 5)}${tree(286, 62)}${tree(236, 20, 6)}${tree(108, 146, 7)}${tree(196, 140, 6)}${tree(290, 10, 8)}
+      <text class="t" x="118" y="112">market square</text><text class="t" x="22" y="100">farms</text>`, "Organic layout: curved roads meet at a market square, buildings dense near the centre and sparse at the edge"),
+  },
+  roads: {
+    h: "Roads and junctions",
+    cap: "Left: straight, same-width roads in a perfect cross. Right: curved roads that widen into a small plaza with a well and lanterns, plus narrower lanes branching off.",
+    bad: () => S(`<rect class="gr" width="300" height="160"/><path class="rd" stroke-width="12" d="M0 80 H300 M150 0 V160"/>${[28, 76, 190, 238].flatMap(x => [40, 114].map(y => bld(x, y, 30, 22, 0))).join("")}`, "Straight uniform crossroads with buildings aligned like a grid"),
+    good: () => S(`<rect class="gr" width="300" height="160"/>
+      <path class="rd" stroke-width="9" d="M0 120 C80 120 110 90 150 80"/><path class="rd" stroke-width="7" d="M150 80 C200 68 250 90 300 70"/><path class="rd" stroke-width="8" d="M150 80 C150 110 162 130 150 160"/>
+      <path class="rd" stroke-width="4" d="M72 111 C72 90 62 70 48 50"/><path class="rd" stroke-width="4" d="M232 82 C240 60 250 40 262 20"/>
+      <circle class="sq" cx="150" cy="80" r="17"/><circle cx="150" cy="80" r="4" fill="var(--tech)"/>
+      ${[[132, 66], [168, 66], [132, 94], [168, 94], [60, 114], [104, 100], [212, 78], [262, 82]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6" fill="var(--light)"/>`).join("")}
+      ${bld(112, 50, 24, 17, -10)}${bld(194, 46, 24, 17, 8)}${bld(100, 134, 24, 16, 6)}${bld(200, 128, 22, 16, -8)}${bld(30, 62, 20, 14, -20)}${bld(278, 34, 20, 14, 15)}
+      ${tree(62, 140, 7)}${tree(250, 140, 7)}${tree(20, 100, 5)}`, "Curved roads with a plaza, well, lanterns and narrow lanes"),
+  },
+  lighting: {
+    h: "Night lighting",
+    cap: "Left: a few torches leave dark pockets where mobs can spawn. Right: lantern posts every 8–10 blocks, windows lit, and overlapping pools of warm light in the centre.",
+    bad: () => S(`<defs><radialGradient id="lg"><stop offset="0" stop-color="#e8a33d" stop-opacity=".75"/><stop offset="1" stop-color="#e8a33d" stop-opacity="0"/></radialGradient></defs>
+      <rect width="300" height="160" fill="#151b27"/><rect y="118" width="300" height="42" fill="#1f2a1d"/>
+      ${[[10, 30], [66, 40], [216, 34]].map(([x, w]) => `<rect x="${x}" y="${118 - w}" width="${w}" height="${w}" fill="#252d3a"/>`).join("")}
+      ${[40, 90, 250].map(x => `<circle cx="${x}" cy="108" r="22" fill="url(#lg)"/><rect x="${x - 1}" y="106" width="2" height="12" fill="#6b4f2f"/><circle cx="${x}" cy="105" r="2.5" fill="#e8a33d"/>`).join("")}
+      <text x="150" y="112" text-anchor="middle" font-size="10" fill="#9aa49b" font-family="sans-serif">dark gap: mobs spawn</text>`, "Dark street with a few torches and a dark gap"),
+    good: () => S(`<defs><radialGradient id="lg"><stop offset="0" stop-color="#e8a33d" stop-opacity=".75"/><stop offset="1" stop-color="#e8a33d" stop-opacity="0"/></radialGradient></defs>
+      <rect width="300" height="160" fill="#151b27"/><rect y="118" width="300" height="42" fill="#1f2a1d"/>
+      ${[[10, 30], [66, 40], [150, 32], [216, 34]].map(([x, w]) => `<rect x="${x}" y="${118 - w}" width="${w}" height="${w}" fill="#252d3a"/><rect x="${x + 6}" y="${118 - w + 8}" width="5" height="6" fill="#e8a33d"/><rect x="${x + w - 12}" y="${118 - w + 8}" width="5" height="6" fill="#e8a33d"/>`).join("")}
+      ${[30, 100, 170, 240].map(x => `<circle cx="${x}" cy="100" r="52" fill="url(#lg)"/><rect x="${x - 1}" y="98" width="2" height="22" fill="#6b4f2f"/><rect x="${x - 3}" y="94" width="6" height="7" fill="#e8a33d"/>`).join("")}
+      <text x="150" y="150" text-anchor="middle" font-size="10" fill="#9aa49b" font-family="sans-serif">posts every 8–10 blocks, all one warm colour</text>`, "Street with regular lantern posts and lit windows"),
+  },
+  walls: {
+    h: "Town walls",
+    cap: "Left: a perfect rectangle with a tower on each corner looks like a pen. Right: the wall follows the land, towers sit where the view or the road needs them, and one gatehouse marks the entrance.",
+    bad: () => S(`<rect class="gr" width="300" height="160"/>${[0, 1, 2].flatMap(r => [0, 1, 2, 3].map(c => bld(70 + c * 55, 50 + r * 34, 32, 22, 0))).join("")}<rect class="wl" x="36" y="22" width="228" height="118" style="stroke-linejoin:miter"/>${[[36, 22], [264, 22], [36, 140], [264, 140]].map(([x, y]) => `<circle class="wt" cx="${x}" cy="${y}" r="8"/>`).join("")}`, "Rectangular wall with four corner towers"),
+    good: () => S(`<rect class="gr" width="300" height="160"/>
+      <path d="M16 0 C6 50 28 100 8 160" fill="none" stroke="var(--tech)" stroke-width="9" opacity=".45" stroke-linecap="round"/>
+      <path class="rd" stroke-width="7" d="M300 150 C230 144 190 120 150 92"/>
+      <path class="wl" d="M62 38 L134 22 L208 32 L262 70 L246 124 L170 142 L96 132 L52 96 Z"/>
+      ${[[134, 22], [262, 70], [96, 132], [52, 96]].map(([x, y], i) => `<circle class="wt" cx="${x}" cy="${y}" r="${i % 2 ? 7 : 9}"/>`).join("")}
+      <rect class="b" x="206" y="130" width="22" height="14" transform="rotate(-22 217 137)" style="stroke-width:2.5"/>
+      ${bld(120, 62, 24, 16, -8)}${bld(176, 58, 26, 18, 6)}${bld(150, 98, 22, 16, 10)}${bld(100, 100, 20, 14, -12)}${bld(206, 92, 22, 14, 14)}
+      ${tree(40, 20, 6)}${tree(280, 30, 7)}${tree(270, 112, 6)}
+      <text class="t" x="196" y="156">gatehouse</text>`, "Irregular wall following the land with a gatehouse on the road"),
+  },
+  hide: {
+    h: "Where the hidden tech reaches the surface",
+    cap: "Every connection to the surface gets a medieval disguise: a windmill for rotation, a chimney for ventilation, a well or cellar for the entrance. Nothing modern is visible above ground.",
+    one: () => S(`<rect x="0" y="90" width="600" height="130" fill="var(--code-bg)"/><rect class="gr" x="0" y="86" width="600" height="8"/>
+      <rect class="b" x="84" y="42" width="14" height="46"/><path class="rf" d="M82 42 L91 30 L100 42Z"/><path class="ln" d="M76 24 L106 54 M106 24 L76 54"/>
+      <rect class="b" x="236" y="62" width="60" height="26"/><path class="rf" d="M232 62 L266 40 L300 62Z"/><rect class="rf" x="278" y="34" width="9" height="20"/><circle cx="282" cy="26" r="5" fill="var(--muted)" opacity=".4"/><circle cx="288" cy="17" r="4" fill="var(--muted)" opacity=".3"/>
+      <rect class="b" x="392" y="74" width="30" height="14" rx="2"/><path class="ln" d="M396 74 V60 M418 74 V60 M394 60 H420"/><path class="rf" d="M392 60 L407 50 L424 60Z"/>
+      <path class="dash" d="M91 90 V148"/><path class="dash" d="M266 90 V150"/><path class="dash" d="M407 90 V140 L470 150"/>
+      <rect class="tk" x="40" y="132" width="520" height="76" rx="3"/>
+      ${[["Create", 60], ["Mekanism", 150], ["Power", 240], ["AE2 core", 330], ["Storage", 420], ["Computer", 500]].map(([n, x]) => `<rect class="tk" x="${x}" y="152" width="${n.length > 6 ? 72 : 62}" height="38" rx="2" style="fill:var(--panel)"/><text class="tn" x="${x + (n.length > 6 ? 36 : 31)}" y="175" text-anchor="middle">${n}</text>`).join("")}
+      <text class="t" x="40" y="116">windmill: rotation from the vault</text><text class="t" x="214" y="116">chimney: vents</text><text class="t" x="372" y="116">well: secret stairway</text><text class="tn" x="44" y="146">UNDERCROFT</text>`, "Cross-section: windmill, chimney and well on the surface each connect to the hidden vault below", "0 0 600 220"),
+  },
+};
+
+/* which illustrations to show under which step */
+const VISUAL_FOR = {
+  "p-vision": ["palette"],
+  "p-districts": ["layout"],
+  "b-roads": ["roads"],
+  "b-skyline": ["skyline", "walls"],
+  "b-light": ["lighting"],
+  "b-hide": ["hide"],
+};
+
+const PALETTES = [
+  { n: "Spruce & slate", c: { wood: "#6b4f2f", stone: "#8a8d91", roof: "#4a5568", acc: "#b8322a" } },
+  { n: "Dark oak & cobble", c: { wood: "#3e2c1c", stone: "#7a7a7a", roof: "#6b3f2a", acc: "#c9a227" } },
+  { n: "Shire & thatch", c: { wood: "#9c7a4a", stone: "#b9b19f", roof: "#c8a95a", acc: "#a8436f" } },
+  { n: "Fortress", c: { wood: "#4a3a2a", stone: "#6d7075", roof: "#2f3640", acc: "#2d5fa8" } },
+  { n: "Birch & terracotta", c: { wood: "#d7c9a0", stone: "#c9c2b0", roof: "#b5573a", acc: "#2f6f8f" } },
+];
+const PAL_LABELS = { wood: "Wood", stone: "Stone", roof: "Roof", acc: "Accent" };
+
+function paletteScene(p) {
+  const roof = (x, y, w, r) => `<path d="M${x - 3} ${y} L${x + w / 2} ${y - r} L${x + w + 3} ${y} Z" fill="${p.roof}"/>`;
+  return S(`<rect width="300" height="130" fill="var(--moss-soft)"/><rect y="104" width="300" height="26" fill="var(--moss-soft)"/>
+    <rect x="14" y="62" width="70" height="42" fill="${p.wood}"/><rect x="14" y="94" width="70" height="10" fill="${p.stone}"/>${roof(14, 62, 70, 26)}
+    <rect x="42" y="78" width="14" height="26" fill="${p.acc}"/><rect x="22" y="72" width="10" height="10" fill="${p.stone}"/><rect x="66" y="72" width="10" height="10" fill="${p.stone}"/>
+    <rect x="106" y="40" width="52" height="64" fill="${p.stone}"/>${[0, 1, 2, 3].map(i => `<rect x="${106 + i * 14}" y="40" width="3" height="64" fill="${p.wood}"/>`).join("")}<rect x="106" y="70" width="52" height="3" fill="${p.wood}"/>${roof(106, 40, 52, 30)}
+    <rect x="124" y="82" width="16" height="22" fill="${p.wood}"/><rect x="112" y="50" width="8" height="10" fill="${p.acc}"/><rect x="144" y="50" width="8" height="10" fill="${p.acc}"/>
+    <rect x="186" y="30" width="38" height="74" fill="${p.stone}"/><path d="M182 30 L205 6 L228 30Z" fill="${p.roof}"/><rect x="200" y="84" width="10" height="20" fill="${p.wood}"/>
+    <rect x="238" y="64" width="2" height="40" fill="${p.wood}"/><rect x="240" y="66" width="22" height="30" fill="${p.acc}"/><path d="M240 96 L251 88 L262 96Z" fill="var(--moss-soft)"/>
+    <circle cx="170" cy="100" r="7" fill="var(--moss)" opacity=".8"/><circle cx="284" cy="96" r="9" fill="var(--moss)" opacity=".8"/>`, "A cottage, a timber-framed house, a tower and a banner in the chosen palette", "0 0 300 130");
+}
+
+function paletteBuilder() {
+  const KEY = "hollowmere-palette";
+  let cur = Object.assign({}, PALETTES[0].c, lsGet(KEY, {}));
+  const box = el("div", "pal");
+  const btns = el("div", "pal-row"), scene = el("div", "pn"), sw = el("div", "pal-sw");
+  const draw = () => {
+    scene.innerHTML = paletteScene(cur);
+    btns.querySelectorAll("button").forEach((b, i) => b.setAttribute("aria-pressed", String(Object.keys(cur).every(k => cur[k] === PALETTES[i].c[k]))));
+    lsSet(KEY, cur);
+  };
+  PALETTES.forEach(p => {
+    const b = el("button"); b.type = "button"; b.textContent = p.n;
+    b.addEventListener("click", () => { cur = Object.assign({}, p.c); sw.querySelectorAll("input").forEach(i => { i.value = cur[i.dataset.k]; }); draw(); });
+    btns.appendChild(b);
+  });
+  Object.keys(PAL_LABELS).forEach(k => {
+    const l = el("label"); l.append(PAL_LABELS[k] + " ");
+    const i = el("input"); i.type = "color"; i.value = cur[k]; i.dataset.k = k;
+    i.addEventListener("input", () => { cur[k] = i.value; draw(); });
+    l.appendChild(i); sw.appendChild(l);
+  });
+  box.append(btns, scene, sw);
+  draw();
+  return box;
+}
+
+function figure(id) {
+  const f = el("figure", "fig");
+  if (id === "palette") {
+    f.innerHTML = `<div class="ft">Palette builder: pick a preset or your own four colours</div>`;
+    f.appendChild(paletteBuilder());
+    const c = el("figcaption"); c.textContent = "Four colours, used everywhere. Keep the accent for small things (banners, shutters, doors) so it stands out. The colours are a guide: match them to the blocks of your chosen style in the Build Tool.";
+    f.appendChild(c);
+    return f;
+  }
+  const v = VIS[id];
+  f.appendChild(el("div", "ft", v.h));
+  if (v.one) f.appendChild(el("div", "pn", v.one()));
+  else {
+    const pair = el("div", "pair");
+    pair.append(el("div", "pn", `<div class="pl bad">Avoid</div>${v.bad()}`), el("div", "pn", `<div class="pl good">Aim for</div>${v.good()}`));
+    f.appendChild(pair);
+  }
+  const c = el("figcaption"); c.textContent = v.cap;
+  f.appendChild(c);
+  return f;
+}
+
 /* ---------- ids ---------- */
 function hash(s) {
   let h = 5381;
@@ -1466,7 +1927,7 @@ function hash(s) {
 }
 PHASES.forEach(ph => ph.steps.forEach(s => {
   s.subs = (s.subs || []).map(html => ({ id: s.id + ":" + hash(html), html }));
-  Object.assign(s, EXTRA[s.id] || {});
+  Object.assign(s, EXTRA[s.id] || {}, LOOK[s.id] ? { look: LOOK[s.id] } : {});
 }));
 const allSteps = PHASES.flatMap(p => p.steps);
 /* one progress unit per sub-step; a step without sub-steps counts as one unit */
@@ -1475,7 +1936,8 @@ const allUnits = allSteps.flatMap(s => units(s).map(id => ({ id, layer: s.layer 
 
 /* ---------- state ---------- */
 let done = {};
-let layer = "all", modSel = "", hideDone = false, essOnly = false, query = "";
+let layer = "all", modSel = "", hideDone = false, essOnly = false, query = "", focus = true;
+let focusActive = false, focusNext = null;
 let openSteps = {};
 let store = null, saveTimer = null, saving = false, pending = false;
 const LS_KEY = "hollowmere-progress";
@@ -1483,7 +1945,7 @@ const LS_KEY = "hollowmere-progress";
 function lsGet(k, d) { try { return JSON.parse(localStorage.getItem(k) || "null") || d; } catch (e) { return d; } }
 function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function lsWrite() { lsSet(LS_KEY, done); }
-function lsSavePrefs() { lsSet(LS_KEY + "-prefs", { layer, modSel, hideDone, essOnly, openSteps }); }
+function lsSavePrefs() { lsSet(LS_KEY + "-prefs", { layer, modSel, hideDone, essOnly, focus, openSteps }); }
 
 const syncEl = document.getElementById("sync");
 function setSync(t) { syncEl.textContent = t; }
@@ -1504,7 +1966,7 @@ function plain(html) { const d = document.createElement("div"); d.innerHTML = ht
 const searchText = new Map(allSteps.map(s => [s.id,
   (s.t + " " + s.mods.join(" ") + " " + plain(s.why || "") + " " + s.subs.map(x => plain(x.html)).join(" ") +
    " " + (s.recipes || []).map(r => r.join(" ")).join(" ") + " " + (s.check || "") +
-   " " + (s.fix || []).map(f => f.join(" ")).join(" ")).toLowerCase()]));
+   " " + (s.fix || []).map(f => f.join(" ")).join(" ") + " " + plain(s.look || "")).toLowerCase()]));
 
 /* glossary hover: wrap the first mention of each term in a step's explanation */
 const GLOSS_RE = GLOSSARY.map(([term, def]) => {
@@ -1545,17 +2007,30 @@ function visible(s) {
 
 function isOpen(s) {
   if (s.id in openSteps) return openSteps[s.id];
+  if (focusActive) return s.id === focusNext;
   return !stepDone(s);
+}
+
+/* the phase you are in: the first one with an unfinished required step (optional steps never hold you back) */
+function currentPhaseIndex() {
+  const i = PHASES.findIndex(ph => ph.steps.some(s => !s.opt && !stepDone(s)));
+  return i < 0 ? PHASES.length - 1 : i;
+}
+function nextStepId(ph) {
+  const s = ph.steps.find(x => !x.opt && !stepDone(x)) || ph.steps.find(x => !stepDone(x));
+  return s ? s.id : null;
 }
 
 function render() {
   const y = window.scrollY;
   main.textContent = "";
+  focusActive = focus && !query;
+  const cur = currentPhaseIndex();
+  focusNext = focusActive ? nextStepId(PHASES[cur]) : null;
   PHASES.forEach((ph, i) => {
     const d = document.createElement("details");
     d.className = "phase";
-    d.open = openPhases[ph.id] !== false;
-    d.addEventListener("toggle", () => { openPhases[ph.id] = d.open; });
+    d.open = ph.id in openPhases ? openPhases[ph.id] : (focusActive ? i === cur : true);
     const total = ph.steps.length, nDone = ph.steps.filter(stepDone).length;
     const sum = document.createElement("summary");
     sum.innerHTML = `<span class="ph-num"><span class="ph-chev">›</span> Phase ${i + 1}</span>
@@ -1563,9 +2038,22 @@ function render() {
       <span class="ph-count ${nDone === total ? "full" : ""}">${nDone}/${total}</span>
       <p class="ph-sub"></p>`;
     sum.querySelector(".ph-title").textContent = ph.title;
+    sum.addEventListener("click", () => { openPhases[ph.id] = !d.open; });
+    if (focusActive && i === cur) sum.querySelector(".ph-num").insertAdjacentHTML("beforeend", `<span class="chip here">You are here</span>`);
     sum.querySelector(".ph-sub").textContent = ph.sub;
     d.appendChild(sum);
     if (ph.intro) { const p = document.createElement("p"); p.className = "ph-intro"; p.textContent = ph.intro; d.appendChild(p); }
+    const meta = PHASE_META[ph.id];
+    if (meta) {
+      const m = el("div", "ph-meta", `<span><b>Goal:</b> <span class="g"></span></span><span><b>Rough time:</b> <span class="tm"></span></span>`);
+      m.querySelector(".g").textContent = meta.goal; m.querySelector(".tm").textContent = meta.time;
+      d.appendChild(m);
+      if (meta.wait) {
+        const w = el("div", "xbox next ph-wait", `<div class="blk-label">While you wait for builders and machines</div><ul></ul>`);
+        meta.wait.forEach(x => w.querySelector("ul").appendChild(el("li", null, x)));
+        d.appendChild(w);
+      }
+    }
 
     const vis = ph.steps.filter(visible);
     if (!vis.length) {
@@ -1609,6 +2097,7 @@ function stepEl(s) {
   const body = document.createElement("div");
   body.className = "st-body";
   const chips = [`<span class="chip layer">${LAYER_NAME[s.layer]}</span>`]
+    .concat(focusActive && s.id === focusNext ? [`<span class="chip nextup">Next up</span>`] : [])
     .concat(s.opt ? [`<span class="chip opt">Optional</span>`] : [])
     .concat(s.mods.map(m => `<span class="chip">${m}</span>`)).join("");
   const open = isOpen(s);
@@ -1676,6 +2165,13 @@ function stepEl(s) {
       });
       det.appendChild(f);
     }
+    (VISUAL_FOR[s.id] || []).forEach(id => det.appendChild(figure(id)));
+    if (s.look) {
+      const l = document.createElement("div"); l.className = "xbox look";
+      l.innerHTML = `<div class="blk-label">Make it look good</div><div></div>`;
+      l.lastChild.innerHTML = s.look;
+      det.appendChild(l);
+    }
     if (s.next) {
       const n = document.createElement("div"); n.className = "xbox next";
       n.innerHTML = `<div class="blk-label">When it feels slow</div><div></div>`;
@@ -1732,7 +2228,7 @@ function renderLearn() {
   const intro = el("section");
   intro.innerHTML = `<h2>Learn the basics</h2>
     <p>The ideas below apply to every tech mod in the pack. Read them once before Phase 4. When a step in the guide seems confusing, come back here. Terms with a dotted underline in the guide show their meaning when you hover them.</p>
-    <nav class="toc" aria-label="On this page"><a href="#learn" data-jump="l-concepts">Core concepts</a><a href="#learn" data-jump="l-read">Reading a machine</a><a href="#learn" data-jump="l-find">Finding information</a><a href="#learn" data-jump="l-gloss">Glossary</a></nav>`;
+    <nav class="toc" aria-label="On this page"><a href="#learn" data-jump="l-concepts">Core concepts</a><a href="#learn" data-jump="l-design">Designing the town</a><a href="#learn" data-jump="l-read">Reading a machine</a><a href="#learn" data-jump="l-find">Finding information</a><a href="#learn" data-jump="l-gloss">Glossary</a></nav>`;
   page.appendChild(intro);
 
   const con = el("section"); con.id = "l-concepts";
@@ -1750,6 +2246,18 @@ function renderLearn() {
   });
   con.appendChild(grid);
   page.appendChild(con);
+
+  const ds = el("section"); ds.id = "l-design";
+  ds.innerHTML = `<h2>Designing the town</h2><p>These ideas make the difference between a town that works and a town that looks great. Read them before Phase 1 is done, then use them in every Surface step. Steps with a green <b>Make it look good</b> box give advice for that exact building, and Phase 11 is a full beautification pass.</p>`;
+  const dgrid = el("div", "concepts");
+  DESIGN.forEach(c => {
+    const card = el("div", "concept", `<h3></h3><p>${c.d}</p>`);
+    card.querySelector("h3").textContent = c.t;
+    if (DESIGN_VIS[c.t]) card.appendChild(figure(DESIGN_VIS[c.t]));
+    dgrid.appendChild(card);
+  });
+  ds.appendChild(dgrid);
+  page.appendChild(ds);
 
   const rd = el("section"); rd.id = "l-read";
   rd.innerHTML = `<h2>Reading a machine</h2><p>Most machine screens share the same parts. When a machine isn't working, check these in order.</p><ul>${READ_MACHINE.map(x => `<li>${x}</li>`).join("")}</ul>`;
@@ -1895,6 +2403,13 @@ document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click"
 modFilter.addEventListener("change", () => { modSel = modFilter.value; lsSavePrefs(); render(); });
 const hideBox = document.getElementById("hideDone");
 hideBox.addEventListener("change", () => { hideDone = hideBox.checked; lsSavePrefs(); render(); });
+const focusBox = document.getElementById("focusMode");
+focusBox.addEventListener("change", () => {
+  focus = focusBox.checked;
+  Object.keys(openPhases).forEach(k => delete openPhases[k]);
+  openSteps = {};
+  lsSavePrefs(); render();
+});
 const essBox = document.getElementById("essOnly");
 essBox.addEventListener("change", () => { essOnly = essBox.checked; lsSavePrefs(); render(); });
 let qTimer;
@@ -1929,8 +2444,9 @@ resetYes.addEventListener("click", () => {
   if (prefs.modSel && mods.includes(prefs.modSel)) modSel = prefs.modSel;
   hideDone = !!prefs.hideDone;
   essOnly = !!prefs.essOnly;
+  focus = prefs.focus !== false;
   openSteps = prefs.openSteps || {};
-  modFilter.value = modSel; hideBox.checked = hideDone; essBox.checked = essOnly;
+  modFilter.value = modSel; hideBox.checked = hideDone; essBox.checked = essOnly; focusBox.checked = focus;
   document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.layer === layer)));
   render();
   renderLearn();

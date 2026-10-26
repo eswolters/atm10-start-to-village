@@ -4,9 +4,10 @@ A beginner-friendly guide for **All the Mods 10** that takes a brand-new world t
 
 ## Use it
 
-Open `index.html` in a browser. It has three tabs:
+Open `index.html` in a browser. It has four tabs:
 
 - **Guide**: the checklist. 90 steps in 11 phases, each with sub-steps you tick off (424 tasks in total). Steps explain why they matter, and many include key ingredients, layout sketches, an *Is it working?* check, a *Not working?* box and a *When it feels slow* hint. Surface steps also carry a green *Make it look good* box with design advice for that building. Several steps also show illustrations (palette builder, skyline, town layout, roads, lighting, walls, hidden tech), each as an *Avoid* / *Aim for* pair. Each phase starts with a goal, a rough time estimate and, where builders have to work, a *While you wait* list. It ends with a checkpoint and a *Town win* step, a small visible improvement to the town. By default only the phase you are in is open (*Focus on current phase*), and its next step is marked. 22 steps are optional, so *Essentials only* gives a real shortest path. Filter by layer (Surface / Undercroft), by mod, or to essentials only, and search.
+- **Materials**: a calculator for ingredients. Pick items and amounts (or press *Ingredients for this step* in the Guide, or *Full breakdown* in a recipe table) and it lists what to gather with where to find it, what to craft and in which order, and the AE2 patterns that would automate the chain. It also has a *where to find it and how to automate it* ladder for each raw material (by hand, colony, machines, AE2), linking to the guide step that builds each rung. Vanilla recipes are reliable; modded ones (Create, AE2, Iron Furnaces) are written from memory and tagged *check JEI*.
 - **Learn the basics**: ten illustrated town-design principles (palette, skyline, roads, lighting, hiding the tech), core automation concepts (input → process → output, push vs pull, sides, bottlenecks, buffers, filters, energy types), how to read a machine, where to find information in game, and a glossary. Glossary terms show their meaning when you hover them in the guide.
 - **Fix it**: every troubleshooting entry from the guide by phase, plus common beginner mistakes.
 

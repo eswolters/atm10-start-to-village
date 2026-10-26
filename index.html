@@ -224,6 +224,24 @@ a { color: var(--tech); }
 .ph-wait { margin: 0 0 14px; }
 .chip.here, .chip.nextup { background: var(--moss); color: var(--bg); }
 .chip.here { margin-left: 8px; }
+.mat-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.mat-form select, .mat-form input { font: inherit; font-size: 15px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 3px; padding: 5px 8px; max-width: 100%; }
+.mat-form input { width: 80px; }
+.mat-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.mat-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; background: var(--moss-soft); color: var(--fg); border-radius: 3px; padding: 2px 4px 2px 9px; }
+.mat-chip button { font: inherit; border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 6px; font-size: 16px; line-height: 1; }
+.mat-block { margin: 0 0 18px; }
+.mat-block h3 { margin: 0 0 6px; }
+.mat-row { display: grid; gap: 2px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+.mat-where { color: var(--muted); }
+.mat-auto { font-size: 14px; }
+.mat-block ul { margin: 4px 0 8px; padding-left: 20px; font-size: 15px; }
+.mat-step { margin: 8px 0; font-size: 14px; color: var(--muted); }
+.rawcard { background: var(--panel); border: 1px solid var(--line); border-radius: 3px; padding: 8px 12px; margin-bottom: 8px; }
+.rawcard summary { cursor: pointer; font-weight: 500; }
+.rawcard p { margin: 6px 0; }
+.ladder { padding-left: 18px; margin: 4px 0 2px; font-size: 15px; }
+.ladder li { margin: 3px 0; }
 .xbox.look { background: var(--panel); border-color: var(--moss); border-left-width: 4px; }
 .xbox.look .blk-label { color: var(--moss); }
 .xbox ul { margin: 2px 0 0; padding-left: 18px; }
@@ -284,13 +302,14 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
     <span><i class="sw s"></i>Surface town (MineColonies)</span>
     <span><i class="sw u"></i>Undercroft (hidden tech)</span>
   </div>
-  <p class="howto">New to automation? Read the <a href="#learn">Learn</a> tab first: 10 minutes there makes every tech step easier. Overwhelmed? Keep <b>Focus on current phase</b> ticked: only the phase you are in and its next step stay open. Time estimates are rough guesses for a first playthrough. Stuck? The <a href="#fix">Fix it</a> tab lists common problems and their causes. In game: hover an item in JEI and press <kbd>R</kbd> (recipe) or <kbd>U</kbd> (uses). Hold <kbd>W</kbd> over a Create item for an animated Ponder scene, and <kbd>G</kbd> over an AE2 item for its guide.</p>
+  <p class="howto">New to automation? Read the <a href="#learn">Learn</a> tab first: 10 minutes there makes every tech step easier. Need the ingredients for something? Open the <a href="#materials">Materials</a> tab: it lists what to gather, where to find it and how to automate it. Overwhelmed? Keep <b>Focus on current phase</b> ticked: only the phase you are in and its next step stay open. Time estimates are rough guesses for a first playthrough. Stuck? The <a href="#fix">Fix it</a> tab lists common problems and their causes. In game: hover an item in JEI and press <kbd>R</kbd> (recipe) or <kbd>U</kbd> (uses). Hold <kbd>W</kbd> over a Create item for an animated Ponder scene, and <kbd>G</kbd> over an AE2 item for its guide.</p>
 </header>
 
 <div class="bar">
   <div class="wrap">
     <nav class="tabs" aria-label="Sections">
       <a href="#guide" data-tab="guide">Guide</a>
+      <a href="#materials" data-tab="materials">Materials</a>
       <a href="#learn" data-tab="learn">Learn the basics</a>
       <a href="#fix" data-tab="fix">Fix it</a>
     </nav>
@@ -317,6 +336,7 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
 </div>
 
 <main class="wrap" id="main"></main>
+<div class="wrap page" id="matPage" hidden></div>
 <div class="wrap page" id="learnPage" hidden></div>
 <div class="wrap page" id="fixPage" hidden></div>
 
@@ -629,9 +649,9 @@ const PHASES = [
 {
   id: "first", title: "Your first automation",
   sub: "Two small projects, 15 minutes each, that teach the basics before the big systems.",
-  intro: "Every big factory is small loops chained together. These two projects teach the three skills you use everywhere: moving items with pipes, setting which side does what, and powering machines with rotation. If something goes wrong here, nothing important breaks.",
+  intro: "Every big factory is small loops chained together. These two projects teach the three skills you use everywhere: moving items with pipes, setting which side does what, and powering machines with rotation. If something goes wrong here, nothing important breaks. Build them on open ground next to your starter base, outside the town centre: the undercroft doesn't exist yet, and you will move or rebuild these in Phase 5.",
   steps: [
-    { id: "m-smelter", layer: "u", t: "Project 1: an automatic smelter", mods: ["Pipez", "Iron Furnaces"],
+    { id: "m-smelter", layer: "s", t: "Project 1: an automatic smelter", mods: ["Pipez", "Iron Furnaces"],
       why: `<p>A furnace that feeds itself and empties itself. It's the smallest complete automation loop: <b>input chest → pipe → machine → pipe → output chest</b>. You learn that pipes must be told to <b>extract</b> from one side, that a furnace takes ore from the top and fuel from the side, and that output comes out of the bottom.</p>`,
       subs: [
         "Place an Iron Furnace with a chest above it (ore) and a chest to its side (fuel)",
@@ -647,7 +667,7 @@ const PHASES = [
   [fuel]-[ IRON FURNACE ]     pipe from the side = fuel slot
        | pipe: extract from furnace bottom
    [output chest]` } },
-    { id: "m-filter", layer: "u", t: "Project 1b: add a filter and an overflow", mods: ["Pipez"],
+    { id: "m-filter", layer: "s", t: "Project 1b: add a filter and an overflow", mods: ["Pipez"],
       why: `<p>Real setups have mixed items. A <b>filter</b> on a pipe only lets certain items through. A filter turned around (a deny list instead of an allow list) sends everything else elsewhere. This is how you sort without a storage system. In Pipez, filters are unlocked by putting an <b>upgrade</b> (Basic or better) in the pipe's settings.</p>`,
       subs: [
         "Craft a Basic Upgrade and put it in the extracting side of the top pipe",
@@ -656,7 +676,7 @@ const PHASES = [
         "Add a second pipe from the chest to a 'rejects' chest, with its filter set to deny raw ores",
         "Check that ore goes to the furnace and cobble goes to the rejects chest",
       ] },
-    { id: "m-cobble", layer: "u", t: "Project 2: a Create cobblestone generator", mods: ["Create"],
+    { id: "m-cobble", layer: "s", t: "Project 2: a Create cobblestone generator", mods: ["Create"],
       why: `<p>Your first rotation-powered machine. A <b>Mechanical Drill</b> breaks the cobblestone made by lava and water flowing together, and a <b>chute</b> or belt carries it to a chest. You learn how a water wheel gives power, how shafts carry it, and what <b>stress</b> means when you add more drills.</p>`,
       subs: [
         "Build a vanilla cobblestone generator (lava and water flowing together, with a gap between them)",
@@ -1919,6 +1939,311 @@ function figure(id) {
   return f;
 }
 
+/* ---------- materials: ingredients, where to find them, how to automate them ---------- */
+/* RAW: things you gather. auto = ladder of ways to get them without effort: [level, what to do, guide step to open] */
+const RAW = {
+  log: { n: "Logs", where: "Any tree. Use your style's main wood so the numbers match what the colony asks for, and replant saplings as you cut.",
+    auto: [["By hand", "Chop trees and replant.", "s-wood"], ["Colony", "The Forester's Hut cuts and replants a tree area, and the logs go to the Warehouse.", "f-forester"],
+      ["Machines", "Mystical Agriculture wood seeds grow logs in a crop room.", "e-ma"], ["AE2", "An Export Bus under a Stash keeps the Warehouse topped up from AE2.", "l-stash"]] },
+  cobblestone: { n: "Cobblestone", where: "Mine any stone: stone drops cobblestone. A cobblestone generator makes it forever.",
+    auto: [["By hand", "Mine it.", "s-wood"], ["Colony", "The Miner's Hut brings back cobble and stone.", "g-mine"], ["Machines", "A Create cobblestone generator with a drill makes it without end.", "m-cobble"], ["AE2", "Export it to the Warehouse through the Stash.", "l-stash"]] },
+  sand: { n: "Sand", where: "Beaches, riverbeds and deserts. Dig it with a shovel.",
+    auto: [["By hand", "Shovel it from beaches and riverbeds.", "s-wood"], ["Colony", "The Crusher's Hut turns cobblestone into gravel and sand.", "g-raw"], ["Machines", "A Mekanism Crusher turns gravel into sand.", "u-mek-ore"], ["AE2", "Export it to the Warehouse through the Stash.", "l-stash"]] },
+  raw_iron: { n: "Raw iron", where: "Iron ore at about Y 16, or in mountains around Y 232. Smelt it to ingots. Keep raw ore if you plan to use Create or Mekanism: they give far more ingots from the same ore.",
+    auto: [["By hand", "Mine at Y 16.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line (crushing wheels and washing) gives about 1.75× the ingots.", "u-create-ore"],
+      ["Machines", "Mystical Agriculture iron seeds grow it in a crop room.", "e-ma"], ["Machines", "A Digital Miner in the Mining dimension.", "e-mining"], ["Machines", "The Mekanism 3× and 4× chain.", "u-mek-ore"]] },
+  raw_copper: { n: "Raw copper", where: "Copper ore around Y 48. Dripstone caves have a lot of it.",
+    auto: [["By hand", "Mine it around Y 48.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line gives extra ingots.", "u-create-ore"], ["Machines", "Mystical Agriculture copper seeds.", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
+  raw_gold: { n: "Raw gold", where: "Deep underground (about Y −16 and lower), and near the surface in Badlands, where there is a lot of it. Nether gold ore also works.",
+    auto: [["By hand", "Mine in Badlands or deep underground.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "Mystical Agriculture gold seeds.", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
+  redstone: { n: "Redstone", where: "Redstone ore near the bottom of the world, around Y −59 (deepslate).",
+    auto: [["By hand", "Mine at Y −59.", "s-ores"], ["Machines", "Washing crushed iron in the Create ore line gives redstone as a bonus.", "u-create-ore"], ["Machines", "Mystical Agriculture redstone seeds.", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
+  coal: { n: "Coal", where: "Coal ore is common at about Y 48 and in mountains. Smelting logs gives charcoal, which works for torches and as fuel.",
+    auto: [["By hand", "Mine it, or smelt logs into charcoal.", "s-ores"], ["Colony", "The Forester's logs make charcoal in a furnace.", "f-forester"], ["Machines", "Mystical Agriculture coal seeds.", "e-ma"]] },
+  diamond: { n: "Diamonds", where: "Diamond ore around Y −59, often next to lava. Bring a water bucket.",
+    auto: [["By hand", "Mine at Y −59.", "s-ores"], ["Machines", "Mystical Agriculture diamond seeds (higher tier).", "e-ma"], ["Machines", "A Digital Miner.", "e-mining"]] },
+  string: { n: "String", where: "Spiders drop it, and cobwebs give it when cut with a sword or shears. Mineshafts have a lot of cobwebs.",
+    auto: [["By hand", "Kill spiders at night, or cut cobwebs.", "s-ores"], ["Machines", "A mob farm makes string, bones and gunpowder.", "e-mob"]] },
+  wool: { n: "Wool", where: "Shear sheep: they regrow their wool. Four string also make one wool.",
+    auto: [["By hand", "Shear sheep.", "s-food"], ["Colony", "The Shepherd's Hut shears sheep for you.", "g-raw"]] },
+  andesite: { n: "Andesite", where: "A grey stone found in caves and on hills. You can also craft it from diorite and cobblestone.",
+    auto: [["By hand", "Mine it in caves.", "s-ores"], ["AE2", "Write a pattern for it so AE2 crafts it on demand.", "a-autocraft"]] },
+  certus_quartz: { n: "Certus quartz", where: "Only from meteorites in the Overworld. Mine the crystals, then grow more on budding certus.",
+    auto: [["By hand", "Find a meteorite.", "a-meteor"], ["Machines", "Budding certus with Growth Accelerators grows crystals without end.", "a-certus"]] },
+  nether_quartz: { n: "Nether quartz", where: "Nether quartz ore, found throughout the Nether.",
+    auto: [["By hand", "Mine it in the Nether.", "s-ores"], ["Colony", "The Nether Mine (Netherworker) hut brings back nether goods.", "c-late"], ["Machines", "Mystical Agriculture nether quartz seeds.", "e-ma"]] },
+};
+
+/* ITEMS: things you make. [name, makes, ingredients, made in, group]. Vanilla recipes are reliable; "mod" ones are from memory for 1.21 and may differ in ATM10. */
+const ITEMS = {};
+function mk(id, n, out, ins, at, grp, mod) { ITEMS[id] = { id, n, out, in: ins, at, grp, mod: !!mod }; }
+const W = "Wood and building", ST = "Stone and glass", MT = "Metal and tools", CR = "Create", AE = "AE2";
+mk("planks", "Planks", 4, [["log", 1]], "crafting table", W);
+mk("stick", "Sticks", 4, [["planks", 2]], "crafting table", W);
+mk("slab", "Wooden slabs", 6, [["planks", 3]], "crafting table", W);
+mk("stairs", "Wooden stairs", 4, [["planks", 6]], "crafting table", W);
+mk("fence", "Wooden fences", 3, [["planks", 4], ["stick", 2]], "crafting table", W);
+mk("fence_gate", "Fence gate", 1, [["planks", 2], ["stick", 4]], "crafting table", W);
+mk("door", "Wooden doors", 3, [["planks", 6]], "crafting table", W);
+mk("trapdoor", "Wooden trapdoors", 2, [["planks", 6]], "crafting table", W);
+mk("ladder", "Ladders", 3, [["stick", 7]], "crafting table", W);
+mk("sign", "Signs", 3, [["planks", 6], ["stick", 1]], "crafting table", W);
+mk("chest", "Chest", 1, [["planks", 8]], "crafting table", W);
+mk("barrel", "Barrel", 1, [["planks", 6], ["slab", 2]], "crafting table", W);
+mk("crafting_table", "Crafting table", 1, [["planks", 4]], "crafting table", W);
+mk("bed", "Bed", 1, [["wool", 3], ["planks", 3]], "crafting table", W);
+mk("torch", "Torches", 4, [["stick", 1], ["coal", 1]], "crafting table", W);
+mk("furnace", "Furnace", 1, [["cobblestone", 8]], "crafting table", ST);
+mk("stone", "Stone", 1, [["cobblestone", 1]], "furnace (needs fuel)", ST);
+mk("smooth_stone", "Smooth stone", 1, [["stone", 1]], "furnace (needs fuel)", ST);
+mk("stone_bricks", "Stone bricks", 4, [["stone", 4]], "crafting table", ST);
+mk("stone_brick_slab", "Stone brick slabs", 6, [["stone_bricks", 3]], "crafting table", ST);
+mk("stone_brick_stairs", "Stone brick stairs", 4, [["stone_bricks", 6]], "crafting table", ST);
+mk("stone_brick_wall", "Stone brick walls", 6, [["stone_bricks", 6]], "crafting table", ST);
+mk("cobble_slab", "Cobblestone slabs", 6, [["cobblestone", 3]], "crafting table", ST);
+mk("cobble_stairs", "Cobblestone stairs", 4, [["cobblestone", 6]], "crafting table", ST);
+mk("cobble_wall", "Cobblestone walls", 6, [["cobblestone", 6]], "crafting table", ST);
+mk("glass", "Glass", 1, [["sand", 1]], "furnace (needs fuel)", ST);
+mk("glass_pane", "Glass panes", 16, [["glass", 6]], "crafting table", ST);
+mk("iron_ingot", "Iron ingot", 1, [["raw_iron", 1]], "furnace (needs fuel)", MT);
+mk("gold_ingot", "Gold ingot", 1, [["raw_gold", 1]], "furnace (needs fuel)", MT);
+mk("iron_nugget", "Iron nuggets", 9, [["iron_ingot", 1]], "crafting table", MT);
+mk("iron_block", "Iron block", 1, [["iron_ingot", 9]], "crafting table", MT);
+mk("iron_bars", "Iron bars", 16, [["iron_ingot", 6]], "crafting table", MT);
+mk("chain", "Chain", 1, [["iron_ingot", 1], ["iron_nugget", 2]], "crafting table", MT);
+mk("lantern", "Lantern", 1, [["iron_nugget", 8], ["torch", 1]], "crafting table", MT);
+mk("iron_pickaxe", "Iron pickaxe", 1, [["iron_ingot", 3], ["stick", 2]], "crafting table", MT);
+mk("iron_axe", "Iron axe", 1, [["iron_ingot", 3], ["stick", 2]], "crafting table", MT);
+mk("iron_hoe", "Iron hoe", 1, [["iron_ingot", 2], ["stick", 2]], "crafting table", MT);
+mk("iron_furnace", "Iron Furnace", 1, [["iron_ingot", 8], ["furnace", 1]], "crafting table", MT, true);
+mk("andesite_alloy", "Andesite Alloy", 1, [["andesite", 1], ["iron_nugget", 1]], "crafting table", CR, true);
+mk("shaft", "Shafts", 4, [["andesite_alloy", 1]], "crafting table", CR, true);
+mk("cogwheel", "Cogwheel", 1, [["shaft", 1], ["planks", 1]], "crafting table", CR, true);
+mk("andesite_casing", "Andesite Casing", 1, [["andesite_alloy", 1], ["log", 1]], "crafting table (strip the log with an axe first)", CR, true);
+mk("water_wheel", "Water Wheel", 1, [["planks", 8], ["shaft", 1]], "crafting table", CR, true);
+mk("mechanical_press", "Mechanical Press", 1, [["shaft", 1], ["andesite_casing", 1], ["iron_block", 1]], "crafting table", CR, true);
+mk("basin", "Basin", 1, [["andesite_alloy", 7]], "crafting table", CR, true);
+mk("mechanical_mixer", "Mechanical Mixer", 1, [["cogwheel", 1], ["andesite_casing", 1], ["whisk", 1]], "crafting table", CR, true);
+mk("certus_dust", "Certus quartz dust", 1, [["certus_quartz", 1]], "any crusher (Create crushing wheels or a Mekanism Crusher)", AE, true);
+mk("silicon", "Silicon", 1, [["certus_dust", 1]], "furnace (needs fuel)", AE, true);
+mk("printed_calc", "Printed Calculation Circuit", 1, [["certus_quartz", 1]], "Inscriber with the Calculation press", AE, true);
+mk("printed_eng", "Printed Engineering Circuit", 1, [["diamond", 1]], "Inscriber with the Engineering press", AE, true);
+mk("printed_logic", "Printed Logic Circuit", 1, [["gold_ingot", 1]], "Inscriber with the Logic press", AE, true);
+mk("printed_silicon", "Printed Silicon", 1, [["silicon", 1]], "Inscriber with the Silicon press", AE, true);
+mk("calc_processor", "Calculation Processor", 1, [["printed_calc", 1], ["redstone", 1], ["printed_silicon", 1]], "Inscriber (no press)", AE, true);
+mk("eng_processor", "Engineering Processor", 1, [["printed_eng", 1], ["redstone", 1], ["printed_silicon", 1]], "Inscriber (no press)", AE, true);
+mk("logic_processor", "Logic Processor", 1, [["printed_logic", 1], ["redstone", 1], ["printed_silicon", 1]], "Inscriber (no press)", AE, true);
+mk("charged_certus", "Charged Certus Quartz", 1, [["certus_quartz", 1]], "Charger (needs power)", AE, true);
+mk("fluix_crystal", "Fluix Crystal", 2, [["charged_certus", 1], ["redstone", 1], ["nether_quartz", 1]], "thrown into water", AE, true);
+/* ingredients the database doesn't cover: shown as "look it up in JEI" instead of guessed */
+const UNKNOWN = { whisk: "Whisk" };
+
+/* guide table names → item ids, so recipe rows can link to the breakdown */
+const ITEM_ALIAS = { "Andesite Alloy": "andesite_alloy", "Shaft": "shaft", "Cogwheel": "cogwheel", "Andesite Casing": "andesite_casing", "Water Wheel": "water_wheel",
+  "Mechanical Press": "mechanical_press", "Mechanical Mixer": "mechanical_mixer", "Basin": "basin", "Iron Furnace": "iron_furnace", "Silicon": "silicon",
+  "Printed Calculation Circuit": "printed_calc", "Printed Engineering Circuit": "printed_eng", "Printed Logic Circuit": "printed_logic", "Fluix Crystal": "fluix_crystal" };
+
+/* "Ingredients for this step" lists. sug = a sensible starter amount I chose, not a number from the sub-steps */
+const MAT_FOR = {
+  "s-wood": { items: [["torch", 64], ["glass", 64]] },
+  "s-tools": { items: [["iron_pickaxe", 3], ["iron_axe", 3], ["iron_hoe", 3], ["iron_furnace", 1]] },
+  "m-smelter": { items: [["iron_furnace", 1], ["chest", 3]], sug: true },
+  "m-cobble": { items: [["water_wheel", 1], ["shaft", 4], ["chest", 1]], sug: true },
+  "u-create-basics": { items: [["shaft", 8], ["cogwheel", 4], ["andesite_casing", 2], ["water_wheel", 1]], sug: true },
+  "u-create-machines": { items: [["mechanical_press", 1], ["mechanical_mixer", 1], ["basin", 1]], sug: true },
+  "a-certus": { items: [["fluix_crystal", 16], ["silicon", 16]], sug: true },
+  "a-processors": { items: [["calc_processor", 16], ["eng_processor", 16], ["logic_processor", 16]] },
+  "a-colony-patterns": { items: [["planks", 64], ["slab", 64], ["stairs", 64], ["fence", 32], ["fence_gate", 8], ["door", 16], ["trapdoor", 16], ["ladder", 16], ["sign", 8], ["chest", 8], ["barrel", 8], ["stone_bricks", 64], ["glass_pane", 64], ["torch", 64], ["lantern", 16], ["bed", 8]], sug: true },
+  "b-light": { items: [["lantern", 32], ["chain", 16], ["fence", 32]], sug: true },
+};
+
+function itemName(id) { return ITEMS[id] ? ITEMS[id].n : RAW[id] ? RAW[id].n : UNKNOWN[id] || id; }
+function stacks(n) { return n >= 64 ? `${n} (${Math.floor(n / 64)} stack${n >= 128 ? "s" : ""}${n % 64 ? " + " + n % 64 : ""})` : String(n); }
+
+/* Work out everything needed for a list of [item, amount] pairs. Shared yields are respected (one log makes 4 planks for every recipe that needs them). */
+function resolve(list) {
+  const need = {};
+  list.forEach(([id, q]) => { need[id] = (need[id] || 0) + q; });
+  const order = [], seen = new Set();
+  const visit = id => { if (seen.has(id)) return; seen.add(id); if (ITEMS[id]) ITEMS[id].in.forEach(([c]) => visit(c)); order.push(id); };
+  Object.keys(need).forEach(visit);
+  const crafts = {}, raw = {}, unknown = {};
+  for (let i = order.length - 1; i >= 0; i--) {
+    const id = order[i], it = ITEMS[id], n = need[id] || 0;
+    if (!it) { if (RAW[id]) raw[id] = n; else unknown[id] = n; continue; }
+    const c = Math.ceil(n / it.out);
+    crafts[id] = c;
+    it.in.forEach(([ing, q]) => { need[ing] = (need[ing] || 0) + c * q; });
+  }
+  return { need, crafts, raw, unknown, order };
+}
+
+const MAT_KEY = "hollowmere-materials";
+let matList = lsGet(MAT_KEY, []).filter(x => Array.isArray(x) && ITEMS[x[0]]);
+function saveMat() { lsSet(MAT_KEY, matList); }
+
+function stepLink(id, label) {
+  const s = allSteps.find(x => x.id === id);
+  const a = el("a"); a.href = "#guide"; a.textContent = label || (s ? s.t : id);
+  a.addEventListener("click", e => { e.preventDefault(); goToStep(id); });
+  return a;
+}
+
+/* open the Materials tab with a ready-made list */
+function openMaterials(items) {
+  matList = items.map(([id, q]) => [id, q]);
+  saveMat();
+  showTab("materials");
+  try { history.replaceState(null, "", "#materials"); } catch (e) {}
+  renderMatPage();
+  window.scrollTo(0, 0);
+}
+
+function renderMatPage() {
+  const page = document.getElementById("matPage");
+  page.textContent = "";
+  const intro = el("section");
+  intro.innerHTML = `<h2>Materials</h2>
+    <p>Pick what you want to build and this works out every ingredient behind it: what to gather, where to find it, what to craft and in what order, and the AE2 patterns that would make it automatically. Use <b>Ingredients for this step</b> in the Guide to fill the list for you.</p>
+    <p class="note">Vanilla recipes here are reliable. Items tagged <span class="chip opt">check JEI</span> (Create, AE2 and other mods) come from my knowledge of the 1.21 versions and may differ in ATM10: JEI is the authority. Anything the database doesn't know is listed so you can look it up.</p>
+    <nav class="toc" aria-label="On this page"><a href="#materials" data-mjump="m-calc">Calculator</a><a href="#materials" data-mjump="m-find">Where to find things and how to automate them</a></nav>`;
+  page.appendChild(intro);
+
+  const calc = el("section"); calc.id = "m-calc";
+  calc.appendChild(el("h2", null, "What do you want to make?"));
+  const form = el("div", "mat-form");
+  const sel = el("select"); sel.setAttribute("aria-label", "Item");
+  [W, ST, MT, CR, AE].forEach(g => {
+    const og = el("optgroup"); og.label = g;
+    Object.values(ITEMS).filter(i => i.grp === g).forEach(i => { const o = el("option"); o.value = i.id; o.textContent = i.n + (i.mod ? " (mod)" : ""); og.appendChild(o); });
+    sel.appendChild(og);
+  });
+  const qty = el("input"); qty.type = "number"; qty.min = "1"; qty.value = "64"; qty.setAttribute("aria-label", "Amount");
+  const add = el("button", "tbtn"); add.type = "button"; add.textContent = "Add to list";
+  const stepSel = el("select"); stepSel.setAttribute("aria-label", "Load a step's list");
+  stepSel.appendChild(Object.assign(el("option"), { value: "", textContent: "Load the list for a step…" }));
+  Object.keys(MAT_FOR).forEach(id => { const s = allSteps.find(x => x.id === id); if (s) stepSel.appendChild(Object.assign(el("option"), { value: id, textContent: s.t })); });
+  const clear = el("button", "tbtn"); clear.type = "button"; clear.textContent = "Clear list";
+  form.append(sel, qty, add, stepSel, clear);
+  calc.appendChild(form);
+  const listBox = el("div", "mat-list"), result = el("div", "mat-result");
+  calc.append(listBox, result);
+  page.appendChild(calc);
+
+  const draw = () => { saveMat(); drawMatList(listBox, draw); drawMatResult(result); };
+  add.addEventListener("click", () => {
+    const q = Math.max(1, parseInt(qty.value, 10) || 1);
+    const hit = matList.find(x => x[0] === sel.value);
+    if (hit) hit[1] += q; else matList.push([sel.value, q]);
+    draw();
+  });
+  stepSel.addEventListener("change", () => {
+    if (!stepSel.value) return;
+    matList = MAT_FOR[stepSel.value].items.map(([id, q]) => [id, q]);
+    stepSel.value = ""; draw();
+  });
+  clear.addEventListener("click", () => { matList = []; draw(); });
+  draw();
+
+  const find = el("section"); find.id = "m-find";
+  find.appendChild(el("h2", null, "Where to find things and how to automate them"));
+  find.appendChild(el("p", null, "Every raw material, with where it is and a ladder of ways to stop gathering it by hand. Each rung opens the guide step that builds it."));
+  Object.values(RAW).forEach(r => {
+    const d = el("details", "rawcard");
+    const sm = el("summary"); sm.textContent = r.n; d.appendChild(sm);
+    d.appendChild(el("p", null)).textContent = r.where;
+    const ul = el("ul", "ladder");
+    r.auto.forEach(([lvl, text, step]) => {
+      const li = el("li"); li.appendChild(el("b", null, lvl + ": ")); li.append(text + " ");
+      li.appendChild(stepLink(step, "Open step →")); ul.appendChild(li);
+    });
+    d.appendChild(ul);
+    find.appendChild(d);
+  });
+  page.appendChild(find);
+}
+
+function drawMatList(box, redraw) {
+  box.textContent = "";
+  if (!matList.length) { box.appendChild(el("p", "empty", "The list is empty. Add an item above, or open a step in the Guide and press Ingredients for this step.")); return; }
+  matList.forEach(([id, q], i) => {
+    const c = el("span", "mat-chip");
+    c.append(`${q} × ${itemName(id)} `);
+    const x = el("button"); x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", "Remove " + itemName(id));
+    x.addEventListener("click", () => { matList.splice(i, 1); redraw(); });
+    c.appendChild(x); box.appendChild(c);
+  });
+}
+
+function drawMatResult(box) {
+  box.textContent = "";
+  if (!matList.length) return;
+  const r = resolve(matList);
+
+  const g = el("div", "mat-block");
+  g.appendChild(el("h3", null, "1. Gather"));
+  const rawIds = Object.keys(r.raw);
+  if (!rawIds.length) g.appendChild(el("p", null, "Nothing to gather: everything in the list is already a raw material."));
+  rawIds.forEach(id => {
+    const row = el("div", "mat-row");
+    row.appendChild(el("b", null, `${stacks(r.raw[id])} × ${RAW[id].n}`));
+    row.appendChild(el("span", "mat-where", RAW[id].where));
+    const best = RAW[id].auto.filter(a => a[0] !== "By hand");
+    if (best.length) {
+      const p = el("span", "mat-auto"); p.append("Automate: ");
+      best.slice(0, 3).forEach((a, i) => { if (i) p.append(" · "); p.appendChild(stepLink(a[2], a[0] + ": " + (allSteps.find(s => s.id === a[2]) || { t: a[2] }).t)); });
+      row.appendChild(p);
+    }
+    g.appendChild(row);
+  });
+  Object.keys(r.unknown).forEach(id => {
+    const row = el("div", "mat-row");
+    row.appendChild(el("b", null, `${r.unknown[id]} × ${itemName(id)}`));
+    row.appendChild(el("span", "mat-where", "Not in this database. Hover it in JEI and press R to see how to make it."));
+    g.appendChild(row);
+  });
+  box.appendChild(g);
+
+  const crafted = r.order.filter(id => r.crafts[id]);
+  const c = el("div", "mat-block recipes");
+  c.appendChild(el("h3", null, "2. Craft, in this order"));
+  if (!crafted.length) c.appendChild(el("p", null, "Nothing to craft."));
+  else {
+    const t = el("table"); t.innerHTML = `<thead><tr><th>Item</th><th>Crafts</th><th>Makes</th><th>You need</th><th>Made in</th></tr></thead><tbody></tbody>`;
+    crafted.forEach(id => {
+      const it = ITEMS[id], n = r.need[id], made = r.crafts[id] * it.out;
+      const tr = el("tr");
+      [it.n + (it.mod ? " " : ""), String(r.crafts[id]), String(made), String(n), it.at].forEach((v, i) => {
+        const td = el("td"); td.textContent = v;
+        if (i === 0 && it.mod) td.appendChild(el("span", "chip opt", "check JEI"));
+        tr.appendChild(td);
+      });
+      t.querySelector("tbody").appendChild(tr);
+    });
+    c.appendChild(t);
+    c.appendChild(el("p", "rnote", "“Makes” can be more than “You need”: recipes give fixed batches, and the surplus is yours (or the next recipe's)."));
+  }
+  box.appendChild(c);
+
+  const p = el("div", "mat-block");
+  p.appendChild(el("h3", null, "3. Automate it in AE2"));
+  if (!crafted.length) p.appendChild(el("p", null, "Nothing to craft, so there are no patterns to write."));
+  else {
+    p.appendChild(el("p", null, "If you encode a pattern for each item below, AE2 can make the whole chain by itself from the raw materials. Then you only keep the raw materials stocked, using the automation ladders above."));
+    const ul = el("ul");
+    crafted.forEach(id => {
+      const it = ITEMS[id], crafting = it.at.startsWith("crafting table");
+      const li = el("li"); li.append(`${it.n}: `);
+      li.append(crafting ? "crafting pattern, made in a Molecular Assembler" : `processing pattern, with the Pattern Provider next to: ${it.at}`);
+      ul.appendChild(li);
+    });
+    p.appendChild(ul);
+    const a = el("p"); a.append("How to set this up: "); a.appendChild(stepLink("a-autocraft")); a.append(" and "); a.appendChild(stepLink("a-colony-patterns")); a.append(".");
+    p.appendChild(a);
+  }
+  box.appendChild(p);
+}
+
 /* ---------- ids ---------- */
 function hash(s) {
   let h = 5381;
@@ -2131,11 +2456,21 @@ function stepEl(s) {
     }
     if (s.recipes) {
       const r = document.createElement("div"); r.className = "recipes";
-      r.innerHTML = `<div class="blk-label">Key ingredients</div><table><thead><tr><th>Item</th><th>Main ingredients</th><th>Made in</th></tr></thead><tbody></tbody></table><div class="rnote">Exact grid and counts: hover the item in JEI and press R.</div>`;
+      const linked = s.recipes.some(x => ITEM_ALIAS[x[0]]);
+      r.innerHTML = `<div class="blk-label">Key ingredients</div><table><thead><tr><th>Item</th><th>Main ingredients</th><th>Made in</th>${linked ? "<th></th>" : ""}</tr></thead><tbody></tbody></table><div class="rnote">Exact grid and counts: hover the item in JEI and press R.</div>`;
       const tb = r.querySelector("tbody");
       s.recipes.forEach(([a, b, c]) => {
         const tr = document.createElement("tr");
         [a, b, c].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
+        if (linked) {
+          const td = document.createElement("td");
+          if (ITEM_ALIAS[a]) {
+            const btn = document.createElement("button"); btn.type = "button"; btn.className = "tbtn"; btn.textContent = "Full breakdown";
+            btn.addEventListener("click", () => openMaterials([[ITEM_ALIAS[a], 1]]));
+            td.appendChild(btn);
+          }
+          tr.appendChild(td);
+        }
         tb.appendChild(tr);
       });
       det.appendChild(r);
@@ -2146,6 +2481,16 @@ function stepEl(s) {
       g.querySelector(".dh").textContent = s.diagram.h;
       g.querySelector("pre").textContent = s.diagram.d;
       det.appendChild(g);
+    }
+    if (MAT_FOR[s.id]) {
+      const m = document.createElement("div"); m.className = "mat-step";
+      const btn = document.createElement("button"); btn.type = "button"; btn.className = "tbtn"; btn.textContent = "Ingredients for this step";
+      btn.addEventListener("click", () => openMaterials(MAT_FOR[s.id].items));
+      m.appendChild(btn);
+      const note = document.createElement("span");
+      note.textContent = MAT_FOR[s.id].sug ? " A starter list (amounts are a suggestion). Opens what to gather, where to find it and how to automate it." : " Opens what to gather, where to find it and how to automate it.";
+      m.appendChild(note);
+      det.appendChild(m);
     }
     if (s.code) det.appendChild(codeBox());
     if (s.check) {
@@ -2320,9 +2665,10 @@ function renderFix() {
 /* ---------- tabs ---------- */
 let tab = "guide";
 function showTab(name) {
-  tab = ["guide", "learn", "fix"].includes(name) ? name : "guide";
+  tab = ["guide", "materials", "learn", "fix"].includes(name) ? name : "guide";
   document.getElementById("main").hidden = tab !== "guide";
   document.getElementById("guideFilters").hidden = tab !== "guide";
+  document.getElementById("matPage").hidden = tab !== "materials";
   document.getElementById("learnPage").hidden = tab !== "learn";
   document.getElementById("fixPage").hidden = tab !== "fix";
   document.querySelectorAll(".tabs a").forEach(a => {
@@ -2349,6 +2695,8 @@ document.querySelectorAll(".tabs a").forEach(a => a.addEventListener("click", e 
   window.scrollTo(0, 0);
 }));
 document.addEventListener("click", e => {
+  const m = e.target.closest("[data-mjump]");
+  if (m) { e.preventDefault(); const t = document.getElementById(m.dataset.mjump); if (t) t.scrollIntoView({ block: "start" }); return; }
   const a = e.target.closest("[data-jump]");
   if (!a) return;
   e.preventDefault();
@@ -2358,7 +2706,7 @@ document.addEventListener("click", e => {
   const t = document.getElementById(a.dataset.jump);
   if (t) t.scrollIntoView({ block: "start" });
 });
-document.querySelectorAll('.howto a[href="#learn"], .howto a[href="#fix"]').forEach(a => a.addEventListener("click", e => {
+document.querySelectorAll('.howto a[href="#learn"], .howto a[href="#fix"], .howto a[href="#materials"]').forEach(a => a.addEventListener("click", e => {
   e.preventDefault();
   const name = a.getAttribute("href").slice(1);
   showTab(name);
@@ -2449,6 +2797,7 @@ resetYes.addEventListener("click", () => {
   modFilter.value = modSel; hideBox.checked = hideDone; essBox.checked = essOnly; focusBox.checked = focus;
   document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.layer === layer)));
   render();
+  renderMatPage();
   renderLearn();
   renderFix();
   showTab((location.hash || "#guide").slice(1));

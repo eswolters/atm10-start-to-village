@@ -2,6 +2,7 @@ W, ST, MT = "Wood and building", "Stone and glass", "Metal and tools"
 HUT, CT = "Colony huts", "Colony tools and storage"
 CR, AE, PW, MK = "Create", "AE2", "Powah", "Mekanism"
 MC, CP, BP = "Machines and pipes", "Computers and peripherals", "Backpacks and drawers"
+BT = "Building tools"
 
 def L(grp, *pairs):
     return [(s, r, grp) for s, r in pairs]
@@ -85,6 +86,11 @@ WANT += L(BP, ("backpack", "sophisticatedbackpacks:backpack"), ("pickup_upgrade"
           ("upgrade_base", "sophisticatedbackpacks:upgrade_base"), ("drawer_1x1", "functionalstorage:oak_1"), ("storage_controller", "functionalstorage:storage_controller"),
           ("warp_stone", "waystones:warp_stone"), ("waystone", "waystones:waystone"), ("warp_dust", "waystones:warp_dust"))
 
+WANT += L(BT, ("nature_compass", "naturescompass:naturescompass"), ("destruction_gadget", "buildinggadgets2:gadget_destruction"), ("exchanging_gadget", "buildinggadgets2:gadget_exchanging"),
+          ("copy_paste_gadget", "buildinggadgets2:gadget_copy_paste"), ("cut_paste_gadget", "buildinggadgets2:gadget_cut_paste"), ("charging_station", "charginggadgets:charging_station"),
+          ("copper_stick", "constructionstick:copper_stick"), ("iron_stick", "constructionstick:iron_stick"), ("diamond_stick", "constructionstick:diamond_stick"),
+          ("mega_torch", "torchmaster:megatorch"), ("coal_block", "minecraft:coal_block"), ("gold_block", "minecraft:gold_block"))
+
 # registry id / tag -> slug, for ingredients that stand for a generic thing
 MAP = {
     "#minecraft:planks": "planks", "#minecraft:logs": "log", "#minecraft:logs_that_burn": "log", "#minecraft:oak_logs": "log", "#c:stripped_logs": "log", "#c:stripped_woods": "log",
@@ -103,7 +109,7 @@ MAP = {
     "minecraft:andesite": "andesite", "minecraft:quartz": "nether_quartz", "#c:gems/quartz": "nether_quartz",
     "ae2:certus_quartz_crystal": "certus_quartz", "#c:gems/certus_quartz": "certus_quartz",
     "#c:wool": "wool", "#minecraft:wool": "wool",
-    "#c:storage_blocks/redstone": "redstone_block", "#c:ender_pearls": "ender_pearl", "#mekanism:tin": "tin_ingot", "#c:dusts/copper": "dust_copper", "#c:ingots/tin": "tin_ingot", "#ae2:all_nether_quartz": "nether_quartz", "#ae2:all_certus_quartz": "certus_quartz", "#ae2:all_fluix": "fluix_crystal", "#c:dusts/fluix": "fluix_dust", "minecraft:ender_pearl": "ender_pearl",
+    "#c:storage_blocks/redstone": "redstone_block", "#c:storage_blocks/coal": "coal_block", "#c:storage_blocks/gold": "gold_block", "#saplings": "sapling", "#minecraft:saplings": "sapling", "#logs": "log", "#c:ender_pearls": "ender_pearl", "#mekanism:tin": "tin_ingot", "#c:dusts/copper": "dust_copper", "#c:ingots/tin": "tin_ingot", "#ae2:all_nether_quartz": "nether_quartz", "#ae2:all_certus_quartz": "certus_quartz", "#ae2:all_fluix": "fluix_crystal", "#c:dusts/fluix": "fluix_dust", "minecraft:ender_pearl": "ender_pearl",
     "#c:glass_blocks/cheap": "glass", "#c:glass_panes": "glass_pane", "#c:glass_panes/colorless": "glass_pane", "#c:leathers": "leather", "#c:feathers": "feather",
     "#c:buckets/empty": "bucket", "#c:buckets/lava": "lava_bucket", "#c:dusts/glowstone": "glowstone_dust", "#c:gems/emerald": "emerald", "#c:gems/lapis": "lapis_lazuli",
     "#c:obsidians/normal": "obsidian", "#c:obsidians": "obsidian", "#c:rods/blaze": "blaze_rod", "#c:ingots/zinc": "zinc_ingot", "#c:nuggets/zinc": "zinc_nugget",
@@ -113,7 +119,7 @@ MAP = {
     "#mekanism:carbon": "coal", "#mekanism:redstone": "redstone", "#mekanism:diamond": "diamond", "#mekanism:refined_obsidian": "dust_refined_obsidian",
 }
 # things you gather rather than craft (their texts live in the page)
-LEAF = {k: "" for k in ["leather", "wheat", "apple", "egg", "beef", "porkchop", "bone", "flint", "gravel", "dirt", "honeycomb", "obsidian", "blaze_rod", "amethyst_shard", "ender_pearl",
+LEAF = {k: "" for k in ["sapling", "leather", "wheat", "apple", "egg", "beef", "porkchop", "bone", "flint", "gravel", "dirt", "honeycomb", "obsidian", "blaze_rod", "amethyst_shard", "ender_pearl",
                         "feather", "sugar_cane", "lapis_lazuli", "poppy", "carrot", "cactus", "kelp", "glowstone_dust", "emerald", "lava_bucket", "raw_zinc", "raw_osmium", "clay_ball", "vibranium_ingot", "raw_tin", "uraninite", "sky_stone_block",
                         "raw_tin", "uraninite", "sky_stone_block", "silicon_press", "calculation_processor_press", "engineering_processor_press", "logic_processor_press", "water_bucket", "rabbit_hide", "honey_bottle","log", "cobblestone", "sand", "raw_iron", "raw_copper", "raw_gold", "redstone", "coal", "diamond", "string", "wool", "andesite", "certus_quartz",
                         "nether_quartz", "slime_ball", "netherrack"]}

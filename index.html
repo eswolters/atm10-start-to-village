@@ -292,6 +292,9 @@ tr.rdone td { opacity: .55; }
 .xbox.look .blk-label { color: var(--moss); }
 .xbox ul { margin: 2px 0 0; padding-left: 18px; }
 .xbox li { margin: 2px 0; }
+.res-steps li.rdone label { opacity: .55; }
+.res-done { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px 14px; font-size: 14px; }
+.res-done li { display: flex; gap: 6px; align-items: center; }
 .fx-sym { font-weight: 500; }
 .milestone { margin: 0 0 22px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); }
 .milestone h3 { font-family: var(--f-display); font-weight: 400; font-size: 19px; margin: 0 0 4px; }
@@ -2558,9 +2561,9 @@ function goalTarget(key) {
   return Object.values(RES).filter(r => r.eff.some(e => e[0] === eff)).sort((a, b) => a.tier - b.tier).find(r => !resState.done[r.id]);
 }
 /* everything still to research for your goals, ancestors included, in order */
-function planList() {
+function planList(withDone) {
   const set = {};
-  Object.keys(resState.goals).forEach(k => { const t = goalTarget(k); if (t) lineage(t.id).forEach(r => { if (!resState.done[r.id]) set[r.id] = r; }); });
+  Object.keys(resState.goals).forEach(k => { const t = goalTarget(k); if (t) lineage(t.id).forEach(r => { if (withDone || !resState.done[r.id]) set[r.id] = r; }); });
   return Object.values(set).sort((a, b) => a.tier - b.tier || a.branch.localeCompare(b.branch) || a.n.localeCompare(b.n));
 }
 function planTotals(list) {
@@ -2610,17 +2613,16 @@ function drawGoals() {
     gb.appendChild(c);
   });
 }
-function drawPlan() {
-  const pl = document.getElementById("resPlan"); pl.textContent = "";
+function drawPlanMain(pl) {
   const goals = Object.keys(resState.goals).filter(goalValid);
   if (!goals.length) { pl.appendChild(el("p", "empty", "Nothing picked yet. Pick a building or a bonus above and the steps appear here.")); return; }
-  const list = planList();
-  if (!list.length) { pl.appendChild(el("p", null, "Everything you picked is already researched.")); }
-  else {
+  const list = planList(), shownList = planList(true);
+  if (!list.length) pl.appendChild(el("p", null, "Everything you picked is researched. Untick a step below if you ticked it by mistake."));
+  if (shownList.length) {
     const ol = el("ol", "res-steps");
-    list.forEach(r => {
-      const li = el("li");
-      const cb = el("input"); cb.type = "checkbox"; cb.checked = false; cb.id = "rs-" + r.id.replace("/", "-"); cb.setAttribute("aria-label", "Researched: " + r.n);
+    shownList.forEach(r => {
+      const li = el("li"); if (resState.done[r.id]) li.className = "rdone";
+      const cb = el("input"); cb.type = "checkbox"; cb.checked = !!resState.done[r.id]; cb.id = "rs-" + r.id.replace("/", "-"); cb.setAttribute("aria-label", "Researched: " + r.n);
       cb.addEventListener("change", () => setResDone(r.id, cb.checked));
       const body = el("label"); body.htmlFor = cb.id;
       const nm = el("b"); nm.textContent = r.n; body.appendChild(nm);
@@ -2678,6 +2680,26 @@ function resCard(r) {
   if (r.parent && RES[r.parent]) parts.push("After: " + RES[r.parent].n);
   r.req.forEach(q => parts.push("Needs " + reqLine(q)));
   parts.push("University level " + r.tier);
+let resDoneOpen = false;
+function drawDoneBox(pl) {
+  const rs = Object.keys(resState.done).filter(id => resState.done[id] && RES[id]).map(id => RES[id]).sort((a, b) => a.tier - b.tier || a.n.localeCompare(b.n));
+  if (!rs.length) return;
+  const d = el("details", "rawcard"); d.open = resDoneOpen; d.addEventListener("toggle", () => { resDoneOpen = d.open; });
+  d.appendChild(el("summary", null, `Researched so far (${rs.length})`));
+  d.appendChild(el("p", "rnote", "Untick a research if you ticked it by mistake. This only changes your checklist: in the game, undoing a finished research costs 1 Ancient Tome."));
+  const ul = el("ul", "res-done");
+  rs.forEach(r => {
+    const li = el("li"), cb = el("input"); cb.type = "checkbox"; cb.checked = true; cb.id = "rd-" + r.id.replace("/", "-"); cb.setAttribute("aria-label", "Researched: " + r.n);
+    cb.addEventListener("change", () => setResDone(r.id, cb.checked));
+    const l = el("label"); l.htmlFor = cb.id; l.textContent = `${r.n} (${RESEARCH_TEXT.branches[r.branch] || r.branch}, tier ${r.tier})`;
+    li.append(cb, l); ul.appendChild(li);
+  });
+  d.appendChild(ul); pl.appendChild(d);
+}
+function drawPlan() {
+  const pl = document.getElementById("resPlan"); pl.textContent = "";
+  drawPlanMain(pl); drawDoneBox(pl);
+}
   c.appendChild(el("div", "res-meta")).textContent = parts.join(" · ");
   if (r.cost.length) c.appendChild(el("div", "res-cost")).textContent = "Cost: " + costText(r);
   return c;

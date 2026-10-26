@@ -3019,16 +3019,68 @@ function planFit() {
 
 /* ---- snapping and measuring (in blocks) ---- */
 function planOthers(ignoreId) { return plan.items.filter(o => o.id !== ignoreId && o.t === "b" && planGroup(o.k) !== "decor").map(rectOf); }
-/* magnet: nudge the last block so edges line up with neighbours, or leave exactly 3 blocks between */
+/* snapping: the nearest of these wins (within a few blocks, more when zoomed out)
+   - line up an edge or the middle with a neighbour, or stand 3 blocks away from it (also from the market square)
+   - stand 1 block beside a straight road
+   Matching edges are shown as pink guide lines while you drag. */
+let planGuides = [], planMods = { shift: false, alt: false };
+function planSnapTol() { return Math.max(2, Math.round(10 / plan.view.s)); }
+function planRoadOff(w) { return w % 2 ? .5 : 0; }   /* a road of odd width runs down the middle of a block row, an even one along the border between two rows */
 function planSnap(rect, ignoreId) {
-  if (!plan.snap) return [rect.x, rect.z];
-  let bx = rect.x, bz = rect.z, dx = 2, dz = 2;
-  planOthers(ignoreId).forEach(q => {
-    if (rect.z < q.z + q.h + 12 && q.z < rect.z + rect.h + 12) [q.x, q.x + q.w - rect.w, q.x + q.w + 3, q.x - 3 - rect.w].forEach(c => { const d = Math.abs(c - rect.x); if (d < dx) { dx = d; bx = c; } });
-    if (rect.x < q.x + q.w + 12 && q.x < rect.x + rect.w + 12) [q.z, q.z + q.h - rect.h, q.z + q.h + 3, q.z - 3 - rect.h].forEach(c => { const d = Math.abs(c - rect.z); if (d < dz) { dz = d; bz = c; } });
+  planGuides = []; if (!plan.snap) return [rect.x, rect.z];
+  const tol = planSnapTol(), near = 14 + tol; let bx = rect.x, bz = rect.z, dx = tol + .5, dz = tol + .5, gx = null, gz = null;
+  const tryX = (c, g) => { const d = Math.abs(c - rect.x); if (d < dx) { dx = d; bx = c; gx = g; } };
+  const tryZ = (c, g) => { const d = Math.abs(c - rect.z); if (d < dz) { dz = d; bz = c; gz = g; } };
+  plan.items.forEach(o => {
+    if (o.id === ignoreId) return;
+    if ((o.t === "b" && planGroup(o.k) !== "decor") || o.t === "square") {
+      const q = rectOf(o);
+      if (rect.z < q.z + q.h + near && q.z < rect.z + rect.h + near) { tryX(q.x, "L"); tryX(q.x + q.w - rect.w, "R"); tryX(q.x + Math.round((q.w - rect.w) / 2), "C"); tryX(q.x + q.w + 3, null); tryX(q.x - 3 - rect.w, null); }
+      if (rect.x < q.x + q.w + near && q.x < rect.x + rect.w + near) { tryZ(q.z, "L"); tryZ(q.z + q.h - rect.h, "R"); tryZ(q.z + Math.round((q.h - rect.h) / 2), "C"); tryZ(q.z + q.h + 3, null); tryZ(q.z - 3 - rect.h, null); }
+    } else if (o.t === "road") {
+      const h = o.w / 2, off = planRoadOff(o.w);
+      for (let m = 1; m < o.pts.length; m++) {
+        const a = o.pts[m - 1], b = o.pts[m];
+        if (a[1] === b[1] && rect.x < Math.max(a[0], b[0]) + near && Math.min(a[0], b[0]) < rect.x + rect.w + near) { tryZ(Math.round(a[1] + off + h) + 1, null); tryZ(Math.round(a[1] + off - h) - 1 - rect.h, null); }
+        if (a[0] === b[0] && rect.z < Math.max(a[1], b[1]) + near && Math.min(a[1], b[1]) < rect.z + rect.h + near) { tryX(Math.round(a[0] + off + h) + 1, null); tryX(Math.round(a[0] + off - h) - 1 - rect.w, null); }
+      }
+    }
   });
-  return [dx <= 1 ? bx : rect.x, dz <= 1 ? bz : rect.z];
+  const gl = (g, lo, len) => g === "L" ? lo : g === "R" ? lo + len : lo + len / 2;
+  if (gx) planGuides.push({ axis: "x", v: gl(gx, bx, rect.w) }); if (gz) planGuides.push({ axis: "z", v: gl(gz, bz, rect.h) });
+  return [dx <= tol ? bx : rect.x, dz <= tol ? bz : rect.z];
 }
+/* a point for a road: onto a building's corner or middle of a side, or in line with the previous point; Shift forces a straight or 45° line, Alt turns snapping off */
+function planRoadPt(bx, bz, last, mods) {
+  let x = bx, z = bz; const m = mods || planMods;
+  if (plan.snap && !m.alt) {
+    const tol = planSnapTol(); let bd = tol + .5;
+    const tryP = (cx, cz) => { const d = Math.hypot(cx - bx, cz - bz); if (d < bd) { bd = d; x = cx; z = cz; } };
+    plan.items.forEach(o => {
+      if (o.t === "road") o.pts.forEach(p => tryP(p[0], p[1]));
+      const r = rectOf(o); if (!r || o.t === "vault") return;
+      const mx = r.x + Math.floor(r.w / 2), mz = r.z + Math.floor(r.h / 2);
+      [[r.x, r.z], [r.x + r.w, r.z], [r.x, r.z + r.h], [r.x + r.w, r.z + r.h], [mx, r.z], [mx, r.z + r.h], [r.x, mz], [r.x + r.w, mz]].forEach(p => tryP(p[0], p[1]));
+    });
+    if (last && bd > tol) { if (Math.abs(x - last[0]) <= tol) x = last[0]; if (Math.abs(z - last[1]) <= tol) z = last[1]; }
+  }
+  if (m.shift && last) {
+    const dx = x - last[0], dz = z - last[1];
+    if (Math.abs(dx) > 2 * Math.abs(dz)) z = last[1]; else if (Math.abs(dz) > 2 * Math.abs(dx)) x = last[0];
+    else { const k = Math.round((Math.abs(dx) + Math.abs(dz)) / 2); x = last[0] + Math.sign(dx) * k; z = last[1] + Math.sign(dz) * k; }
+  }
+  return [x, z];
+}
+function planRoadLength(r) { let n = 0; for (let i = 1; i < r.pts.length; i++) n += Math.hypot(r.pts[i][0] - r.pts[i - 1][0], r.pts[i][1] - r.pts[i - 1][1]); return Math.round(n); }
+/* handles of the selected road: corners to drag, and a "+" halfway along each piece */
+function planRoadHandleAt(sx, sy) {
+  const it = planItem(planSel); if (!it || it.t !== "road" || planArm || planRoad) return null; planOrigin();
+  const o = planRoadOff(it.w), P = it.pts;
+  for (let i = 0; i < P.length; i++) if (Math.abs(px(P[i][0] + o) - sx) <= 8 && Math.abs(pz(P[i][1] + o) - sy) <= 8) return { kind: "v", i };
+  for (let i = 1; i < P.length; i++) { const mx = (P[i - 1][0] + P[i][0]) / 2 + o, mz = (P[i - 1][1] + P[i][1]) / 2 + o; if (Math.abs(px(mx) - sx) <= 7 && Math.abs(pz(mz) - sy) <= 7) return { kind: "m", i }; }
+  return null;
+}
+
 /* the nearest building on each side, as measuring lines: [x1, z1, x2, z2, gap] */
 function planGaps(rect, ignoreId) {
   const out = [], others = planOthers(ignoreId);
@@ -3169,12 +3221,12 @@ function planDraw() {
     c.strokeStyle = fg; c.lineWidth = i.id === planSel ? 3 : 1; c.strokeRect(px(r.x) + .5, pz(r.z) + .5, r.w * s - 1, r.h * s - 1);
     c.fillStyle = fg; c.font = "bold 12px " + planCol("--f-body"); c.textBaseline = "top"; c.textAlign = "left"; c.fillText(`Market square ${r.w}×${r.h}`, px(r.x) + 6, pz(r.z) + 5);
   });
+  const roadPath = (pts, w) => { const o = planRoadOff(w); c.beginPath(); pts.forEach((p, k) => k ? c.lineTo(px(p[0] + o), pz(p[1] + o)) : c.moveTo(px(p[0] + o), pz(p[1] + o))); };
   plan.items.filter(i => i.t === "road").forEach(i => {
-    c.strokeStyle = planCol("--road"); c.lineCap = "butt"; c.lineJoin = "round"; c.lineWidth = Math.max(1, i.w * s);
-    c.beginPath(); i.pts.forEach((p, k) => k ? c.lineTo(px(p[0] + .5), pz(p[1] + .5)) : c.moveTo(px(p[0] + .5), pz(p[1] + .5))); c.stroke();
-    if (i.id === planSel) { c.strokeStyle = fg; c.lineWidth = 1; c.setLineDash([4, 3]); c.beginPath(); i.pts.forEach((p, k) => k ? c.lineTo(px(p[0] + .5), pz(p[1] + .5)) : c.moveTo(px(p[0] + .5), pz(p[1] + .5))); c.stroke(); c.setLineDash([]); i.pts.forEach(p => { c.fillStyle = fg; c.fillRect(px(p[0] + .5) - 3, pz(p[1] + .5) - 3, 6, 6); }); }
+    c.strokeStyle = planCol("--road"); c.lineCap = "butt"; c.lineJoin = "miter"; c.lineWidth = Math.max(1, i.w * s); roadPath(i.pts, i.w); c.stroke();
+    if (i.id === planSel) { c.strokeStyle = fg; c.lineWidth = 1; c.setLineDash([4, 3]); roadPath(i.pts, i.w); c.stroke(); c.setLineDash([]); }
   });
-  if (planRoad) { c.strokeStyle = planCol("--road"); c.lineWidth = Math.max(1, 4 * s); c.beginPath(); planRoad.pts.forEach((p, k) => k ? c.lineTo(px(p[0] + .5), pz(p[1] + .5)) : c.moveTo(px(p[0] + .5), pz(p[1] + .5))); c.stroke(); planRoad.pts.forEach(p => { c.fillStyle = fg; c.fillRect(px(p[0] + .5) - 3, pz(p[1] + .5) - 3, 6, 6); }); }
+  if (planRoad) { c.strokeStyle = planCol("--road"); c.lineCap = "butt"; c.lineJoin = "miter"; c.lineWidth = Math.max(1, 4 * s); roadPath(planRoad.pts, 4); c.stroke(); }
   /* buildings: the real blocks, with the bounding box (what the builder levels) as a thin outline */
   const drawBuilding = (i, ghost, valid) => {
     const r = rectOf(i), sh = planShape(i), g = PLAN_GROUPS[planGroup(i.k)];
@@ -3211,6 +3263,20 @@ function planDraw() {
     c.fillStyle = fg; c.font = "bold 11px " + planCol("--f-mono"); c.textAlign = "center"; c.textBaseline = "bottom"; c.fillText(String(r.w), px(r.x) + r.w * s / 2, pz(r.z) - 3);
     c.save(); c.translate(px(r.x) - 4, pz(r.z) + r.h * s / 2); c.rotate(-Math.PI / 2); c.textBaseline = "bottom"; c.fillText(String(r.h), 0, 0); c.restore(); c.textAlign = "left"; c.textBaseline = "top";
   }
+  /* road: the point you are about to add, and handles on the selected road */
+  if (planRoad && planHover) {
+    const last = planRoad.pts[planRoad.pts.length - 1], nx = planRoadPt(planHover.x, planHover.z, last), o = planRoadOff(4);
+    c.strokeStyle = fg; c.lineWidth = 2; c.setLineDash([5, 4]); c.globalAlpha = .8;
+    if (last) { c.beginPath(); c.moveTo(px(last[0] + o), pz(last[1] + o)); c.lineTo(px(nx[0] + o), pz(nx[1] + o)); c.stroke(); }
+    c.setLineDash([]); c.globalAlpha = 1; c.fillStyle = fg; c.fillRect(px(nx[0] + o) - 4, pz(nx[1] + o) - 4, 8, 8);
+    planRoad.pts.forEach(p => { c.fillStyle = panel; c.strokeStyle = fg; c.lineWidth = 2; c.fillRect(px(p[0] + o) - 4, pz(p[1] + o) - 4, 8, 8); c.strokeRect(px(p[0] + o) - 4, pz(p[1] + o) - 4, 8, 8); });
+    if (last) { const len = Math.round(Math.hypot(nx[0] - last[0], nx[1] - last[1])), mx = (px(last[0] + o) + px(nx[0] + o)) / 2, mz = (pz(last[1] + o) + pz(nx[1] + o)) / 2, tx = len + " blocks", tw = c.measureText(tx).width + 8; c.font = "bold 11px " + planCol("--f-mono"); c.textAlign = "center"; c.textBaseline = "middle"; const w2 = c.measureText(tx).width + 8; c.fillStyle = panel; c.fillRect(mx - w2 / 2, mz - 18, w2, 16); c.fillStyle = fg; c.fillText(tx, mx, mz - 10); c.textAlign = "left"; c.textBaseline = "top"; }
+  }
+  if (sel && sel.t === "road" && !planArm && !planRoad) {
+    const o = planRoadOff(sel.w);
+    sel.pts.forEach((p, i) => { if (i) { const mx = (sel.pts[i - 1][0] + p[0]) / 2 + o, mz = (sel.pts[i - 1][1] + p[1]) / 2 + o; c.fillStyle = panel; c.strokeStyle = fg; c.lineWidth = 1.5; c.beginPath(); c.arc(px(mx), pz(mz), 6, 0, 2 * Math.PI); c.fill(); c.stroke(); c.fillStyle = fg; c.fillRect(px(mx) - 3, pz(mz) - .5, 6, 1.5); c.fillRect(px(mx) - .5, pz(mz) - 3, 1.5, 6); } });
+    sel.pts.forEach(p => { c.fillStyle = panel; c.strokeStyle = fg; c.lineWidth = 2; c.fillRect(px(p[0] + o) - 4.5, pz(p[1] + o) - 4.5, 9, 9); c.strokeRect(px(p[0] + o) - 4.5, pz(p[1] + o) - 4.5, 9, 9); });
+  }
   if (sel && (sel.t === "vault" || sel.t === "square") && !planArm) planHandles(rectOf(sel)).forEach(h => { c.fillStyle = panel; c.strokeStyle = fg; c.lineWidth = 2; c.fillRect(px(h[1]) - 4, pz(h[2]) - 4, 8, 8); c.strokeRect(px(h[1]) - 4, pz(h[2]) - 4, 8, 8); });
   const gr = planArmRect();
   if (gr) {
@@ -3218,6 +3284,7 @@ function planDraw() {
     if (planArm.t === "b") { const tmp = { t: "b", k: planArm.k, l: planArm.l, st: "", x: gr.x, z: gr.z, r: 0 }; drawBuilding(tmp, true, valid); measure(gr); }
     else { c.fillStyle = valid ? "rgba(46,139,58,.35)" : "rgba(192,57,43,.35)"; c.fillRect(px(gr.x), pz(gr.z), gr.w * s, gr.h * s); c.strokeStyle = valid ? "#2e8b3a" : red; c.lineWidth = 2; c.strokeRect(px(gr.x) + 1, pz(gr.z) + 1, gr.w * s - 2, gr.h * s - 2); }
   } else if (planHover && s >= 6 && !planDrag && !planRoad) { c.strokeStyle = fg; c.lineWidth = 2; c.globalAlpha = .8; c.strokeRect(px(planHover.x) + 1, pz(planHover.z) + 1, s - 2, s - 2); c.globalAlpha = 1; }
+  if ((planDrag || planArm) && planGuides.length) { c.strokeStyle = "#d6336c"; c.lineWidth = 1; c.setLineDash([6, 4]); planGuides.forEach(g => { c.beginPath(); if (g.axis === "x") { c.moveTo(px(g.v) + .5, 0); c.lineTo(px(g.v) + .5, planH); } else { c.moveTo(0, pz(g.v) + .5); c.lineTo(planW, pz(g.v) + .5); } c.stroke(); }); c.setLineDash([]); }
   /* rulers with world coordinates, and a scale bar */
   c.fillStyle = panel; c.globalAlpha = .88; c.fillRect(0, 0, planW, 16); c.fillRect(0, 16, 38, planH); c.globalAlpha = 1;
   c.fillStyle = muted; c.font = "10px " + planCol("--f-mono"); c.textAlign = "left"; c.textBaseline = "middle";
@@ -3233,7 +3300,7 @@ function planHit(wx, wz) {
   for (let k = plan.items.length - 1; k >= 0; k--) {
     const i = plan.items[k]; if (i.t !== "road") continue;
     for (let m = 1; m < i.pts.length; m++) {
-      const [ax, az] = i.pts[m - 1], [bx, bz] = i.pts[m], dx = bx - ax, dz = bz - az, L = dx * dx + dz * dz || 1;
+      const ro = planRoadOff(i.w), ax = i.pts[m - 1][0] + ro, az = i.pts[m - 1][1] + ro, bx = i.pts[m][0] + ro, bz = i.pts[m][1] + ro, dx = bx - ax, dz = bz - az, L = dx * dx + dz * dz || 1;
       const t = Math.max(0, Math.min(1, ((wx - ax) * dx + (wz - az) * dz) / L)); if (Math.hypot(wx - (ax + t * dx), wz - (az + t * dz)) <= i.w / 2 + tol) return i;
     }
   }
@@ -3247,7 +3314,7 @@ function planStatus() {
   const w = plan.origin.x || plan.origin.z ? ` (world ${plan.origin.x + (planHover ? planHover.x : 0)}, ${plan.origin.z + (planHover ? planHover.z : 0)})` : "";
   st.textContent = (planHover ? `Block ${planHover.x}, ${planHover.z}${w}` : "Move over the map") + ` · 1 block = ${plan.view.s} px`;
   const what = planArm ? (planArm.t === "b" ? planLabel(planArm.k) : planArm.t === "vault" ? "the undercroft" : "the market square") : "";
-  hint.textContent = planRoad ? "Drawing a road: click to add points. Double-click or press Enter to finish. Esc cancels."
+  hint.textContent = planRoad ? "Drawing a road: click to add points. Shift = straight line, Alt = no snapping. Enter or double-click finishes, Backspace removes the last point, Esc cancels."
     : planArm ? `Placing ${what}: click the map to put it down. Esc or right-click stops.`
     : "Click a building on the left, then click the map. Drag buildings to move them, drag empty ground to pan, scroll to zoom.";
 }
@@ -3335,7 +3402,11 @@ function planDrawSide() {
       b2.addEventListener("click", () => { planPush(); const ox = plan.origin.x, oz = plan.origin.z, x0 = Math.floor((ox + sel.x) / 16) * 16 - ox, z0 = Math.floor((oz + sel.z) / 16) * 16 - oz, x1 = Math.ceil((ox + sel.x + sel.w) / 16) * 16 - ox, z1 = Math.ceil((oz + sel.z + sel.h) / 16) * 16 - oz; sel.x = x0; sel.z = z0; sel.w = x1 - x0; sel.h = z1 - z0; savePlan(); planRefresh(); });
       box.appendChild(b2);
     }
-    if (sel.t === "road") box.appendChild(row("Width", numIn(sel.w, v => { sel.w = Math.max(1, Math.min(12, v)); }, 1, 12)));
+    if (sel.t === "road") {
+      box.appendChild(el("p", "rnote")).textContent = `${planRoadLength(sel)} blocks long, ${sel.pts.length} points. Drag a square to move a point, click a + to add one, double-click a square to remove it. Shift keeps a line straight.`;
+      const wr = el("div", "plan-btns"); [1, 3, 5, 7, 9].forEach(n => { const b = el("button", "tbtn"); b.type = "button"; b.textContent = n + " wide"; b.setAttribute("aria-pressed", String(sel.w === n)); b.addEventListener("click", () => { planPush(); sel.w = n; savePlan(); planRefresh(); }); wr.appendChild(b); });
+      box.appendChild(wr); box.appendChild(row("Width", numIn(sel.w, v => { sel.w = Math.max(1, Math.min(12, v)); }, 1, 12)));
+    }
     const b = el("button", "tbtn"); b.type = "button"; b.textContent = "Delete (Del)"; b.addEventListener("click", planDelete); box.appendChild(b);
   }
 }
@@ -3347,7 +3418,7 @@ function fillPalette() {
   const row = (label, size, on, fn) => { const b = el("button", "pal-row"); b.type = "button"; b.setAttribute("aria-pressed", String(on)); const n = el("span"); n.textContent = label; const z = el("span", "pal-size"); z.textContent = size; b.append(n, z); b.addEventListener("click", fn); return b; };
   const layout = [["Market square", "15×15", planArm && planArm.t === "square", () => planArmSet(planArm && planArm.t === "square" ? null : { t: "square" })],
     ["Undercroft", "32×32", planArm && planArm.t === "vault", () => planArmSet(planArm && planArm.t === "vault" ? null : { t: "vault" })],
-    ["Road", "drag points", !!planRoad, () => (planRoad ? planFinishRoad() : planStartRoad())]].filter(r => !q || r[0].toLowerCase().includes(q));
+    ["Road", "click points", !!planRoad, () => (planRoad ? planFinishRoad() : planStartRoad())]].filter(r => !q || r[0].toLowerCase().includes(q));
   if (layout.length) { box.appendChild(el("h4", null, "Layout")); layout.forEach(r => box.appendChild(row(...r))); }
   Object.keys(PLAN_GROUPS).forEach(g => {
     const keys = []; Object.keys(PLAN_BLD).forEach(k => { if (PLAN_BLD[k][1] === g) { keys.push(k); if (FOOT[plan.style] && FOOT[plan.style]["alt" + k]) keys.push("alt" + k); } });
@@ -3410,7 +3481,16 @@ function renderPlanPage() {
     cv.focus({ preventScroll: true }); try { cv.setPointerCapture(e.pointerId); } catch (x) {}
     if (e.button === 2) return;
     const p = pt(e); planHover = { x: p.bx, z: p.bz };
-    if (planRoad) { planRoad.pts.push([p.bx, p.bz]); planRefresh(); return; }
+    planMods = { shift: e.shiftKey, alt: e.altKey };
+    if (planRoad) { const last = planRoad.pts[planRoad.pts.length - 1], np = planRoadPt(p.bx, p.bz, last); if (!last || np[0] !== last[0] || np[1] !== last[1]) planRoad.pts.push(np); planRefresh(); return; }
+    const rh = planRoadHandleAt(p.x, p.y);
+    if (rh) {
+      const it = planItem(planSel), snapJson = JSON.stringify(plan.items); let i = rh.i;
+      if (rh.kind === "m") { const a = it.pts[i - 1], b = it.pts[i]; it.pts.splice(i, 0, [Math.round((a[0] + b[0]) / 2), Math.round((a[1] + b[1]) / 2)]); }
+      planDrag = { mode: "vertex", id: it.id, i, snap: snapJson, moved: rh.kind === "m", added: rh.kind === "m" };
+      if (planDrag.moved) { planHist.push(snapJson); if (planHist.length > 40) planHist.shift(); planRedo = []; }
+      planRefresh(); return;
+    }
     if (planArm) { planPlaceArmed(); return; }
     const hd = planHandleAt(p.x, p.y);
     if (hd) { const it = planItem(planSel); planDrag = { mode: "resize", id: it.id, h: hd[0], snap: JSON.stringify(plan.items), orig: rectOf(it), moved: false }; planRefresh(); return; }
@@ -3422,9 +3502,15 @@ function renderPlanPage() {
     planRefresh();
   });
   cv.addEventListener("pointermove", e => {
-    const p = pt(e); planHover = { x: p.bx, z: p.bz };
-    if (!planDrag) { planDraw(); planStatus(); const hh = planHandleAt(p.x, p.y); cv.style.cursor = hh ? hh[0] + "-resize" : planArm || planRoad ? "crosshair" : planHit(p.wx, p.wz) ? "move" : "grab"; return; }
+    const p = pt(e); planHover = { x: p.bx, z: p.bz }; planMods = { shift: e.shiftKey, alt: e.altKey };
+    if (!planDrag) { planDraw(); planStatus(); const hh = planHandleAt(p.x, p.y), rh = planRoadHandleAt(p.x, p.y); cv.style.cursor = rh ? (rh.kind === "v" ? "move" : "copy") : hh ? hh[0] + "-resize" : planArm || planRoad ? "crosshair" : planHit(p.wx, p.wz) ? "move" : "grab"; return; }
     const d = planDrag;
+    if (d.mode === "vertex") {
+      const it = planItem(d.id); if (!it) return;
+      if (!d.moved) { d.moved = true; planHist.push(d.snap); if (planHist.length > 40) planHist.shift(); planRedo = []; }
+      it.pts[d.i] = planRoadPt(p.bx, p.bz, it.pts[d.i - 1] || it.pts[d.i + 1] || null, { shift: e.shiftKey, alt: e.altKey });
+      planDraw(); planDrawSide(); planStatus(); return;
+    }
     if (d.mode === "resize") {
       const it = planItem(d.id); if (!it) return;
       if (!d.moved) { d.moved = true; planHist.push(d.snap); if (planHist.length > 40) planHist.shift(); planRedo = []; }
@@ -3447,17 +3533,22 @@ function renderPlanPage() {
     } else { const dx = p.bx - d.sx, dz = p.bz - d.sz; it.pts = d.orig.map(q => [q[0] + dx, q[1] + dz]); }
     planDraw(); planDrawSide(); planStatus();
   });
-  const end = () => { if (planDrag) savePlan(); planDrag = null; planRefresh(); };
+  const end = () => { if (planDrag) savePlan(); planDrag = null; planGuides = []; planRefresh(); };
   cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
   cv.addEventListener("pointerleave", () => { if (!planDrag) { planHover = null; planDraw(); planStatus(); } });
   cv.addEventListener("contextmenu", e => { if (planArm || planRoad) { e.preventDefault(); planArm = null; planRoad = null; roadBtn.setAttribute("aria-pressed", "false"); fillPalette(); planRefresh(); } });
-  cv.addEventListener("dblclick", () => { if (planRoad) { planRoad.pts.pop(); planFinishRoad(); } });
+  cv.addEventListener("dblclick", e => {
+    if (planRoad) { planFinishRoad(); return; }
+    const p = pt(e), rh = planRoadHandleAt(p.x, p.y), it = planItem(planSel);   /* double-click a corner of the selected road to remove it */
+    if (rh && rh.kind === "v" && it.pts.length > 2) { planPush(); it.pts.splice(rh.i, 1); savePlan(); planRefresh(); }
+  });
   cv.addEventListener("wheel", e => { e.preventDefault(); const now = performance.now(); if (now - planWheelAt < 70) return; planWheelAt = now; const p = pt(e); planZoomStep(e.deltaY < 0 ? 1 : -1, p.x, p.y); }, { passive: false });
   cv.addEventListener("keydown", e => {
     const s = planItem(planSel), step = e.shiftKey ? 5 : 1, k = e.key;
     if (k === "Escape" && !planArm && !planRoad && map.classList.contains("full")) { planFull(false); return; }
     if (k === "Escape") { planArm = null; planRoad = null; planSel = null; roadBtn.setAttribute("aria-pressed", "false"); fillPalette(); planRefresh(); return; }
     if (k === "Enter" && planRoad) { planFinishRoad(); return; }
+    if (k === "Backspace" && planRoad) { e.preventDefault(); planRoad.pts.pop(); planRefresh(); return; }
     if ((k === "Delete" || k === "Backspace") && s) { e.preventDefault(); planDelete(); return; }
     if ((k === "r" || k === "R") && s) { planRotate(); return; }
     if ((k === "d" || k === "D") && s && !e.ctrlKey && !e.metaKey) { planDuplicate(); return; }

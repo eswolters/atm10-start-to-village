@@ -594,7 +594,7 @@ const PHASES = [
       ],
       look: `Two or three materials per building, repeated across the town, always look better than ten different ones. The accent colour should be rare: when only banners and shutters are red, the red stands out. When everything is red, nothing does.` },
     { id: "p-districts", layer: "p", t: "Sketch districts, main road and landmark", mods: ["MineColonies"],
-      why: `<p>Real towns grow around a <b>market square</b> and a few <b>main roads</b>, with different kinds of building clustered together: workshops, homes, farms, harbour. That grouping is what makes a town feel like a place instead of a scattering of huts. MineColonies will let you put huts anywhere, so you have to decide this yourself.</p>`,
+      why: `<p>Real towns grow around a <b>market square</b> and a few <b>main roads</b>, with different kinds of building clustered together: workshops, homes, farms, harbour. That grouping is what makes a town feel like a place instead of a scattering of huts. MineColonies will let you put huts anywhere, so you have to decide this yourself. For how to build the roads later, see <a href="#learn" data-jump="l-roads">ways to make roads</a>.</p>`,
       subs: [
         "Mark the market square at the town centre (about 15×15 blocks, left open for now)",
         "Mark the main road from the square to the town entrance, and a second road crossing it",
@@ -829,9 +829,9 @@ const PHASES = [
         "Check that every citizen has a job and a bed",
       ] },
     { id: "w-found", layer: "s", t: "Town win: the first street", mods: ["MineColonies", "Structurize"],
-      why: `<p>With the first buildings up, a road between them turns scattered huts into a street. It also helps citizens walk faster.</p>`,
+      why: `<p>With the first buildings up, a road between them turns scattered huts into a street. It also helps citizens walk faster, if you use the right blocks: see <a href="#learn" data-jump="l-roads">ways to make roads</a>.</p>`,
       subs: [
-        "Lay a 3-wide road from the Town Hall past the Builder's Hut, mixing gravel, coarse dirt and cobblestone",
+        "Lay a 3-wide road from the Town Hall past the Builder's Hut, mixing gravel, dirt path and stone bricks or polished andesite (blocks on MineColonies' road list make citizens walk faster)",
         "Place lantern posts every 8–10 blocks along it",
         "Give each house a front garden, fence or hedge",
         "Put a flower bed or tree beside the Town Hall's door",
@@ -1524,7 +1524,7 @@ const PHASES = [
         "Nether Mine (Netherworker) for nether goods",
       ] },
     { id: "c-decor", layer: "s", t: "Decorations and roads", mods: ["Structurize", "MineColonies"],
-      why: `<p>The Build Tool also has <b>decorations</b>: walls, gates, wells, lamp posts and market stalls. The Structurize <b>Shape Tool</b> lays out roads and walls quickly, and builders build them like any other building.</p>`,
+      why: `<p>The Build Tool also has <b>decorations</b>: walls, gates, wells, lamp posts and market stalls. The Structurize <b>Shape Tool</b> has a builder dig, fill and flatten ground and put up simple shapes (a cube, sphere, dome or bowl in one block), for example a flat cube as a road base. Inside your colony builders build it like any other decoration, so it needs materials. For the roads, see <a href="#learn" data-jump="l-roads">ways to make roads</a>.</p>`,
       subs: [
         "Lay main roads between districts",
         "Build the town wall along the line you marked in Phase 7, using the Build Tool's wall and gate decorations. Level uneven ground along the line first with the Shape Tool",
@@ -1553,15 +1553,15 @@ const PHASES = [
   intro: "A colony that runs itself is only half the goal. MineColonies builders place the buildings, but everything between the buildings (roads, trees, light, props) is yours, and that is what makes a town feel alive. Do this phase in rounds while waiting for builders and crafts, not all at the end.",
   steps: [
     { id: "b-roads", layer: "s", t: "Lay organic roads", mods: ["Structurize", "MineColonies", "Macaw's", "Construction Sticks", "Building Gadgets 2"],
-      why: `<p>Roads tie the buildings together. Citizens also walk faster on road blocks, so this helps the colony too. The worst-looking roads are straight, one block type and exactly the same width everywhere.</p>`,
+      why: `<p>Roads tie the buildings together. Citizens also walk faster on MineColonies' road blocks, so this helps the colony too (see <a href="#learn" data-jump="l-roads">ways to make roads</a> for which blocks count). The worst-looking roads are straight, one block type and exactly the same width everywhere.</p>`,
       subs: [
         "Lay the main road from the gate to the market square, 3–4 blocks wide, with a gentle curve",
-        "Mix 3 blocks in each road: for example gravel, coarse dirt and cobblestone, with random patches",
+        "Mix 3 blocks in each road: for example gravel, dirt path and polished andesite, with random patches. Cobblestone and coarse dirt look good at the edges, but they are not on MineColonies' road list",
         "Add stone-slab or stair edges where the road meets a building, and a small step up to doors",
         "Branch narrower lanes (2 blocks) to the houses and put a dead-end or a small square at the end of some",
         "Build bridges over water in stone with arches, or wood with railings",
       ],
-      tip: `<b>Blocks for it:</b> Macaw's Paths and Pavings has 315 path and paving blocks (Basket Weave, Running Bond, Flagstone, Crystal Floor), and Chipped adds variants of ordinary blocks for edges. A Construction Stick extends a block face fast: the Iron Stick places up to 27 blocks per click, the Diamond Stick up to 128. The Exchanging Gadget swaps bare dirt for path in one click. See the <a href="#learn" data-jump="l-decor">decoration mods</a> and <a href="#learn" data-jump="l-tools">tools</a> on the Learn tab.`,
+      tip: `<b>Blocks for it:</b> Macaw's Paths and Pavings has 315 path and paving blocks (Basket Weave, Running Bond, Flagstone, Crystal Floor), and Chipped adds variants of ordinary blocks for edges (both are for looks: Macaw's paving blocks are not on MineColonies' road list). A Construction Stick extends a block face fast: the Iron Stick places up to 27 blocks per click, the Diamond Stick up to 128. The Exchanging Gadget swaps bare dirt for path in one click. See the <a href="#learn" data-jump="l-decor">decoration mods</a> and <a href="#learn" data-jump="l-tools">tools</a> on the Learn tab.`,
       look: `Paths wear out near doors and wells and are narrower in alleys. Let the road swell into a small square wherever two roads meet, put a well, tree or bench in it, and the junction turns into a landmark.` },
     { id: "b-land", layer: "s", t: "Landscape the gaps between buildings", mods: [],
       why: `<p>Bare dirt and flat grass between buildings is the biggest giveaway of a "generated" town. Buildings are only the skeleton: plants, terrain and water are what make it look lived in.</p>`,
@@ -1903,6 +1903,14 @@ const CONCEPTS = [
 ];
 
 /* Learn tab: design principles for the look of the town */
+const ROADS = [
+  { t: "Which blocks make citizens faster", d: `MineColonies keeps a list of <b>road blocks</b>, and citizens walk faster on them. On the list: <b>gravel</b>, <b>dirt path</b>, stone bricks (and their slabs and stairs), smooth stone, polished andesite, diorite and granite, bricks, nether bricks, mud bricks, sandstone variants, polished blackstone, deepslate bricks and tiles, concrete, wooden planks and slabs, and wool carpet. <b>Not</b> on the list: cobblestone, coarse dirt, plain dirt and grass, and Macaw's paving blocks. Use list blocks for most of the road, and keep the others for edges and squares, where looks matter more than speed.` },
+  { t: "By hand", d: `Place the blocks along the route yourself. A shovel turns grass or dirt into dirt path with one click. A main road is 3 to 4 blocks wide and a lane 2, with a gentle curve and about 3 block types mixed, for example gravel, dirt path and polished andesite. It is cheap and gives you full control, but a long road takes a while.` },
+  { t: "Construction Sticks", d: `A stick extends the face of the block you aim at, so one click lays a row or a patch. The <b>Iron Stick</b> places up to 27 blocks per click (1 iron ingot and 2 sticks) and the <b>Diamond Stick</b> up to 128 (1 diamond and 2 sticks). Good for long straight stretches.` },
+  { t: "Exchanging Gadget", d: `Swaps bare dirt for path blocks in one click, so it is the fastest way to dress ground you have already shaped. It costs 4 iron ingots, 1 redstone, 2 diamonds and 2 lapis, and it needs charging in a Charging Station.` },
+  { t: "Let a builder do it (Shape Tool)", d: `The Structurize Shape Tool has a builder put up a simple shape in one block inside your colony, for example a flat cube as a long road base, or to level uneven ground first. It needs materials like any decoration, and you cancel it at the Town Hall if you change your mind.` },
+  { t: "Plan it first", d: `Draw the route on the <a href="#planner" data-goto="planner">Town planner</a> before you place a block. Its road tool snaps to building corners, keeps lines straight and shows the length of each piece, so you can see where the road bends around buildings.` },
+];
 const DESIGN = [
   { t: "Theme and palette", d: `Write down one sentence of what the town is, and pick one wood, one stone, one roof colour and one accent. Every choice then has a test: does it fit? Most of what makes a town look <i>designed</i> is simply repeating a few materials.` },
   { t: "Silhouette first", d: `From far away, you see only shape. Build a clear high point (keep, church, tall tower), mid-height roofs, and lower outskirts. Vary roof heights and directions between neighbours. If the skyline is a flat line, the town will look flat from everywhere.` },
@@ -4146,7 +4154,7 @@ function renderLearn() {
   const intro = el("section");
   intro.innerHTML = `<h2>Learn the basics</h2>
     <p>The ideas below apply to every tech mod in the pack. Read them once before Phase 4. When a step in the guide seems confusing, come back here. Terms with a dotted underline in the guide show their meaning when you hover them.</p>
-    <nav class="toc" aria-label="On this page"><a href="#learn" data-jump="l-concepts">Core concepts</a><a href="#learn" data-jump="l-design">Designing the town</a><a href="#learn" data-jump="l-styles">Town styles</a><a href="#learn" data-jump="l-decor">Decoration mods</a><a href="#learn" data-jump="l-tools">Building tools</a><a href="#learn" data-jump="l-read">Reading a machine</a><a href="#learn" data-jump="l-find">Finding information</a><a href="#learn" data-jump="l-gloss">Glossary</a></nav>`;
+    <nav class="toc" aria-label="On this page"><a href="#learn" data-jump="l-concepts">Core concepts</a><a href="#learn" data-jump="l-design">Designing the town</a><a href="#learn" data-jump="l-roads">Making roads</a><a href="#learn" data-jump="l-styles">Town styles</a><a href="#learn" data-jump="l-decor">Decoration mods</a><a href="#learn" data-jump="l-tools">Building tools</a><a href="#learn" data-jump="l-read">Reading a machine</a><a href="#learn" data-jump="l-find">Finding information</a><a href="#learn" data-jump="l-gloss">Glossary</a></nav>`;
   page.appendChild(intro);
 
   const con = el("section"); con.id = "l-concepts";
@@ -4176,6 +4184,13 @@ function renderLearn() {
   });
   ds.appendChild(dgrid);
   page.appendChild(ds);
+
+  const rs = el("section"); rs.id = "l-roads";
+  rs.innerHTML = `<h2>Making roads</h2><p>A road does two jobs: it makes the town look like a town, and citizens walk faster on the blocks MineColonies counts as road blocks. These are the ways to make one, from the cheapest to the fastest.</p>`;
+  const rgrid = el("div", "concepts");
+  ROADS.forEach(c => { const card = el("div", "concept", `<h3></h3><p>${c.d}</p>`); card.querySelector("h3").textContent = c.t; rgrid.appendChild(card); });
+  rs.appendChild(rgrid);
+  page.appendChild(rs);
 
   const st = el("section"); st.id = "l-styles";
   st.innerHTML = `<h2>Town styles in this pack</h2><p>The Build Tool lists about 40 styles and previews each one once the colony exists. These are the ones that fit a medieval town with a few contrasting quarters, with the notes from each pack's own description. Pick one main style and at most two helpers.</p>`;
@@ -4324,6 +4339,8 @@ document.querySelectorAll(".tabs a").forEach(a => a.addEventListener("click", e 
   window.scrollTo(0, 0);
 }));
 document.addEventListener("click", e => {
+  const gt = e.target.closest("[data-goto]");
+  if (gt) { e.preventDefault(); showTab(gt.dataset.goto); try { history.replaceState(null, "", "#" + gt.dataset.goto); } catch (err) {} window.scrollTo(0, 0); return; }
   const m = e.target.closest("[data-mjump]");
   if (m) { e.preventDefault(); const t = document.getElementById(m.dataset.mjump); if (t) t.scrollIntoView({ block: "start" }); return; }
   const a = e.target.closest("[data-jump]");

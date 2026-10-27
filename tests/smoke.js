@@ -193,7 +193,6 @@
     });
     return bad;
   });
-
   check("the first guard comes in Phase 3, before the Phase 7 guard step, and happiness is explained before it is used", () => {
     const bad = [], order = allSteps.map(s => s.id), phaseOf = id => PHASES.findIndex(p => p.steps.some(s => s.id === id)) + 1;
     if (phaseOf("f-guard") !== 3) bad.push("f-guard should be in Phase 3, it is in Phase " + phaseOf("f-guard"));
@@ -201,6 +200,17 @@
     if (!GLOSSARY.some(g => g[0] === "Happiness")) bad.push("no glossary entry for Happiness");
     const routine = allSteps.find(s => s.id === "f-routine");
     if (!/<b>Happiness<\/b>/.test(routine.why)) bad.push("f-routine does not explain happiness");
+    return bad;
+  });
+
+  check("every jump link points at something that exists, and every road mention links to the road guide", () => {
+    const bad = [], tabs = ["guide", "materials", "research", "planner", "learn", "fix"];
+    ["fix", "learn", "guide"].forEach(showTab);
+    openPhases && PHASES.forEach(p => { openPhases[p.id] = true; }); allSteps.forEach(s => { openSteps[s.id] = true; }); render();
+    document.querySelectorAll("[data-jump]").forEach(a => { if (!document.getElementById(a.dataset.jump)) bad.push("jump target missing: " + a.dataset.jump); });
+    document.querySelectorAll("[data-goto]").forEach(a => { if (!tabs.includes(a.dataset.goto)) bad.push("unknown tab: " + a.dataset.goto); });
+    ["p-districts", "w-found", "c-decor", "b-roads"].forEach(id => { const s = allSteps.find(x => x.id === id), html = s.why + (s.tip || ""); if (!/data-jump="l-roads"/.test(html)) bad.push(id + " has no link to the road guide"); });
+    if (!document.getElementById("l-roads")) bad.push("the Learn tab has no road section");
     return bad;
   });
 

@@ -2,14 +2,11 @@
 
 Newest first. The guide targets ATM10 on Minecraft 1.21.1 (NeoForge), solo play.
 
-## Phases 4 to 6 review
+## Roads
 
-- **New step: "Your first Nether trip"** at the start of the Create machines in Phase 5. The required path needs about 55 Nether quartz and about 100 glowstone dust by Phase 8 (Powah's energizing rods need quartz as early as Phase 5), and nothing had introduced the Nether. A test now fails if a required step needs Nether items before this step.
-- The automatic smelter now uses the **Pipe Wrench**, which is what sets a pipe end to extract, and its chest layout is spelled out.
-- One vault depth: the ceiling at least 12 blocks below the lowest foundation (as in Phase 1), staying above about Y -50.
-- The Create basics step is now a recap of the Phase 4 machine, and the cobble project explains stress where it is first used.
-- The Pipez filter project is optional (it needs an Advanced upgrade), and catching a blaze and making brass are optional until the Phase 9 trains.
-
+- New **Making roads** section on the Learn tab: which blocks make citizens walk faster (MineColonies' own road-block list), and the ways to lay a road (by hand, Construction Sticks, the Exchanging Gadget, the Shape Tool, and planning it on the Town planner first). Every road step links to it.
+- **Correction:** the guide recommended a gravel, coarse dirt and cobblestone mix, but only gravel is on MineColonies' road-block list, so only gravel speeds citizens up. The steps now suggest gravel, dirt path and stone bricks or polished andesite, and say that cobblestone, coarse dirt and Macaw's paving are for looks only.
+- A test now checks that every in-page jump link points at something that exists.
 
 ## Phases 7 to 11 review
 
@@ -19,6 +16,13 @@ Newest first. The guide targets ATM10 on Minecraft 1.21.1 (NeoForge), solo play.
 - **Happiness** is explained in Phase 3, where it is first used, and has a hover definition.
 - **Blaze rods are now required** on the Nether trip (about 6, for the Phase 9 Powah step), and the trip warns about fortresses.
 
+## Phases 4 to 6 review
+
+- **New step: "Your first Nether trip"** at the start of the Create machines in Phase 5. The required path needs about 55 Nether quartz and about 100 glowstone dust by Phase 8 (Powah's energizing rods need quartz as early as Phase 5), and nothing had introduced the Nether. A test now fails if a required step needs Nether items before this step.
+- The automatic smelter now uses the **Pipe Wrench**, which is what sets a pipe end to extract, and its chest layout is spelled out.
+- One vault depth: the ceiling at least 12 blocks below the lowest foundation (as in Phase 1), staying above about Y -50.
+- The Create basics step is now a recap of the Phase 4 machine, and the cobble project explains stress where it is first used.
+- The Pipez filter project is optional (it needs an Advanced upgrade), and catching a blaze and making brass are optional until the Phase 9 trains.
 
 ## Newcomer pass
 

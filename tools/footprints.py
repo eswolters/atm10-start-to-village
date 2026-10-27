@@ -153,7 +153,8 @@ for (style, b), (lvl, jar, n) in BEST.items():
     try:
         with zipfile.ZipFile(jar) as zz: g = outline(blueprint(gzip.decompress(zz.read(n))))
     except Exception as e: print("outline skipped", n, e, file=sys.stderr); continue
-    if sum(map(sum, g)) >= 0.97 * len(g) * len(g[0]): continue      # practically a full rectangle: draw the box
+    filled = sum(map(sum, g))
+    if filled == 0 or filled >= 0.97 * len(g) * len(g[0]): continue      # nothing built (odd blueprint) or practically a full rectangle: draw the box
     MASK.setdefault(style, {})[b] = pack_mask(g)
 styles = [[k, STYLES.get(k, k)] for k in sorted(FOOT, key=lambda s: STYLES.get(s, s).lower()) if len(FOOT[k]) >= 15]
 FOOT = {k: FOOT[k] for k, _ in styles}

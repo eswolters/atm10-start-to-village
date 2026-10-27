@@ -1,0 +1,17 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: The data tools still parse
+        run: |
+          python3 -m py_compile tools/*.py
+          node --check tools/kubejs_shim.js
+      - name: Smoke tests (the guide in headless Chrome)
+        run: python3 -I tests/run.py

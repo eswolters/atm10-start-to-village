@@ -594,7 +594,7 @@ const PHASES = [
         "Mine 2 stacks of coal for early power and torches",
         "Bring back any tin, lead or uranium ore you find. Don't smelt it yet, Mekanism doubles it later",
       ],
-      tip: `<b>Why keep raw ore:</b> smelting raw ore directly gives 1 ingot. Once Create or Mekanism is running, the same ore gives 1.75× to 5× as much. Store raw ore you don't need right away.` },
+      tip: `<b>Why keep raw ore:</b> smelting raw ore directly gives 1 ingot. Once Mekanism is running, the same raw ore gives up to 2.67× as much (Create's ore line gives 1× plus free by-products). Store raw ore you don't need right away.` },
     { id: "s-waystone", layer: "s", t: "Put a waystone at the town site", mods: ["Waystones"],
       why: `<p>A waystone lets you teleport home from any other waystone, or with a Warp Scroll/Warp Stone. You'll travel back and forth constantly, so this saves a lot of time.</p>`,
       subs: [
@@ -760,9 +760,9 @@ const PHASES = [
        | pipe: extract from furnace bottom
    [output chest]` } },
     { id: "m-filter", layer: "s", t: "Project 1b: add a filter and an overflow", mods: ["Pipez"],
-      why: `<p>Real setups have mixed items. A <b>filter</b> on a pipe only lets certain items through. A filter turned around (a deny list instead of an allow list) sends everything else elsewhere. This is how you sort without a storage system. In Pipez, filters are unlocked by putting an <b>upgrade</b> (Basic or better) in the pipe's settings.</p>`,
+      why: `<p>Real setups have mixed items. A <b>filter</b> on a pipe only lets certain items through. A filter turned around (a deny list instead of an allow list) sends everything else elsewhere. This is how you sort without a storage system. In Pipez, an <b>upgrade</b> in the pipe's settings unlocks more features: Basic only unlocks the redstone mode, Improved adds the distribution mode, and <b>filters need an Advanced upgrade</b> or better.</p>`,
       subs: [
-        "Craft a Basic Upgrade and put it in the extracting side of the top pipe",
+        "Craft an Advanced Pipe Upgrade (Basic, then Improved, then Advanced, which needs 4 diamonds) and put it in the extracting side of the top pipe",
         "Add a filter that allows only raw ores (an item tag such as raw materials works)",
         "Throw a mix of ore and cobble in the top chest",
         "Add a second pipe from the chest to a 'rejects' chest, with its filter set to deny raw ores",
@@ -843,7 +843,7 @@ const PHASES = [
       subs: [
         "Build a stone tower 15+ blocks high in a style that fits the town",
         "Place a Windmill Bearing at the top facing outward",
-        "Build a sail cross with at least 8 sail blocks (more sails = more stress capacity)",
+        "Build a sail cross with at least 8 sail blocks, ideally 32 or more. Each sail block counts, and every 8 sails add 1 RPM (512 SU per RPM, up to 16 RPM)",
         "Glue it to the bearing (Super Glue) and right-click the bearing to start",
         "Run a vertical shaft down through the tower into the vault",
         "Check total stress capacity with the goggles",
@@ -875,14 +875,14 @@ const PHASES = [
         ["Empty Blaze Burner", "iron sheets, netherrack", "crafting table"],
         ["Brass Ingot", "copper + zinc, heated", "Mixer + Basin + Blaze Burner"],
       ] },
-    { id: "u-create-ore", layer: "u", t: "Ore doubling with crushing wheels and washing", mods: ["Create"],
-      why: `<p>Two <b>crushing wheels</b> turn raw ore into <b>crushed ore</b> with a chance of extra output and XP nuggets. An <b>encased fan</b> blowing through water <b>washes</b> crushed ore into nuggets, often with a bonus byproduct (for example redstone from iron). On average that's about 1.75× the ingots of smelting, with no electricity.</p>`,
+    { id: "u-create-ore", layer: "u", t: "Ore washing with crushing wheels", mods: ["Create"],
+      why: `<p>Two <b>crushing wheels</b> turn ore into <b>crushed ore</b>, and sometimes into XP nuggets. An <b>encased fan</b> blowing through water <b>washes</b> crushed ore into 9 nuggets plus a chance of a free by-product: redstone from iron (75%), clay from copper, quartz from gold, gunpowder from zinc. <b>Raw ore gives one ingot's worth, so this line does not multiply what you mine.</b> You get the by-products and the XP nuggets, with no electricity. The line only gives about 1.75× for iron, gold and zinc ore <i>blocks</i> (mined with Silk Touch). If you need more ingots, Mekanism (Phase 9) is what multiplies them.</p>`,
       subs: [
         "Craft two Crushing Wheels and place them side by side, spinning toward each other",
         "Put a chute or hopper on top so you can feed raw ore",
         "Place a conveyor belt under the wheels",
         "Put an Encased Fan blowing over the belt through a water source (washing)",
-        "Collect the nuggets at the end of the belt and press them into ingots",
+        "Collect the nuggets at the end of the belt and craft them into ingots (9 nuggets each)",
       ],
       diagram: { h: "Create ore line", d:
 `  raw ore -> [chute]
@@ -1272,7 +1272,7 @@ const PHASES = [
   intro: "Automation only works if AE2 doesn't run dry. These engines turn power into raw materials, so mining becomes optional. Start with the decision step: most of this phase is optional until the colony actually runs short.",
   steps: [
     { id: "e-choose", layer: "p", t: "Do you need more materials yet?", mods: ["AE2", "Create"],
-      why: `<p>The Create ore line from Phase 5 gives about 1.75× the ingots of plain smelting, which is enough for most of the colony. Mekanism's 3× and 4× ore processing is a large build with its own chemistry, so do it only when the colony really runs short. AE2 doesn't need Mekanism, and neither does anything earlier in this guide.</p>`,
+      why: `<p>Smelting raw ore gives 1 ingot each, and the Create ore line from Phase 5 gives the same 1 ingot's worth plus free redstone, clay, quartz and gunpowder. That is enough for most of the colony. Only Mekanism multiplies ore: 2× per raw ore with the purification stage and 2.67× with chemical injection. It is a large build with its own chemistry, so do it only when the colony really runs short. AE2 doesn't need Mekanism, and neither does anything earlier in this guide.</p>`,
       subs: [
         "Leave your AE2 network running for a day of play and write down the iron, copper and gold counts",
         "Check again: if the counts keep falling while the colony builds, do the Mekanism steps below",
@@ -1315,8 +1315,8 @@ const PHASES = [
                                    green  = energy
   [Auto-eject: ON]                 yellow = extra input (e.g. gas)
   Check the legend in the GUI: some machines use more colours.` } },
-    { id: "u-mek-ore", layer: "u", t: "Mekanism ore processing: 2×, 3×, 4×", mods: ["Mekanism"],
-      why: `<p>Each stage adds a step in front of the previous one. <b>2×</b>: the Enrichment Chamber turns 1 ore into 2 dusts. <b>3×</b>: the Purification Chamber uses oxygen to make 3 clumps per ore. <b>4×</b>: the Chemical Injection Chamber uses hydrogen chloride to make 4 shards per ore. Build one stage at a time, since each stage teaches a new piece of chemistry.</p>`,
+    { id: "u-mek-ore", layer: "u", t: "Mekanism ore processing: up to 2.67× per raw ore", mods: ["Mekanism"],
+      why: `<p>Each stage adds a step in front of the previous one. The names 2×, 3× and 4× are Mekanism's counts per ore <i>block</i> (what a Silk Touch pickaxe gives). Raw ore, which is what mining and the Miner's Hut give you, gets two thirds of that. <b>2×</b>: the Enrichment Chamber turns 3 raw ore into 4 dusts (1.33 ingots per raw ore, barely better than smelting). <b>3×</b>: the Purification Chamber uses oxygen to turn 1 raw ore into 2 clumps (2 ingots). <b>4×</b>: the Chemical Injection Chamber uses hydrogen chloride to turn 3 raw ore into 8 shards (2.67 ingots). Build one stage at a time, since each stage teaches a new piece of chemistry.</p>`,
       subs: [
         "<b>2×:</b> Enrichment Chamber → Energized Smelter",
         "Build an infinite water source (Electric Pump in a 3×3 water pool)",
@@ -1325,16 +1325,16 @@ const PHASES = [
         "<b>4×:</b> Thermal Evaporation Plant makes brine, the separator turns brine into chlorine",
         "<b>4×:</b> Chemical Infuser combines hydrogen + chlorine into hydrogen chloride",
         "<b>4×:</b> Chemical Injection Chamber (ore + HCl → shards) in front of the 3× chain",
-        "Connect everything with Pipez or Mekanism pipes and test with a stack of iron ore",
+        "Connect everything with Pipez or Mekanism pipes and test with a stack of raw iron",
       ],
-      diagram: { h: "4× chain (each arrow is a pipe)", d:
+      diagram: { h: "Full chain (each arrow is a pipe)", d:
 `  ore -> [Chem. Injection] -> shards -> [Purification] -> clumps
               ^ HCl                          ^ O2
          [Chem. Infuser]               [Electrolytic Sep.] <- water
           ^ H2     ^ Cl2
                                   clumps -> [Crusher] -> dirty dust
    -> [Enrichment] -> dust -> [Energized Smelter] -> ingots -> storage` },
-      tip: `<b>5× (later):</b> Chemical Dissolution Chamber (sulfuric acid) → Chemical Washer → Chemical Crystallizer → the 4× chain. Leave this until power and chemicals are running smoothly.` },
+      tip: `<b>5× (later):</b> Chemical Dissolution Chamber (sulfuric acid) → Chemical Washer → Chemical Crystallizer → the 4× chain (the 5× count is per ore block too). Leave this until power and chemicals are running smoothly.` },
     { id: "u-mek-factory", layer: "u", t: "Upgrade machines to factories", mods: ["Mekanism"],
       why: `<p>A <b>factory</b> processes several items at once (3, 5, 7 or 9 slots, by tier). <b>Speed and Energy Upgrades</b> make it faster and cheaper to run. One factory replaces a row of machines.</p>`,
       subs: [
@@ -1353,7 +1353,7 @@ const PHASES = [
         "Set its filters to the ores you need (iron, copper, osmium, zinc...)",
         "Force-load the chunk(s) with FTB Chunks",
         "Craft two Quantum Entangloporters on the same frequency",
-        "Connect the home end to the 4× ore chain",
+        "Connect the home end to your Mekanism ore chain",
       ] },
     { id: "e-trains", layer: "s", t: "Create trains to outposts", mods: ["Create"],
       why: `<p>A Create railway is the most medieval-looking way to move goods. Trains run on a <b>schedule</b> between <b>stations</b> and load and unload automatically. Use one to bring wood from a remote forest or stone from a quarry outpost into a station whose lower floor opens into the vault.</p>
@@ -1370,9 +1370,9 @@ const PHASES = [
         "Unload at home into Funnels → AE2",
       ] },
     { id: "e-power", layer: "u", t: "Scale up power", mods: ["Powah", "Mekanism", "Flux Networks"],
-      why: `<p>Running 4× ore processing, autocrafting and growth accelerators at once takes a lot of power. <b>Powah reactors</b> are compact. <b>Flux Networks</b> sends power wirelessly, so you need no visible cables. That covers the undercroft and, if you built one in <i>Create trains to outposts</i>, an outpost.</p>`,
+      why: `<p>Running Mekanism ore processing, autocrafting and growth accelerators at once takes a lot of power. <b>Powah reactors</b> are compact. <b>Flux Networks</b> sends power wirelessly, so you need no visible cables. That covers the undercroft and, if you built one in <i>Create trains to outposts</i>, an outpost.</p>`,
       subs: [
-        "Build a Powah reactor (uraninite fuel, check its coolant in JEI)",
+        "Build a Powah reactor (uraninite fuel, with water as the coolant)",
         "Or build Mekanism generators",
         "Craft a Flux Controller, Flux Plugs and Flux Points",
         "Connect the vault (and an outpost, if you have one) on one flux network",
@@ -1636,14 +1636,14 @@ const EXTRA = {
   "u-create-basics": { fix: [["The network stops and the shafts show red particles", "It's overstressed. Lower the speed (RPM) or add another source."]] },
   "u-windmill": {
     opt: true,
-    check: "The goggles on the bottom shaft show a few thousand SU of capacity.",
+    check: "The goggles on the bottom shaft show 512 SU with 8 sail blocks, about 2,000 SU with 32.",
     fix: [["The bearing won't assemble", "The sails aren't glued to the bearing, or there are fewer than 8 sail blocks."]],
     next: "More sails, up to the limit, give more capacity. A second windmill on the same shaft network adds up." },
   "u-create-machines": { fix: [["The mixer won't make brass", "The basin needs heat: a lit Blaze Burner directly underneath, fed with fuel."]] },
   "u-create-ore": {
-    check: "One stack of raw iron gives clearly more than one stack of ingots.",
+    check: "A stack of raw iron gives 576 iron nuggets (64 ingots' worth) and about 48 free redstone.",
     fix: [["Crushed ore isn't washed", "The fan must blow through water: put a water source in the fan's airflow, between the fan and the items."]],
-    next: "The Mekanism 3× and 4× chain in Phase 9 gives more ingots when you need them. Keep this line for zinc and other metals Mekanism doesn't handle." },
+    next: "Mekanism's chains in Phase 9 are what give more ingots per raw ore (2× and 2.67×). Keep this line for the by-products (redstone, clay, quartz, gunpowder) and the XP nuggets." },
   "u-power": {
     check: "The Energy Cell's stored FE goes up while machines are running.",
     fix: [["Machines have no power", "Cables need to touch the machine on a side that accepts energy. Check the machine's side config."]],
@@ -1658,7 +1658,7 @@ const EXTRA = {
     ] },
   "u-mek-ore": {
     opt: true,
-    check: "One iron ore gives 4 ingots at the end of the chain.",
+    check: "3 raw iron ore end up as 8 ingots at the end of the chain (one ore block gives 4).",
     fix: [
       ["The chain is full and stops", "An output is backed up somewhere. Follow the chain and find the first machine with a full output slot."],
       ["Purification Chamber idles", "No oxygen. Check that the Electrolytic Separator has water and power, and that oxygen goes out the correct side."],
@@ -1713,7 +1713,7 @@ const EXTRA = {
   "e-mob": { opt: true },
   "e-pots": { opt: true },
   "e-bees": { opt: true },
-  "e-power": { tip: "<b>Obsidian for Flux Cores:</b> each batch of Flux Cores needs 4 obsidian. A Cobblegen Galore Block Generator has an obsidian recipe (water on one side, lava on the other). It uses up the lava source each time, so keep the lava topped up. Check it in JEI under Block Generator.", next: "Measure first: put an Energy Detector or look at the cell's input/output, and add generation 20% above use." },
+  "e-power": { tip: "<b>Obsidian for Flux Cores:</b> each batch of Flux Cores needs 4 obsidian. A Cobblegen Galore Block Generator has an obsidian recipe (water on one side, lava on the other). It uses up the lava source each time, so keep the lava topped up. Check it in JEI under Block Generator.", next: "Measure first: put an Energy Detector (from Advanced Peripherals) or look at the cell's input/output, and add generation 20% above use." },
   "c-late": { opt: true },
   "c-scan": { opt: true },
 };
@@ -1768,7 +1768,7 @@ const MILESTONES = {
   ae2: ["All your items in AE2", "Processors made automatically", "Autocrafting for planks, glass, slabs, stairs and other colony blocks"],
   grow: ["Town Hall L3 and 3 builders", "Crafters handle most building requests", "University built, with the Library and School unlocked by research", "Guards in place and happiness at 7+"],
   link: ["Warehouse topped up from AE2", "The script fills requests, and the Clipboard is mostly empty"],
-  engines: ["AE2 stock of iron, copper and wood goes up while you're idle", "Power use stays below generation", "If you needed it: Mekanism 3× or 4× ore processing runs"],
+  engines: ["AE2 stock of iron, copper and wood goes up while you're idle", "Power use stays below generation", "If you needed it: Mekanism ore processing runs (2× or 2.67× per raw ore)"],
   crown: ["Town Hall L5, and the town builds itself as long as raw materials keep coming in"],
   beauty: ["Roads, trees, flowers and lanterns fill the space between every pair of buildings", "The skyline has one clear landmark, and the walls follow the land", "No pipe, cable or machine can be seen from the surface", "You took gate, square, skyline and night screenshots, and you'd show them to a friend"],
 };
@@ -1901,7 +1901,7 @@ const GLOSSARY = [
 
 /* Common beginner mistakes, shown on the Fix it tab */
 const MISTAKES = [
-  ["Smelting all your raw ore right away", "Raw ore is worth 1.75× to 4× more once Create or Mekanism is running. Store it until then."],
+  ["Smelting all your raw ore right away", "Raw ore gives up to 2.67× the ingots once Mekanism is running. Store it until then."],
   ["AE2 cables merging", "Two cables next to each other connect and share channels. Use different colours, or a covered cable, to keep lines apart."],
   ["Building everything at once", "Upgrade the bottleneck first. A faster first machine doesn't help if the second can't keep up."],
   ["Miner's Hut too close to things", "Its shaft and tunnels cut through anything in the way. Keep it far from the vault."],
@@ -2184,8 +2184,8 @@ raw("kelp", "Kelp", CAT_EARTH, "An underwater plant in oceans and rivers. Smelt 
 raw("andesite", "Andesite", CAT_EARTH, "A grey stone found in caves and on hills. You can also craft it: diorite and cobblestone make andesite.",
   [["By hand", "Mine it in caves.", "s-ores"], ["AE2", "Write a pattern for it so AE2 crafts it on demand.", "a-autocraft"]]);
 raw("raw_iron", "Raw iron", CAT_ORE, "Iron ore from Y −24 to 56 (richest around Y 16), and far more in mountains from Y 80 to 384 (richest around Y 232). Smelt it for ingots, but keep raw ore if you plan to use Create or Mekanism: they give far more ingots from the same ore.",
-  [["By hand", "Mine at Y 16.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line (crushing wheels and washing) gives about 1.75× the ingots.", "u-create-ore"],
-   ["Machines", "Mystical Agriculture iron seeds grow it in a crop room.", "e-ma"], ["Machines", "The Mekanism 3× and 4× chain.", "u-mek-ore"]]);
+  [["By hand", "Mine at Y 16.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line (crushing wheels and washing) gives the same ingots plus free redstone.", "u-create-ore"],
+   ["Machines", "Mystical Agriculture iron seeds grow it in a crop room.", "e-ma"], ["Machines", "The Mekanism purification and injection chains give 2× to 2.67× per raw ore.", "u-mek-ore"]]);
 raw("raw_copper", "Raw copper", CAT_ORE, "Copper ore from Y −16 to 112, richest around Y 48. Dripstone caves have big veins of it.",
   [["By hand", "Mine it around Y 48.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line gives extra ingots.", "u-create-ore"], ["Machines", "Mystical Agriculture copper seeds.", "e-ma"]]);
 raw("raw_gold", "Raw gold", CAT_ORE, "Gold ore from Y −64 to 32, richest around Y −16. Badlands biomes also have a lot of gold from Y 32 to 256, close to the surface.",
@@ -2194,7 +2194,7 @@ raw("raw_zinc", "Raw zinc", CAT_ORE, "In this pack zinc comes from AllTheOres, n
   [["By hand", "Mine it around Y 31.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Create ore line washes it into extra nuggets.", "u-create-ore"]]);
 raw("raw_tin", "Raw tin", CAT_ORE, "Tin ore from AllTheOres: Y −64 to 196, richest around Y 66.", [["By hand", "Mine it around Y 66.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"]]);
 raw("raw_osmium", "Raw osmium", CAT_ORE, "Osmium ore from AllTheOres (Mekanism's own generation is switched off): Y −64 to 56, richest around Y −4.",
-  [["By hand", "Mine it around Y −4.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Mekanism 3× and 4× chain.", "u-mek-ore"]]);
+  [["By hand", "Mine it around Y −4.", "s-ores"], ["Colony", "The Miner's Hut brings back ore.", "g-mine"], ["Machines", "The Mekanism purification and injection chains give 2× to 2.67× per raw ore.", "u-mek-ore"]]);
 raw("coal", "Coal", CAT_ORE, "Coal ore is common from Y 0 up to 192 (richest around Y 96), and especially above Y 136 in mountains. Smelting logs gives charcoal, which works for torches and as fuel.",
   [["By hand", "Mine it, or smelt logs into charcoal.", "s-ores"], ["Colony", "The Forester's logs make charcoal in a furnace.", "f-forester"], ["Machines", "Mystical Agriculture coal seeds.", "e-ma"]]);
 raw("redstone", "Redstone", CAT_ORE, "Redstone ore from Y −64 to 15, most of it near the bottom of the world (Y −64 to −32).",
@@ -2207,7 +2207,7 @@ raw("amethyst_shard", "Amethyst shards", CAT_ORE, "Amethyst geodes underground: 
 raw("certus_quartz", "Certus quartz", CAT_ORE, "Only from meteorites in the Overworld. Mine the crystals, then grow more on budding certus.",
   [["By hand", "Find a meteorite.", "a-meteor"], ["Machines", "Budding certus with Growth Accelerators grows crystals without end.", "a-certus"]]);
 raw("sky_stone_block", "Sky stone", CAT_ORE, "The dark stone around a meteorite's crater. Mine it with a pickaxe: smelting it makes smooth sky stone, which the ME Controller needs.", [["By hand", "Mine it at the meteorite.", "a-meteor"]]);
-raw("uraninite", "Uraninite", CAT_ORE, "Powah's uraninite ore (poor, normal and dense) generates underground in the Overworld. Hover the ore in JEI and press U to see how it becomes uraninite.", [["By hand", "Find and mine the ore.", "u-power"]]);
+raw("uraninite", "Uraninite", CAT_ORE, "Powah's uraninite ore generates in the Overworld from the bottom of the world (Y −64) upward: poor ore up to Y 64, normal ore up to Y 20 and dense ore up to Y 0. Hover the ore in JEI and press U to see how it becomes uraninite.", [["By hand", "Find and mine the ore.", "u-power"]]);
 raw("vibranium_ingot", "Vibranium ingot", CAT_ORE, "Vibranium ore generates in the Nether (around Y 64 to 127, in the upper Nether). Smelt or blast the ore. It is the late-game metal the Digital Miner needs in this pack.", [["By hand", "Mine it in the Nether.", "e-mining"]]);
 raw("wheat", "Wheat", CAT_FARM, "Grows from seeds on farmland. Seeds drop from tall grass.", [["By hand", "Plant a field next to water.", "s-food"], ["Colony", "The Farmer's Hut grows fields for you.", "f-farm"]]);
 raw("carrot", "Carrots", CAT_FARM, "Found in villages and as a rare zombie drop. Plant them on farmland.", [["By hand", "Plant a field.", "s-food"], ["Colony", "The Farmer's Hut grows fields for you.", "f-farm"]]);
@@ -2247,6 +2247,11 @@ raw("inferium_essence", "Inferium essence", CAT_ORE, "Mystical Agriculture: mine
    ["Machines", "A mob farm collects it from every kill, even with Spikes.", "e-mob"]]);
 raw("prosperity_shard", "Prosperity shard", CAT_ORE, "Mystical Agriculture: mine Prosperity ore, which generates in the Overworld up to Y 24.", [["By hand", "Mine Prosperity ore deep down.", "e-ma"]]);
 raw("flux_dust", "Flux dust", CAT_OTHER, "In this pack the Basic Power quests give it as rewards, and Xycraft's Extractor also makes it: a charged redstone block ringed by obsidian, with a Flux Block next to it. Check the recipe in JEI.", [["Quest book", "Basic Power chapter rewards.", "p-quests"]]);
+raw("silicon_press", "Silicon press", CAT_ORE, "One of the 4 inscriber presses. They only come from the mysterious cube at the centre of a meteorite. Keep them: they are not used up.", [["By hand", "Break a meteorite's mysterious cube.", "a-meteor"]]);
+raw("calculation_processor_press", "Calculation processor press", CAT_ORE, "One of the 4 inscriber presses. They only come from the mysterious cube at the centre of a meteorite. Keep them: they are not used up.", [["By hand", "Break a meteorite's mysterious cube.", "a-meteor"]]);
+raw("engineering_processor_press", "Engineering processor press", CAT_ORE, "One of the 4 inscriber presses. They only come from the mysterious cube at the centre of a meteorite. Keep them: they are not used up.", [["By hand", "Break a meteorite's mysterious cube.", "a-meteor"]]);
+raw("logic_processor_press", "Logic processor press", CAT_ORE, "One of the 4 inscriber presses. They only come from the mysterious cube at the centre of a meteorite. Keep them: they are not used up.", [["By hand", "Break a meteorite's mysterious cube.", "a-meteor"]]);
+raw("rabbit_hide", "Rabbit hide", CAT_MOB, "Rabbits drop it. They live in deserts, snowy plains and flower forests.", [["By hand", "Kill rabbits.", "s-ores"]]);
 raw("rabbit_foot", "Rabbit's foot", CAT_MOB, "Rabbits sometimes drop it. They live in deserts, snowy plains and flower forests, so expect to hunt a lot of them: the walking research alone needs 1, 4, 8, 32 and 64.", [["By hand", "Hunt rabbits.", "s-ores"], ["Machines", "A mob farm.", "e-mob"]]);
 raw("saddle", "Saddle", CAT_OTHER, "You can't craft it. Find it in chests (dungeons, temples and others) or fish it up as treasure.", [["By hand", "Loot chests or fish.", "s-ores"]]);
 raw("gilded_blackstone", "Gilded blackstone", CAT_OTHER, "Found in the Nether, in bastion remnants.", [["By hand", "Mine it in a bastion remnant.", "s-ores"]]);
@@ -2313,7 +2318,7 @@ const MAT_FOR = {
   "c-late": { items: [["hut_enchanter", 1], ["hut_alchemist", 1], ["hut_mechanic", 1], ["hut_concretemixer", 1], ["hut_netherworker", 1]] },
   "c-scan": { items: [["scan_tool", 1]] },
   "m-smelter": { items: [["iron_furnace", 1], ["chest", 3], ["pipez_item_pipe", 16]], sug: true },
-  "m-filter": { items: [["pipez_basic_upgrade", 1], ["chest", 1]], sug: true },
+  "m-filter": { items: [["pipez_advanced_upgrade", 1], ["chest", 1]], sug: true },
   "m-cobble": { items: [["mechanical_drill", 3], ["water_wheel", 1], ["shaft", 8], ["chest", 1]], sug: true },
   "u-create-basics": { items: [["shaft", 8], ["cogwheel", 4], ["andesite_casing", 2], ["goggles", 1], ["water_wheel", 1]], sug: true },
   "u-windmill": { items: [["windmill_bearing", 1], ["sail_frame", 8], ["super_glue", 1], ["shaft", 16]], sug: true },

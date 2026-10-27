@@ -2,6 +2,15 @@
 
 Newest first. The guide targets ATM10 on Minecraft 1.21.1 (NeoForge), solo play.
 
+## Phases 4 to 6 review
+
+- **New step: "Your first Nether trip"** at the start of the Create machines in Phase 5. The required path needs about 55 Nether quartz and about 100 glowstone dust by Phase 8 (Powah's energizing rods need quartz as early as Phase 5), and nothing had introduced the Nether. A test now fails if a required step needs Nether items before this step.
+- The automatic smelter now uses the **Pipe Wrench**, which is what sets a pipe end to extract, and its chest layout is spelled out.
+- One vault depth: the ceiling at least 12 blocks below the lowest foundation (as in Phase 1), staying above about Y -50.
+- The Create basics step is now a recap of the Phase 4 machine, and the cobble project explains stress where it is first used.
+- The Pipez filter project is optional (it needs an Advanced upgrade), and catching a blaze and making brass are optional until the Phase 9 trains.
+
+
 ## Newcomer pass
 
 - A "Start here" panel replaces the old intro wall: what you end with (with a cross-section diagram of the town above its hidden vault), who it is for, how long it takes (about 30 to 55 hours for Phases 1 to 8), what versions it was checked against, and a three-step path. The old tips are in a collapsed "Other tools" list. "Hollowmere" is now explained as the example town's name.

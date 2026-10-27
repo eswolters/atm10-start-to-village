@@ -182,6 +182,18 @@
     return bad;
   });
 
+  check("no required step needs Nether items before the Nether trip step", () => {
+    const bad = [], order = allSteps.map(s => s.id), trip = order.indexOf("u-nether");
+    if (trip < 0) return ["there is no u-nether step"];
+    const nether = ["nether_quartz", "glowstone_dust", "netherrack", "blaze_rod"];
+    allSteps.forEach(s => {
+      if (s.opt || s.id === "u-nether" || !MAT_FOR[s.id]) return;
+      const r = resolve(MAT_FOR[s.id].items), hit = Object.keys(r.raw).concat(Object.keys(r.crafts)).filter(x => nether.includes(x));
+      if (hit.length && order.indexOf(s.id) < trip) bad.push(s.id + " needs " + hit.join(", ") + " before the Nether trip");
+    });
+    return bad;
+  });
+
   /* ---- no script errors ---- */
   check("no script errors while loading or running the tests", () => (window.__errs || []).slice());
 

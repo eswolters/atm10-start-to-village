@@ -78,7 +78,7 @@ WANT += L(MK, ("metallurgic_infuser", "mekanism:metallurgic_infuser"), ("steel_c
           ("basic_tier_installer", "mekanism:basic_tier_installer"), ("speed_upgrade", "mekanism:upgrade_speed"), ("energy_upgrade", "mekanism:upgrade_energy"),
           ("thermal_evaporation_block", "mekanism:thermal_evaporation_block"), ("thermal_evaporation_controller", "mekanism:thermal_evaporation_controller"),
           ("thermal_evaporation_valve", "mekanism:thermal_evaporation_valve"), ("dynamic_tank", "mekanism:dynamic_tank"))
-WANT += L(MC, ("iron_furnace", "ironfurnaces:iron_furnace"), ("pipez_item_pipe", "pipez:item_pipe"), ("pipez_basic_upgrade", "pipez:basic_upgrade"), ("pipez_improved_upgrade", "pipez:improved_upgrade"), ("pipez_advanced_upgrade", "pipez:advanced_upgrade"),
+WANT += L(MC, ("iron_furnace", "ironfurnaces:iron_furnace"), ("pipez_item_pipe", "pipez:item_pipe"), ("pipez_basic_upgrade", "pipez:basic_upgrade"), ("pipez_wrench", "pipez:wrench"), ("pipez_improved_upgrade", "pipez:improved_upgrade"), ("pipez_advanced_upgrade", "pipez:advanced_upgrade"),
           ("laser_node", "laserio:laser_node"), ("laser_wrench", "laserio:laser_wrench"), ("laser_connector", "laserio:laser_connector"),
           ("laser_card_item", "laserio:card_item"), ("laser_filter_basic", "laserio:filter_basic"))
 WANT += L(CP, ("computer_advanced", "computercraft:computer_advanced"), ("colony_integrator", "advancedperipherals:colony_integrator"), ("me_bridge", "advancedperipherals:me_bridge"),
@@ -119,7 +119,7 @@ WANT += L(MT, ("block_gen_stone", "cobblegengalore:block_gen_stone"))
 # registry id / tag -> slug, for ingredients that stand for a generic thing
 MAP = {
     "#minecraft:planks": "planks", "#minecraft:logs": "log", "#minecraft:logs_that_burn": "log", "#minecraft:oak_logs": "log", "#c:stripped_logs": "log", "#c:stripped_woods": "log",
-    "#c:rods/wooden": "stick", "#minecraft:wooden_slabs": "slab", "#minecraft:wooden_doors": "door", "#minecraft:wooden_trapdoors": "trapdoor",
+    "#c:rods/wooden": "stick", "#c:rods": "stick", "#minecraft:wooden_slabs": "slab", "#minecraft:wooden_doors": "door", "#minecraft:wooden_trapdoors": "trapdoor",
     "#minecraft:stone_crafting_materials": "cobblestone", "#c:cobblestones": "cobblestone", "#c:cobblestones/normal": "cobblestone", "minecraft:cobblestone": "cobblestone",
     "#c:stones": "stone", "#c:stones/stone": "stone",
     "#minecraft:smelts_to_glass": "sand", "#c:sands": "sand", "#c:sands/colorless": "sand", "minecraft:sand": "sand",

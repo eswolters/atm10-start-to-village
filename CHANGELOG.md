@@ -2,6 +2,14 @@
 
 Newest first. The guide targets ATM10 on Minecraft 1.21.1 (NeoForge), solo play.
 
+## Newcomer pass
+
+- A "Start here" panel replaces the old intro wall: what you end with (with a cross-section diagram of the town above its hidden vault), who it is for, how long it takes (about 30 to 55 hours for Phases 1 to 8), what versions it was checked against, and a three-step path. The old tips are in a collapsed "Other tools" list. "Hollowmere" is now explained as the example town's name.
+- Other tabs show a compact header, so their content starts near the top. On phones all six tabs are visible and the guide filters sit behind a Filters button.
+- New first step, "Your first 30 minutes", for people who have just spawned (JEI keys, the quest book's Chapter 1, the map).
+- Fixed the order in Phase 1: the Nature's Compass needs iron, so it now says to come back after the first mining.
+- The Warp Stone waystone (4 ender pearls) is optional in Phase 2, with the village waystone as the alternative. The ore trip no longer asks for osmium before Mekanism is relevant.
+
 ## Checked against the pack (latest audit)
 
 - **Corrected: Create ore line.** In this pack raw ore crushes 1 to 1, so crushing and washing gives one ingot's worth plus free redstone, clay, quartz or gunpowder. It only gives about 1.75× for ore blocks mined with Silk Touch. The guide used to say 1.75× for everything.

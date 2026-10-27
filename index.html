@@ -6,7 +6,10 @@
 <style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
-<title>Hollowmere Town Plan</title>
+<title>ATM10: build a medieval town that runs itself</title>
+<meta name="description" content="A step-by-step All the Mods 10 guide: from a new world to a MineColonies town automated by Create, Powah and AE2, with the machines hidden in a vault under the town.">
+<meta property="og:title" content="ATM10: build a medieval town that runs itself">
+<meta property="og:description" content="A step-by-step All the Mods 10 guide: from a new world to a MineColonies town automated by Create, Powah and AE2, with the machines hidden in a vault under the town.">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -58,7 +61,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 }
 header.intro { padding-block: 40px 20px; }
 .eyebrow { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(36px, 7vw, 54px); line-height: 1.05; margin: 6px 0 12px; text-wrap: balance; }
+h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(32px, 6vw, 46px); line-height: 1.05; margin: 6px 0 12px; text-wrap: balance; }
 .lede { margin: 0 0 10px; max-width: 64ch; }
 .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; font-size: 15px; color: var(--muted); }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
@@ -91,7 +94,7 @@ input[type="search"] { flex: 1 1 160px; min-width: 0; }
 button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--tech); outline-offset: 2px; }
 
 main { padding-block: 24px 48px; display: flex; flex-direction: column; gap: 14px; }
-details.phase { border-top: 1px solid var(--line); }
+details.phase { border-top: 1px solid var(--line); scroll-margin-top: 160px; }
 details.phase > summary {
   list-style: none; cursor: pointer; padding-block: 16px 10px;
   display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: baseline;
@@ -362,19 +365,98 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
   .ph-sub { grid-column: 1 / 4; }
   li.step { padding: 10px 10px; grid-template-columns: 24px 1fr; }
 }
+.start { margin-top: 22px; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; max-width: 1000px; }
+.start h2 { font-family: var(--f-display); font-weight: 400; font-size: 26px; margin: 0 0 12px; }
+.start-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.xs { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 3px; background: var(--bg); }
+.xs-soil { fill: var(--line); opacity: .55; } .xs-ground { stroke: var(--muted); stroke-width: 1.5; }
+.xs-wall { fill: var(--moss-soft); stroke: var(--moss); stroke-width: 1.5; } .xs-roof { fill: var(--moss); } .xs-sail line { stroke: var(--moss); stroke-width: 3; }
+.xs-tree { fill: var(--moss); opacity: .75; } .xs-trunk { fill: var(--muted); }
+.xs-shaft, .xs-stairs { fill: none; stroke: var(--tech); stroke-width: 2.5; stroke-dasharray: 5 3; }
+.xs-vault { fill: var(--tech-soft); stroke: var(--tech); stroke-width: 2; stroke-dasharray: 8 4; }
+.xs-mach rect { fill: var(--panel); stroke: var(--tech); stroke-width: 1.5; } .xs-mach text { fill: var(--fg); font: 600 17px var(--f-body); text-anchor: middle; }
+.xs-label text { fill: var(--muted); font: 16px var(--f-body); } .xs-label .xs-small { font-size: 14px; } .xs-label .xs-wh { fill: var(--fg); font-size: 14px; text-anchor: middle; font-weight: 600; } .xs-label .xs-vt { fill: var(--tech); font-weight: 700; font-size: 17px; }
+.glance { margin: 0; } .glance dt { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 10px; } .glance dt:first-child { margin-top: 0; }
+.glance dd { margin: 2px 0 0; font-size: 15.5px; }
+.path { margin: 16px 0 0 22px; padding: 0; } .path li { margin: 6px 0; font-size: 16px; }
+.more-tools { margin-top: 12px; font-size: 15px; color: var(--muted); } .more-tools summary { cursor: pointer; } .more-tools ul { margin: 8px 0 0 20px; padding: 0; } .more-tools li { margin: 4px 0; }
+.more-tools kbd { font-family: var(--f-mono); font-size: 12px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 3px; padding: 0 5px; background: var(--panel); color: var(--fg); }
+.filt-toggle { display: none; }
+body.not-guide header.intro { padding-block: 26px 8px; } body.not-guide header.intro .lede, body.not-guide header.intro .start, body.not-guide header.intro .legend { display: none; } body.not-guide h1 { font-size: clamp(26px, 5vw, 34px); margin-bottom: 4px; }
+@media (max-width: 760px) { .start-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) {
+  .tabs { flex-wrap: wrap; overflow-x: visible; } .tabs a { font-size: 17px; padding: 2px 10px 5px; } .tabs a:first-child { padding-left: 0; }
+  .filt-toggle { display: inline-block; } .bar .filters { display: none; } .bar.filters-open .filters { display: flex; }
+  .start { padding: 14px 14px; display: flex; flex-direction: column; } .start h2 { order: -2; } .start .path { order: -1; margin-top: 0; margin-bottom: 14px; }
+}
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
 <header class="intro wrap">
-  <div class="eyebrow">All the Mods 10 · MineColonies town · new world → full automation · solo</div>
-  <h1>Hollowmere Town Plan</h1>
-  <p class="lede">A medieval MineColonies town on the surface, with its high-tech core hidden underneath in an <em>undercroft</em>. Each step explains why it matters, then breaks into small sub-steps you tick off. Many steps also have a table of key ingredients and a sketch of the machine layout. The systems build on each other: Create, Powah, AE2, and finally a ComputerCraft script that fills the colony's requests from your ME system. Mekanism comes later as an optional upgrade, if the colony runs short of ore. Along the way, design advice keeps the town beautiful, and the last phase is a full beautification pass.</p>
+  <div class="eyebrow">All the Mods 10 · MineColonies · Create · AE2 · solo play</div>
+  <h1>Build a medieval town that runs itself</h1>
+  <p class="lede">A step-by-step guide for All the Mods 10 that takes you from a brand-new world to a MineColonies town whose supply chain is automated by Create, Powah and AE2, with all the machines hidden in a vault under the town. The example town is called <b>Hollowmere</b>: name yours anything.</p>
+  <section class="start" id="startHere" aria-labelledby="startTitle">
+    <h2 id="startTitle">Start here</h2>
+    <div class="start-grid">
+      <svg class="xs" viewBox="0 0 520 250" role="img" aria-label="Cross-section of the finished build: a medieval town on the surface, and below it a hidden vault called the undercroft that holds the Create, Powah and AE2 machines. A Warehouse sits right above the vault, and a hidden staircase from the Tavern leads down to it.">
+        <rect class="xs-soil" x="0" y="112" width="520" height="138"/>
+        <line class="xs-ground" x1="0" y1="112" x2="520" y2="112"/>
+        <g class="xs-town">
+          <rect class="xs-wall" x="24" y="76" width="48" height="36"/><polygon class="xs-roof" points="18,76 48,52 78,76"/>
+          <rect class="xs-wall" x="92" y="84" width="38" height="28"/><polygon class="xs-roof" points="86,84 111,64 136,84"/>
+          <rect class="xs-wall" x="152" y="44" width="26" height="68"/><path class="xs-roof" d="M150 44 h30 v-8 h-6 v4 h-6 v-4 h-6 v4 h-6 v-4 h-6 z"/>
+          <rect class="xs-wall" x="196" y="66" width="76" height="46"/><polygon class="xs-roof" points="190,66 234,38 278,66"/>
+          <rect class="xs-wall" x="304" y="96" width="30" height="16"/><polygon class="xs-roof" points="300,96 319,84 338,96"/>
+          <rect class="xs-wall" x="362" y="62" width="12" height="50"/>
+          <g class="xs-sail"><line x1="368" y1="62" x2="344" y2="38"/><line x1="368" y1="62" x2="392" y2="86"/><line x1="368" y1="62" x2="392" y2="38"/><line x1="368" y1="62" x2="344" y2="86"/></g>
+          <circle class="xs-tree" cx="432" cy="94" r="16"/><rect class="xs-trunk" x="429" y="106" width="6" height="6"/>
+          <circle class="xs-tree" cx="470" cy="100" r="12"/><rect class="xs-trunk" x="467" y="109" width="6" height="3"/>
+        </g>
+        <path class="xs-shaft" d="M234 112 V152"/>
+        <path class="xs-stairs" d="M111 112 h8 v8 h8 v8 h8 v8 h8 v8"/>
+        <rect class="xs-vault" x="60" y="152" width="400" height="84" rx="4"/>
+        <g class="xs-mach">
+          <rect x="84" y="186" width="70" height="36" rx="3"/><text x="119" y="209">Create</text>
+          <rect x="176" y="186" width="70" height="36" rx="3"/><text x="211" y="209">Powah</text>
+          <rect x="268" y="186" width="70" height="36" rx="3"/><text x="303" y="209">AE2</text>
+          <rect x="360" y="186" width="80" height="36" rx="3"/><text x="400" y="209">Storage</text>
+        </g>
+        <g class="xs-label">
+          <text x="12" y="24">Surface: the medieval town</text>
+          <text x="234" y="100" class="xs-wh">Warehouse</text>
+          <text x="12" y="134" class="xs-small">hidden stairs</text>
+          <text x="76" y="174" class="xs-vt">Undercroft: the hidden tech</text>
+        </g>
+      </svg>
+      <dl class="glance">
+        <dt>You end with</dt><dd>Citizens who ask for materials, and an AE2 network that delivers them on its own, with the machines out of sight in an underground vault (the <em>undercroft</em>).</dd>
+        <dt>Who it is for</dt><dd>Anyone who can survive in normal Minecraft. You don't need modded experience: the Learn tab explains automation from scratch.</dd>
+        <dt>How long</dt><dd>About 30 to 55 hours of play for Phases 1 to 8, going by each phase's own estimate. Phases 9 to 11 and the Side projects are optional or open-ended.</dd>
+        <dt>Checked against</dt><dd>Minecraft 1.21.1 with NeoForge 21.1.259, ATM10 from CurseForge (file 9190157): Create 6.0.10, AE2 19.2.18, Mekanism 10.7.19, MineColonies 1.1.1403, Powah 6.2.10. ATM10 changes often, so treat JEI as the final word.</dd>
+      </dl>
+    </div>
+    <ol class="path">
+      <li><b>Read the <a href="#learn">Learn</a> tab</b> (10 minutes) before Phase 4, when you build your first machines. You can skip it for Phases 1 to 3.</li>
+      <li><b>Keep “Focus on current phase” ticked.</b> The guide then opens only your current phase and its next step.</li>
+      <li><b><a href="#guide" id="goPhase1">Start with Phase 1 below</a></b> and tick boxes as you go. Stuck? The <a href="#fix">Fix it</a> tab lists common problems and their causes.</li>
+    </ol>
+    <details class="more-tools">
+      <summary>Other tools on this page</summary>
+      <ul>
+        <li><a href="#materials">Materials</a>: what to gather for anything you need to build, where to find it and how to automate it.</li>
+        <li><a href="#research">Research</a>: what unlocks each MineColonies building and bonus, as a plan you can tick off.</li>
+        <li><a href="#planner">Town planner</a>: real-size buildings on a block map, with your layout checked against the guide.</li>
+        <li>In game: hover an item in JEI and press <kbd>R</kbd> (recipe) or <kbd>U</kbd> (uses). Hold <kbd>W</kbd> over a Create item for an animated Ponder scene, and <kbd>G</kbd> over an AE2 item for its guide.</li>
+        <li>Time estimates are rough guesses for a first playthrough.</li>
+      </ul>
+    </details>
+  </section>
   <div class="legend">
     <span><i class="sw p"></i>Planning</span>
     <span><i class="sw s"></i>Surface town (MineColonies)</span>
     <span><i class="sw u"></i>Undercroft (hidden tech)</span>
   </div>
-  <p class="howto">New to automation? Read the <a href="#learn">Learn</a> tab first: 10 minutes there makes every tech step easier. Need the ingredients for something? Open the <a href="#materials">Materials</a> tab: it lists what to gather, where to find it and how to automate it. Planning University research? The <a href="#research">Research</a> tab shows what unlocks each building and bonus. Laying out your town? The <a href="#planner">Town planner</a> shows real-size buildings and checks your layout against the guide. Overwhelmed? Keep <b>Focus on current phase</b> ticked: only the phase you are in and its next step stay open. Time estimates are rough guesses for a first playthrough. Stuck? The <a href="#fix">Fix it</a> tab lists common problems and their causes. In game: hover an item in JEI and press <kbd>R</kbd> (recipe) or <kbd>U</kbd> (uses). Hold <kbd>W</kbd> over a Create item for an animated Ponder scene, and <kbd>G</kbd> over an AE2 item for its guide.</p>
 </header>
 
 <div class="bar">
@@ -391,6 +473,7 @@ abbr.g { text-decoration: underline dotted; text-underline-offset: 3px; cursor: 
       <div class="meter" id="meter" role="img" aria-label="Overall progress"></div>
       <span class="count" id="count">0 / 0</span>
       <span class="sync" id="sync">Loading progress…</span>
+      <button type="button" class="tbtn filt-toggle" id="filtToggle" aria-expanded="false" aria-controls="guideFilters">Filters</button>
     </div>
     <div class="filters" id="guideFilters">
       <div class="seg" role="group" aria-label="Layer filter">
@@ -445,6 +528,16 @@ const PHASES = [
   sub: "Ten minutes of planning saves hours of moving buildings later.",
   intro: "MineColonies buildings are big and hard to move once built. The town and the tech underneath also have to stay out of each other's way. Decide the layout first.",
   steps: [
+    { id: "p-day1", layer: "p", t: "Your first 30 minutes (if you've just spawned)", mods: ["JEI", "FTB Quests", "JourneyMap"],
+      why: `<p>All the Mods 10 starts like normal Minecraft, only with far more to find. Three tools carry you through the whole game: the <b>recipe viewer (JEI)</b>, the <b>quest book</b> and your <b>map</b>. The quest book's <b>Chapter 1: The Beginning</b> is a gentle walkthrough of the vanilla basics (wood, crafting table, furnace, iron and diamond gear), so it is a good companion for your first hours. This guide plans the town before it sends you out to gather, so use this step to get comfortable with the tools.</p>`,
+      subs: [
+        "Make the basics as in normal Minecraft: wood tools, a crafting table, a furnace, a bed and some food, and survive the first night",
+        "Open the quest book and read Chapter 1: The Beginning. Its first quests follow these same steps",
+        "Hover any item in your inventory and press <kbd>R</kbd> to see how it is made, or <kbd>U</kbd> to see what it is used in",
+        "Open the map (JourneyMap) and put a waypoint on your first base with <kbd>B</kbd>",
+        "Look through Options > Controls so you know the keys for JEI, the map and the quest book",
+        "Optional: make the Crafting Table on a Stick from the quest book. It works as a portable crafting table, and you can bind a key to it",
+      ] },
     { id: "p-site", layer: "p", t: "Choose the town site", mods: ["MineColonies", "Nature's Compass", "JourneyMap"],
       why: `<p>The Town Hall claims a block of chunks around itself, and the claim grows as the colony levels up. Citizens walk everywhere, so a flat site means shorter trips and fewer stuck citizens. The fisher needs a body of open water, and the forester needs a patch of trees it can cut and replant.</p>`,
       subs: [
@@ -454,7 +547,7 @@ const PHASES = [
         "Make sure it's at least 200 blocks from anything you've built that you don't want inside the colony border",
         "Stand in the middle, press <kbd>F3</kbd> and write down the coordinates of the future town square",
         "Mark the centre with a tall pillar or a torch tower so you can find it again",
-        "Craft a Nature's Compass (a compass, 4 saplings and 4 logs) and use it to search for a Plains, Meadow or Forest biome that has a river nearby",
+        "If you can't find a good site on foot, craft a Nature's Compass (a compass, 4 saplings and 4 logs; the compass needs 4 iron ingots and a redstone, so come back after your first mining in Phase 2) and use it to search for a Plains, Meadow or Forest biome that has a river nearby",
         "Put a JourneyMap waypoint on the town centre (press <kbd>B</kbd>) so you can always find your way back",
       ],
       tip: `<b>Nature's Compass:</b> right-click it to open the biome list, pick a biome and press Search. It then points the way and shows the coordinates. In this pack it costs no experience and can't teleport you. The Explorer's Compass (for structures) costs 4 netherite ingots and 4 enderium gears here, so skip it.`,
@@ -586,17 +679,17 @@ const PHASES = [
     { id: "s-ores", layer: "s", t: "Mining trip for tech ores", mods: ["Mekanism", "Create"],
       why: `<p>Each tech mod needs its own ore. <b>Osmium</b> is the Mekanism metal. <b>Zinc</b> is Create's metal and goes into brass. Lots of <b>redstone</b> goes into Mekanism circuits and AE2. A few <b>diamonds</b> are needed for AE2 engineering processors.</p>`,
       subs: [
-        "Mine about 1 stack of osmium ore (Mekanism)",
+        "Optional: mine about 1 stack of osmium ore if you plan to do Mekanism in Phase 9. You can come back for it",
         "Mine about 1 stack of zinc ore (Create)",
         "Mine 2 stacks of copper ore (around Y 48)",
         "Mine 3 stacks of redstone (deepslate level, Y −59)",
         "Find 10+ diamonds (Y −59)",
         "Mine 2 stacks of coal for early power and torches",
-        "Bring back any tin, lead or uranium ore you find. Don't smelt it yet, Mekanism doubles it later",
+        "Bring back any tin, lead or uranium ore you find. Don't smelt it yet: Mekanism's ore chain gives more ingots per raw ore (check JEI for which metals it handles)",
       ],
       tip: `<b>Why keep raw ore:</b> smelting raw ore directly gives 1 ingot. Once Mekanism is running, the same raw ore gives up to 2.67× as much (Create's ore line gives 1× plus free by-products). Store raw ore you don't need right away.` },
     { id: "s-waystone", layer: "s", t: "Put a waystone at the town site", mods: ["Waystones"],
-      why: `<p>A waystone lets you teleport home from any other waystone, or with a Warp Scroll/Warp Stone. You'll travel back and forth constantly, so this saves a lot of time.</p>`,
+      why: `<p>A waystone lets you teleport home from any other waystone, or with a Warp Scroll/Warp Stone. You'll travel back and forth constantly, so this saves a lot of time.</p><p><b>This step is optional for now.</b> The Warp Stone needs 4 ender pearls and 4 amethyst shards, which are hard to get in the first days. Do it once you have ender pearls, or use a waystone you find in a village (some villages generate one, and wild waystones can appear too).</p>`,
       subs: [
         "Craft a Warp Stone (4 amethyst shards, 4 ender pearls and 1 emerald)",
         "Craft a waystone (3 stone bricks, the Warp Stone and 3 obsidian) or take one from a village",
@@ -604,9 +697,9 @@ const PHASES = [
         "Sleep in a bed at the site to set your spawn",
       ] },
     { id: "w-survive", layer: "s", t: "Town win: a waystone worth arriving at", mods: ["Waystones"],
-      why: `<p>Every trip home ends at this waystone, so it's the first thing you see of the town. A little care here gives you a nice moment every time you arrive.</p>`,
+      why: `<p>Every trip home ends at this waystone, or at your bed if you haven't built one yet, so it's the first thing you see of the town. A little care here gives you a nice moment every time you arrive.</p>`,
       subs: [
-        "Build a small stone plinth or three steps around the waystone",
+        "Build a small stone plinth or three steps around the waystone (or around the spot where you arrive home)",
         "Add two lanterns and a bench",
         "Plant a flower bed and a tree beside it",
         "Place a sign with the town's name",
@@ -1594,7 +1687,7 @@ const EXTRA = {
   "g-health": { opt: true },
   "s-pack": { opt: true, check: "Mined blocks go straight into the backpack instead of your inventory." },
   "s-ores": { fix: [["Can't find zinc or osmium", "Check the ore in JEI (U on the ore) for the Y-levels where it generates. Mining in the ATM Mining dimension is faster once you can reach it."]] },
-  "s-waystone": { check: "You can teleport to the town waystone from any other waystone." },
+  "s-waystone": { opt: true, check: "You can teleport to the town waystone from any other waystone." },
   "f-camp": { fix: [["The camp preview is red", "The spot isn't flat enough or something is in the way. Move it or flatten the ground."]] },
   "f-hall": { check: "Four citizens wander around, and the Town Hall GUI opens with your colony name." },
   "f-builder": {
@@ -4161,11 +4254,21 @@ function renderFix() {
 }
 
 /* ---------- tabs ---------- */
+document.getElementById("goPhase1").addEventListener("click", e => {
+  e.preventDefault(); showTab("guide"); try { history.replaceState(null, "", "#guide"); } catch (err) {}
+  const ph = document.querySelector("details.phase"); if (ph) { ph.open = true; ph.scrollIntoView({ block: "start" }); }
+});
+document.getElementById("filtToggle").addEventListener("click", e => {
+  const bar = document.querySelector(".bar"), on = !bar.classList.contains("filters-open");
+  bar.classList.toggle("filters-open", on); e.currentTarget.setAttribute("aria-expanded", String(on));
+});
 let tab = "guide";
 function showTab(name) {
   tab = ["guide", "materials", "research", "planner", "learn", "fix"].includes(name) ? name : "guide";
   document.getElementById("main").hidden = tab !== "guide";
   document.getElementById("guideFilters").hidden = tab !== "guide";
+  document.getElementById("filtToggle").hidden = tab !== "guide";
+  document.body.classList.toggle("not-guide", tab !== "guide");
   document.getElementById("matPage").hidden = tab !== "materials";
   document.getElementById("resPage").hidden = tab !== "research";
   document.getElementById("planPage").hidden = tab !== "planner";
@@ -4207,7 +4310,7 @@ document.addEventListener("click", e => {
   const t = document.getElementById(a.dataset.jump);
   if (t) t.scrollIntoView({ block: "start" });
 });
-document.querySelectorAll('.howto a[href="#learn"], .howto a[href="#fix"], .howto a[href="#materials"], .howto a[href="#research"], .howto a[href="#planner"]').forEach(a => a.addEventListener("click", e => {
+document.querySelectorAll('header.intro a[href="#learn"], header.intro a[href="#fix"], header.intro a[href="#materials"], header.intro a[href="#research"], header.intro a[href="#planner"]').forEach(a => a.addEventListener("click", e => {
   e.preventDefault();
   const name = a.getAttribute("href").slice(1);
   showTab(name);

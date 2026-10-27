@@ -162,6 +162,26 @@
     plan.items = []; plan.next = 1; return true;
   });
 
+  /* ---- first impressions: the start panel and the first steps ---- */
+  check("the Start here panel is on the Guide tab only, and its links work", () => {
+    const bad = [], vis = () => getComputedStyle(document.getElementById("startHere")).display !== "none";
+    showTab("guide"); if (!vis()) bad.push("hidden on the Guide tab");
+    showTab("learn"); if (vis()) bad.push("still showing on the Learn tab");
+    document.getElementById("goPhase1").click(); if (tab !== "guide") bad.push("the Phase 1 link did not return to the Guide");
+    if (!document.querySelector("details.phase").open) bad.push("Phase 1 not open after the link");
+    const t = document.getElementById("filtToggle"); t.click(); const open = document.querySelector(".bar").classList.contains("filters-open"); t.click();
+    if (!open || document.querySelector(".bar").classList.contains("filters-open")) bad.push("the Filters button does not toggle");
+    return bad;
+  });
+  check("Phase 1 starts with the first-30-minutes step, and the early steps need nothing the reader can't have yet", () => {
+    const bad = [], p1 = PHASES[0].steps;
+    if (p1[0].id !== "p-day1") bad.push("Phase 1 does not start with p-day1");
+    const site = allSteps.find(s => s.id === "p-site");
+    site.subs.forEach(x => { if (/Nature's Compass/.test(x.html) && !/Phase 2|iron/.test(x.html)) bad.push("the compass step does not say it needs iron first"); });
+    if (!allSteps.find(s => s.id === "s-waystone").opt) bad.push("the Warp Stone waystone step should be optional in Phase 2");
+    return bad;
+  });
+
   /* ---- no script errors ---- */
   check("no script errors while loading or running the tests", () => (window.__errs || []).slice());
 

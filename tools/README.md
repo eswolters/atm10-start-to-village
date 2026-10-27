@@ -22,3 +22,5 @@ What each step does:
 Helpers: `q.py final.json minecraft:oak_planks ...` shows what makes an item (after step 3), and `worldgen.py` extracts ore placement (heights) for the "where to find it" texts, which are written by hand in `index.html` (`RAW`).
 
 After a rebuild, check the diff: ingredients that are new or changed in the pack will show up there. Craft recipes that need several steps (Create sequenced assembly) aren't supported and appear as "look it up in JEI".
+
+After any rebuild, run `python3 ../tests/run.py`: it checks that every step, recipe and gather card still links up.

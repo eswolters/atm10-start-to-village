@@ -11,6 +11,15 @@ Newest first. The guide targets ATM10 on Minecraft 1.21.1 (NeoForge), solo play.
 - The Pipez filter project is optional (it needs an Advanced upgrade), and catching a blaze and making brass are optional until the Phase 9 trains.
 
 
+## Phases 7 to 11 review
+
+- **Raids:** a new Phase 3 step, "Raids are on: your first guard". Raids are enabled in this pack's config, about every 14 nights, and the guide used to mention guards only in Phase 7. A Guard Tower needs no research (only the Barracks does). The Phase 7 guard step now builds on it.
+- **One wall, three stages:** Phase 7 marks the line and builds the gatehouse and a short stretch, Phase 10 builds the wall with the Build Tool's wall and gate decorations, and Phase 11 reshapes it to follow the land. The wall used to be built in four places.
+- **Shape Tool:** now described as it works (it has a builder dig, fill and flatten ground and put up simple shapes, built like any decoration inside your colony, with materials). Checked in the MineColonies and Structurize code and on the MineColonies wiki.
+- **Happiness** is explained in Phase 3, where it is first used, and has a hover definition.
+- **Blaze rods are now required** on the Nether trip (about 6, for the Phase 9 Powah step), and the trip warns about fortresses.
+
+
 ## Newcomer pass
 
 - A "Start here" panel replaces the old intro wall: what you end with (with a cross-section diagram of the town above its hidden vault), who it is for, how long it takes (about 30 to 55 hours for Phases 1 to 8), what versions it was checked against, and a three-step path. The old tips are in a collapsed "Other tools" list. "Hollowmere" is now explained as the example town's name.

@@ -763,6 +763,13 @@ const PHASES = [
         "Check visitors at the Tavern and recruit ones with useful skills",
         "Keep a few spare items for recruiting (diamonds, emeralds, gold, cake and so on)",
       ] },
+    { id: "f-guard", layer: "s", t: "Raids are on: your first guard", mods: ["MineColonies"],
+      why: `<p>Raids are switched on in this pack: on average one every 14 nights, and never closer than 10 nights apart. Raiders break blocks and doors, so an undefended colony is in danger. On the day a raid is coming you get a chat message saying that raiders will arrive that night and from which direction, and citizens run for shelter while it lasts. A <b>Guard Tower</b> needs no research (the Barracks and the other guard buildings do, in Phase 7), so one tower with an armed guard now is cheap insurance. Surviving a raid without a civilian dying even raises happiness.</p>`,
+      subs: [
+        "Build a Guard Tower near the edge of the colony, on the side with the most open ground",
+        "Fill the tower's requests for weapons and armour (spare iron gear from Phase 2 works)",
+        "Read the chat each day: a message tells you when raiders are coming that night, and from which direction",
+      ] },
     { id: "f-jobs", layer: "s", t: "Assign the right citizens to the right jobs", mods: ["MineColonies"],
       why: `<p>Every citizen has skills (for example Strength, Dexterity, Focus, Knowledge, Intelligence) and every job uses two of them. A citizen with the right skills works noticeably faster. The hut GUI shows the skills a job uses.</p>`,
       subs: [
@@ -814,11 +821,11 @@ const PHASES = [
       ],
       tip: `<b>Plan ahead:</b> later, the Stash on top of a hidden ME Export Bus becomes the place where AE2 feeds items into the colony.` },
     { id: "f-routine", layer: "s", t: "Set up a daily routine", mods: ["MineColonies"],
-      why: `<p>A colony grows steadily as long as no request stays open. Do this round whenever you come home.</p>`,
+      why: `<p>A colony grows steadily as long as no request stays open. Do this round whenever you come home.</p><p><b>Happiness</b> is the colony's mood score, shown on the Town Hall's happiness page. It rises with housing, food, security, health, having tools and having work, and a happier colony works and grows faster. Look for the lowest factor on that page: Phase 7 shows how to fix each one.</p>`,
       subs: [
         "Check the Clipboard and fill what you can",
         "Check the builder's Resource Scroll",
-        "Check happiness in the Town Hall",
+        "Open the Town Hall's happiness page and look at the lowest factor",
         "Check that every citizen has a job and a bed",
       ] },
     { id: "w-found", layer: "s", t: "Town win: the first street", mods: ["MineColonies", "Structurize"],
@@ -1251,14 +1258,14 @@ const PHASES = [
         "Check saturation and happiness in the Town Hall after a few days",
       ] },
     { id: "g-guards", layer: "s", t: "Guards and defence", mods: ["MineColonies"],
-      why: `<p>As the colony grows, <b>raids</b> start: barbarians, pirates and so on attack the town. Guards protect citizens, and the colony's <b>security</b> also feeds into happiness. Guard Towers each hold one guard. Barracks hold several, and so do the Archery and Combat Academy, where guards train. The Barracks must be researched first (Tactic Training: 3 blocks of iron; your Guard Towers must total level 3), and so must the Archery (Improved Bows: 6 blocks of iron) and Combat Academy (Improved Swords: 6 blocks of iron).</p>
-      <p>In this pack raids come on average every 14 nights (never fewer than 10 apart), with up to 80 raiders, and raiders can break blocks and doors. Prepare before your first one.</p>`,
+      why: `<p><b>Raids</b> are barbarians, pirates and so on attacking the town. You built your first Guard Tower in Phase 3, and this step finishes the defence. Guards protect citizens, and the colony's <b>security</b> also feeds into happiness. Guard Towers each hold one guard. Barracks hold several, and so do the Archery and Combat Academy, where guards train. The Barracks must be researched first (Tactic Training: 3 blocks of iron; your Guard Towers must total level 3), and so must the Archery (Improved Bows: 6 blocks of iron) and Combat Academy (Improved Swords: 6 blocks of iron).</p>
+      <p>In this pack raids come on average every 14 nights (never fewer than 10 apart), with up to 80 raiders, and raiders can break blocks and doors.</p>`,
       subs: [
-        "Build 2 Guard Towers at the edge of town",
+        "Add more Guard Towers so the whole edge of town is covered (you built the first one in Phase 3)",
         "Give guards weapons and armour (or let the Blacksmith make them)",
         "Set patrol or follow modes in the tower GUI",
         "Build Barracks once the colony reaches 20+ citizens",
-        "Build a wall around the town with Fortress-style decorations",
+        "Mark the line of the future wall with fence posts, joining the Guard Towers and running through the gatehouse (you build the wall itself in Phase 10)",
       ] },
     { id: "g-health", layer: "s", t: "Hospital and Graveyard", mods: ["MineColonies"],
       why: `<p>Citizens can get sick. The <b>Hospital</b> treats them, using cures you supply. The <b>Graveyard</b> handles citizens who died, so their spot in the colony is cleaned up properly.</p>
@@ -1280,7 +1287,7 @@ const PHASES = [
       subs: [
         "Build a gatehouse where the main road enters town",
         "Raise the Guard Towers as stone towers with banners",
-        "Run a first stretch of wall, or a hedge and fence, between them",
+        "Run a short stretch of low wall, or a hedge and fence, from the gatehouse to the nearest tower. The full wall comes in Phase 10",
         "Walk in from the gate: the road and the landmark should be the first things you see",
       ] },
   ]
@@ -1520,7 +1527,7 @@ const PHASES = [
       why: `<p>The Build Tool also has <b>decorations</b>: walls, gates, wells, lamp posts and market stalls. The Structurize <b>Shape Tool</b> lays out roads and walls quickly, and builders build them like any other building.</p>`,
       subs: [
         "Lay main roads between districts",
-        "Build a town wall with gates",
+        "Build the town wall along the line you marked in Phase 7, using the Build Tool's wall and gate decorations. Level uneven ground along the line first with the Shape Tool",
         "Add decorations: a well, market stalls, lamp posts",
       ] },
     { id: "c-scan", layer: "s", t: "Save your own builds as blueprints", mods: ["Structurize"],
@@ -1573,8 +1580,8 @@ const PHASES = [
         "Raise the landmark on the highest ground, with the biggest building and the tallest tower",
         "Alternate roof directions and heights between neighbours (some gable to the street, some sideways)",
         "Place guard towers on corners and gates, not evenly spaced along a straight wall",
-        "Lay the wall with the Shape Tool, following the land, and let it climb hills instead of being flat",
-        "Build a proper gatehouse where the main road enters, with a drawbridge or portcullis",
+        "Reshape the wall you built in Phase 10 so it follows the land and climbs hills instead of staying flat (the Shape Tool can raise sections, and builders build them)",
+        "Dress the gatehouse from Phase 7 with a drawbridge or portcullis",
         "Add chimneys, weathervanes and small dormer windows to plain roofs",
       ],
       tip: `<b>Blocks for it:</b> Macaw's Roofs (607 roof blocks in wood, stone and terracotta, with steep, attic and top variants), Macaw's Stairs (terrace, loft and balcony stairs) and Macaw's Windows (gothic windows, parapets, shutters) finish plain walls and towers. Macaw's Fences has gates and wall caps for the gatehouse, and Framed Blocks lets you shape a custom roof from any block in your palette.`,
@@ -1728,6 +1735,7 @@ const EXTRA = {
       ["Items go back and forth", "Two pipes are extracting from each other. Only the start of each route should extract."],
     ],
     next: "Add a second furnace on the same pipe: Pipez spreads items between all destinations." },
+  "f-guard": { check: "A guard stands at the tower and its requests are filled." },
   "u-nether": { check: "You are home with at least a stack of Nether quartz and 2 stacks of glowstone dust.", fix: [["The portal won't light", "Light the inside of the frame with flint and steel, and check that the frame is a hollow rectangle of at least 4 wide and 5 tall."]] },
   "m-filter": { opt: true, check: "Ore ends up as ingots and cobble ends up in the rejects chest." },
   "m-cobble": {
@@ -1868,7 +1876,7 @@ const PHASE_META = {
 const MILESTONES = {
   plan: ["You've chosen and marked the town site, and know where the vault and mine district go", "You've chosen a main style and wood type", "You have a one-line vision, a four-part palette and a marked market square, main road and landmark site"],
   survive: ["6 stacks of logs and 4 of cobble", "Full iron gear and spare tools for citizens", "About a stack each of osmium and zinc, plus redstone and 10+ diamonds", "A waystone home"],
-  found: ["About 8–12 citizens, all with beds and jobs", "Builder's Hut, Residences, Tavern, Forester, Farmer, Fisher, Dining Hall and Warehouse built", "Couriers deliver to builders without you"],
+  found: ["About 8–12 citizens, all with beds and jobs", "Builder's Hut, Residences, Tavern, Forester, Farmer, Fisher, Dining Hall and Warehouse built", "Couriers deliver to builders without you", "A Guard Tower with an armed guard, because raids are on"],
   first: ["A smelter that runs on its own", "A cobblestone generator powered by rotation", "You can explain extract vs insert and stress (and filters, if you did Project 1b)"],
   undercroft: ["Hidden vault with an entrance", "A Nether portal, and the Nether quartz and glowstone dust for what comes next", "Create power and an ore line", "Steady FE, with stored energy going up"],
   ae2: ["All your items in AE2", "Processors made automatically", "Autocrafting for planks, glass, slabs, stairs and other colony blocks"],
@@ -1975,6 +1983,7 @@ const FIND_INFO = [
 ];
 
 const GLOSSARY = [
+  ["Happiness", "The colony's mood score, on the Town Hall's happiness page. Housing, food, security, health, tools and work all feed into it, and a happier colony works and grows faster."],
   ["SU", "Stress Units. Create's measure of load. Sources give stress capacity, machines use stress. Used above capacity = everything stops."],
   ["RPM", "Rotations per minute: Create's speed. Faster machines work faster but use more stress."],
   ["FE", "Forge Energy, the shared power unit of almost all tech mods. RF and Joules (Mekanism) convert to it."],
@@ -2424,6 +2433,7 @@ const MAT_FOR = {
   "c-late": { items: [["hut_enchanter", 1], ["hut_alchemist", 1], ["hut_mechanic", 1], ["hut_concretemixer", 1], ["hut_netherworker", 1]] },
   "c-scan": { items: [["scan_tool", 1]] },
   "u-nether": { items: [["obsidian", 10], ["blaze_rod", 6]] },
+  "f-guard": { items: [["hut_guardtower", 1], ["iron_sword", 1], ["shield", 1]], sug: true },
   "m-smelter": { items: [["iron_furnace", 1], ["chest", 3], ["pipez_item_pipe", 16], ["pipez_wrench", 1]], sug: true },
   "m-filter": { items: [["pipez_advanced_upgrade", 1], ["chest", 1]], sug: true },
   "m-cobble": { items: [["mechanical_drill", 3], ["water_wheel", 1], ["shaft", 8], ["chest", 1]], sug: true },

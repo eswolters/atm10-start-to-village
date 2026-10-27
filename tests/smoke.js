@@ -194,6 +194,16 @@
     return bad;
   });
 
+  check("the first guard comes in Phase 3, before the Phase 7 guard step, and happiness is explained before it is used", () => {
+    const bad = [], order = allSteps.map(s => s.id), phaseOf = id => PHASES.findIndex(p => p.steps.some(s => s.id === id)) + 1;
+    if (phaseOf("f-guard") !== 3) bad.push("f-guard should be in Phase 3, it is in Phase " + phaseOf("f-guard"));
+    if (order.indexOf("f-guard") > order.indexOf("g-guards")) bad.push("f-guard comes after g-guards");
+    if (!GLOSSARY.some(g => g[0] === "Happiness")) bad.push("no glossary entry for Happiness");
+    const routine = allSteps.find(s => s.id === "f-routine");
+    if (!/<b>Happiness<\/b>/.test(routine.why)) bad.push("f-routine does not explain happiness");
+    return bad;
+  });
+
   /* ---- no script errors ---- */
   check("no script errors while loading or running the tests", () => (window.__errs || []).slice());
 

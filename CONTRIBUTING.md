@@ -30,6 +30,10 @@ A rebuild needs the game, so run it on your own machine (`ATM10_INSTANCE=... ./t
 
 Every number in the guide should come from the installed pack: recipes and config from the jars and `kubejs`, quest text from `config/ftbquests`. When you add or change a claim, check it there first, and say in the step when it is something you could not check. `tools/q.py` shows what makes an item, and `tools/README.md` lists the other helpers.
 
+## The audit record
+
+`AUDIT.md` lists what was checked against the pack, what was wrong, and what is still judgement. Update it when you change a claim, and use it as the checklist when ATM10 releases a new version.
+
 ## Tests
 
 ```sh

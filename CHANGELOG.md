@@ -2,6 +2,11 @@
 
 Newest first. The guide targets ATM10 on Minecraft 1.21.1 (NeoForge), solo play.
 
+## Claim audit
+
+- Every sentence with a number or game rule (350) was listed and checked against the pack, and the result is recorded in `AUDIT.md`.
+- **Corrected:** Mystical Agriculture mobs do not drop Inferium essence in this pack (turned off in its config), the Silk Touch rule for budding certus, hut recipes (the Town Hall and Graveyard are exceptions), and several research prerequisites the steps left out. The happiness check no longer quotes a number that no source supports.
+
 ## Roads
 
 - New **Making roads** section on the Learn tab: which blocks make citizens walk faster (MineColonies' own road-block list), and the ways to lay a road (by hand, Construction Sticks, the Exchanging Gadget, the Shape Tool, and planning it on the Town planner first). Every road step links to it.
